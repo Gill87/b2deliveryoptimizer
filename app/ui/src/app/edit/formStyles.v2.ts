@@ -174,6 +174,31 @@ export const VEHICLE_ROW_ACTIONS =
 export const VEHICLE_ROW_ICON_BUTTON =
   "relative size-10 shrink-0 rounded-[4px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--edit-teal-300)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--edit-bg-primary)] hover:bg-[var(--edit-tertiary-btn-hover)] active:bg-[var(--edit-tertiary-btn-pressed)] transition-colors";
 
+// Mobile Hi-Fi Locked Vehicle Card (Figma 8325:7475)
+export const VEHICLE_MOBILE_LOCKED_CARD_V2 =
+  "lg:hidden flex flex-col gap-[12px] border border-[var(--edit-stone-200)] rounded-[8px] p-4 w-full";
+
+export const VEHICLE_MOBILE_LOCKED_HEADER =
+  "flex items-center justify-between w-full";
+
+export const VEHICLE_MOBILE_LOCKED_INFO =
+  "flex flex-col gap-[4px] leading-[1.5] text-[16px] text-[var(--edit-text-primary)] whitespace-nowrap";
+
+export const VEHICLE_MOBILE_LOCKED_NAME =
+  "font-bold";
+
+export const VEHICLE_MOBILE_LOCKED_SUBTITLE =
+  "flex items-center gap-[4px] font-normal";
+
+export const VEHICLE_MOBILE_LOCKED_ICON_ROW =
+  "flex items-center gap-[8px]";
+
+export const VEHICLE_MOBILE_LOCKED_STATUS_ROW =
+  "flex items-center gap-[16px] w-full";
+
+export const VEHICLE_MOBILE_LOCKED_DEPARTURE =
+  "font-normal text-[16px] leading-[1.5] text-[var(--edit-text-primary)] whitespace-nowrap";
+
 export const VEHICLE_SECTION_BTN_GHOST =
   "h-9 px-4 rounded-[80px] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap hover:bg-[var(--edit-tertiary-btn-hover)] active:bg-[var(--edit-tertiary-btn-pressed)] transition-colors cursor-pointer";
 

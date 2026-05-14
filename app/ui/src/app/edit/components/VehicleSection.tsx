@@ -46,8 +46,6 @@ type VehicleSectionProps = {
   markAllAvailable: () => void;
   updateVehicle: <K extends keyof VehicleRowType>(id: number, key: K, value: VehicleRowType[K]) => void;
   deleteVehicle: (id: number) => void;
-  unlockVehicle: (id: number) => void;
-  confirmVehicle: (id: number) => void;
   touchedIds: Set<number>;
   allVehiclesLocked: boolean;
   activeVehicleIsValid: boolean;
@@ -61,8 +59,6 @@ export default function VehicleSection({
   markAllAvailable,
   updateVehicle,
   deleteVehicle,
-  unlockVehicle,
-  confirmVehicle,
   touchedIds,
   allVehiclesLocked,
   activeVehicleIsValid,
@@ -135,8 +131,6 @@ export default function VehicleSection({
                 vehicle={v}
                 updateVehicle={updateVehicle}
                 deleteVehicle={handleDeleteRequest}
-                unlockVehicle={unlockVehicle}
-                confirmVehicle={confirmVehicle}
                 onEditVehicle={setEditingVehicle}
                 vehicleTouched={touchedIds.has(v.id)}
                 geocodeFailed={geocodeFailedSet.has(v.id)}
@@ -164,8 +158,7 @@ export default function VehicleSection({
               vehicle={v}
               updateVehicle={updateVehicle}
               deleteVehicle={handleDeleteRequest}
-              unlockVehicle={unlockVehicle}
-              confirmVehicle={confirmVehicle}
+              onEditVehicle={setEditingVehicle}
               vehicleTouched={touchedIds.has(v.id)}
               geocodeFailed={geocodeFailedSet.has(v.id)}
               outOfRegionFailed={outOfRegionSet.has(v.id)}
