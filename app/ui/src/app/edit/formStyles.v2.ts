@@ -36,7 +36,7 @@ export const NAVBAR_V2_ROOT =
 // ── MOBILE Navbar (Figma 8169:2301) ──────────────────────────────────────────
 
 export const MOBILE_NAVBAR_ROOT =
-  "lg:hidden bg-[var(--edit-stone-50)] flex items-center justify-between px-4 py-3";
+  "lg:hidden bg-[var(--edit-bg-primary)] flex items-center justify-between px-4 py-3";
 
 export const MOBILE_NAVBAR_LEFT_GROUP =
   "flex items-center gap-2";
@@ -104,7 +104,7 @@ export const NAVBAR_V2_BTN_FILLED =
 export const PAGE_V2_ROOT =
   "min-h-screen flex flex-col bg-[var(--edit-stone-50)] font-sans-manrope";
   
-export const PAGE_V2_BODY = "flex flex-1 min-h-0";
+export const PAGE_V2_BODY = "flex flex-1 lg:min-h-0";
 
 export const PAGE_V2_MAIN =
   "flex-1 min-w-0 bg-[var(--edit-bg-primary)] border-t border-l border-[var(--edit-stone-200)] rounded-tl-[12px] p-6 space-y-16";
@@ -405,7 +405,7 @@ export const OVERLAY_BACKDROP =
   "fixed inset-0 z-50 flex items-center justify-center bg-black/40";
 
 export const OVERLAY_PANEL =
-  "bg-[var(--edit-bg-primary)] flex flex-col gap-[14px] items-end overflow-hidden p-6 rounded-[6px] w-full max-w-[480px] mx-4 shadow-lg max-h-[90dvh]";
+  "bg-[var(--edit-bg-primary)] flex flex-col gap-[14px] items-end overflow-hidden p-4 lg:p-6 rounded-[6px] w-full max-w-[480px] mx-2 lg:mx-4 shadow-lg max-h-[90dvh]";
 
 export const OVERLAY_BODY =
   "flex flex-col gap-6 items-start w-full flex-1 min-h-0";
@@ -583,13 +583,25 @@ export const PAGINATION_V2_PAGE_INACTIVE =
 // ── Page Footer ───────────────────────────────────────────────────────────────
 
 export const FOOTER_ROOT =
-  "flex items-center justify-between px-4 py-3";
+  "hidden lg:flex items-center justify-between px-4 py-3";
 
 export const FOOTER_LOGO =
   "shrink-0 w-[25.326px] h-[28px] [aspect-ratio:25.33/28] [background:var(--edit-footer-logo-bg)]";
 
 export const FOOTER_TEXT =
   "font-normal text-[16px] leading-[1.5] text-[var(--edit-text-primary)] whitespace-nowrap";
+
+// Mobile footer (lg:hidden)
+export const MOBILE_FOOTER_ROOT =
+  "lg:hidden flex flex-col gap-[8px] items-start py-3";
+
+export const MOBILE_FOOTER_LOGO =
+  "shrink-0 w-[25.179px] h-[27.838px] [aspect-ratio:25.179/27.838] [background:var(--edit-footer-logo-bg)]";
+
+export const MOBILE_FOOTER_TEXT_WRAPPER =
+  "flex flex-col font-['Manrope',sans-serif] font-normal text-[16px] leading-[1.5] text-[var(--edit-text-primary)] whitespace-nowrap";
+
+export const MOBILE_FOOTER_TEXT_LINE = "relative shrink-0";
 
 export const OPTIMIZING_SPINNER_WRAP =
   "flex justify-center mt-2";

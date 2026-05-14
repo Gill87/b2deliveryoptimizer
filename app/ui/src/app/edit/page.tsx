@@ -18,6 +18,7 @@ import VehicleSection from "./components/VehicleSection";
 import AddressSection from "./components/AddressSection";
 import AddressPagination from "./components/AddressPagination";
 import EditPageFooter from "./components/EditPageFooter";
+import MobileEditPageFooter from "./components/MobileEditPageFooter";
 import { useVehicles } from "./hooks/useVehicles";
 import { useAddresses } from "./hooks/useAddresses";
 import { useOptimize } from "./hooks/useOptimize";
@@ -209,6 +210,7 @@ export default function Page() {
             <AddressPagination {...addressState} />
           </div>
           <EditPageFooter />
+          <MobileEditPageFooter />
         </main>
       </div>
     </div>
