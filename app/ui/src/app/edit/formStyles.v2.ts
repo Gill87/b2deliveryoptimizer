@@ -31,7 +31,59 @@ export const SIDEBAR_NAV_LABEL_INACTIVE =
   "text-[14px] leading-5 font-medium text-[var(--edit-text-primary)] text-center whitespace-nowrap";
 
 export const NAVBAR_V2_ROOT =
-  "bg-[var(--edit-stone-50)] flex items-center justify-between p-4";
+  "hidden lg:flex bg-[var(--edit-stone-50)] items-center justify-between p-4";
+
+// ── MOBILE Navbar (Figma 8169:2301) ──────────────────────────────────────────
+
+export const MOBILE_NAVBAR_ROOT =
+  "lg:hidden bg-[var(--edit-stone-50)] flex items-center justify-between px-4 py-3";
+
+export const MOBILE_NAVBAR_LEFT_GROUP =
+  "flex items-center gap-2";
+
+export const MOBILE_NAVBAR_MENU_BTN =
+  "size-6 shrink-0 cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--edit-teal-300)] rounded-[4px]";
+
+export const MOBILE_NAVBAR_TITLE =
+  "font-bold text-[20px] leading-[28px] text-[var(--edit-text-primary)] whitespace-nowrap";
+
+// ── MOBILE Sidebar (Figma 7472:3661) ─────────────────────────────────────────
+
+export const MOBILE_SIDEBAR_OVERLAY =
+  "lg:hidden fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 ease-in-out";
+
+export const MOBILE_SIDEBAR_PANEL =
+  "absolute left-0 top-0 h-full w-[280px] bg-[var(--edit-stone-50)] rounded-br-[12px] rounded-tr-[12px] shadow-xl flex flex-col transition-transform duration-300 ease-in-out";
+
+export const MOBILE_SIDEBAR_HEADER =
+  "flex items-center gap-2 pt-6 px-4";
+
+export const MOBILE_SIDEBAR_CLOSE_BTN =
+  "size-6 shrink-0 cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--edit-teal-300)] rounded-[4px]";
+
+export const MOBILE_SIDEBAR_HEADER_TITLE =
+  "font-bold text-[20px] leading-[28px] text-[var(--edit-text-primary)] whitespace-nowrap";
+
+export const MOBILE_SIDEBAR_NAV =
+  "flex flex-col gap-4 px-4 mt-[23px]";
+
+export const MOBILE_SIDEBAR_NAV_ITEM_ACTIVE =
+  "flex items-center gap-2 w-full";
+
+export const MOBILE_SIDEBAR_NAV_ITEM_INACTIVE =
+  "flex items-center gap-2 w-full";
+
+export const MOBILE_SIDEBAR_NAV_ITEM_DISABLED =
+  "flex items-center gap-2 w-full opacity-[0.26] cursor-not-allowed";
+
+export const MOBILE_SIDEBAR_NAV_PILL_ACTIVE =
+  "flex items-center justify-center rounded-[80px] bg-[var(--edit-container-active)] px-[9px] py-[4px] w-[52px] shrink-0";
+
+export const MOBILE_SIDEBAR_NAV_PILL_INACTIVE =
+  "flex items-center justify-center rounded-[80px] px-[9px] py-[4px] w-[52px] shrink-0";
+
+export const MOBILE_SIDEBAR_NAV_LABEL =
+  "font-bold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap";
 
 export const NAVBAR_V2_LOGO =
   "font-bold text-[20px] leading-7 text-[var(--edit-text-primary)] whitespace-nowrap";

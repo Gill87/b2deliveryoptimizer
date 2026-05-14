@@ -7,6 +7,8 @@
 
 import styles from "./edit.module.css";
 import Navbar from "./components/Navbar";
+import MobileNavbar from "./components/MobileNavbar";
+import MobileSidebar from "./components/MobileSidebar";
 import OptimizingModal from "./components/OptimizingModal";
 import Sidebar from "./components/Sidebar/Sidebar";
 import SidebarEditButton from "./components/Sidebar/SidebarEditButton";
@@ -41,6 +43,7 @@ export default function Page() {
   const vehicleState = useVehicles();
   const addressState = useAddresses();
   const [sessionError, setSessionError] = useState<string | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { importVehicles } = vehicleState;
   const { importAddresses } = addressState;
   const {
@@ -184,6 +187,8 @@ export default function Page() {
           onSave={handleStartLocationSave}
         />
       )}
+      <MobileSidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+      <MobileNavbar onMenuClick={() => setIsMobileMenuOpen(true)} />
       <Navbar
         onImportSession={handleImportSession}
         onExportSession={handleExportSession}
