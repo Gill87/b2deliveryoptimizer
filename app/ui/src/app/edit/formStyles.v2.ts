@@ -573,7 +573,7 @@ export const OVERLAY_AUTOCOMPLETE_ITEM_TEXT =
 // ── Pagination V2 (Figma 8083:3520) ──────────────────────────────────────────
 
 export const PAGINATION_V2_ROW =
-  "flex items-center justify-between w-full";
+  "hidden lg:flex items-center justify-between w-full";
 
 export const PAGINATION_V2_SHOW_CONTAINER =
   "border border-[var(--edit-stone-200)] bg-[var(--edit-bg-primary)] flex items-center justify-between p-[8px] rounded-[6px] w-[112px] relative cursor-pointer overflow-hidden";
@@ -605,6 +605,23 @@ export const PAGINATION_V2_PAGE_ACTIVE =
 export const PAGINATION_V2_PAGE_INACTIVE =
   "flex items-center justify-center size-[40px] font-['Manrope',sans-serif] font-semibold text-[14px] leading-[20px] text-[var(--edit-text-primary)] shrink-0 cursor-pointer hover:bg-[var(--edit-stone-50)] rounded-[6px] transition-colors";
 
+// ── Mobile Pagination (Figma 8325:4916) ──────────────────────────────────────
+
+export const MOBILE_PAGINATION_ROOT =
+  "lg:hidden flex flex-col gap-[16px] items-center w-full";
+
+export const MOBILE_PAGINATION_PILLS_ROW =
+  "flex gap-[8px] items-center shrink-0";
+
+export const MOBILE_PAGINATION_PAGE_ACTIVE =
+  "bg-[var(--edit-pagination-mobile-active-bg)] flex items-center justify-center rounded-[100px] size-[36px] font-['Manrope',sans-serif] font-semibold text-[14px] leading-[20px] text-[var(--edit-text-primary)] shrink-0 select-none";
+
+export const MOBILE_PAGINATION_PAGE_INACTIVE =
+  "flex items-center justify-center size-[36px] font-['Manrope',sans-serif] font-semibold text-[14px] leading-[20px] text-[var(--edit-text-primary)] shrink-0 cursor-pointer hover:bg-[var(--edit-stone-50)] rounded-[100px] transition-colors";
+
+export const MOBILE_PAGINATION_NAV_ROW =
+  "flex items-center justify-between shrink-0 w-full";
+
 // ── Page Footer ───────────────────────────────────────────────────────────────
 
 export const FOOTER_ROOT =
@@ -630,3 +647,61 @@ export const MOBILE_FOOTER_TEXT_LINE = "relative shrink-0";
 
 export const OPTIMIZING_SPINNER_WRAP =
   "flex justify-center mt-2";
+
+// ── Mobile Address Card Edit State (Figma 8325:4843) ──────────────────────────
+
+export const MOBILE_ADDR_CARD_EDIT_CONTENT =
+  "flex flex-col gap-6";
+
+export const MOBILE_ADDR_EDIT_SECTION =
+  "flex flex-col gap-2";
+
+export const MOBILE_ADDR_EDIT_SECTION_LABEL =
+  "font-semibold text-[16px] leading-[1.5] text-[var(--edit-text-primary)]";
+
+export const MOBILE_ADDR_EDIT_NAME_ROW =
+  "flex items-center gap-2";
+
+export const MOBILE_ADDR_EDIT_DELIVERY_INFO_ROW =
+  "flex items-start gap-4";
+
+export const MOBILE_ADDR_EDIT_DELIVERY_GROUP =
+  "flex flex-col gap-2";
+
+export const MOBILE_ADDR_EDIT_EST_CONTROL =
+  "flex items-center gap-2";
+
+export const MOBILE_ADDR_EDIT_SCHEDULE_ROW =
+  "flex items-center gap-2";
+
+export const MOBILE_ADDR_EDIT_TIME_SELECT_WRAP =
+  "border border-[var(--edit-stone-200)] flex h-11 items-center justify-between px-2 py-[10px] rounded-[6px] flex-1 relative overflow-hidden cursor-pointer";
+
+export const MOBILE_ADDR_EDIT_NOTES_WRAP =
+  "border border-[var(--edit-stone-200)] flex items-start overflow-hidden px-2 py-[10px] rounded-[6px] w-full";
+
+export const MOBILE_ADDR_EDIT_ACTION_BAR =
+  "flex items-center justify-between pt-2";
+
+export const MOBILE_ADDR_EDIT_ACTION_BAR_END =
+  "flex items-center justify-end pt-2";
+
+export const MOBILE_ADDR_EDIT_COLLAPSE_BTN =
+  "flex items-center gap-1 h-9 px-3 rounded-[80px] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] hover:bg-[var(--edit-tertiary-btn-hover)] active:bg-[var(--edit-tertiary-btn-pressed)] transition-colors cursor-pointer";
+
+export const MOBILE_ADDR_EDIT_ICON_BTNS_GROUP =
+  "flex items-center gap-1";
+
+// ── Mobile Address Card Locked State (Figma 8325:4687) ──────────────────────
+
+export const MOBILE_ADDR_LOCKED_VALUE =
+  "font-normal text-[16px] leading-[1.5] text-[var(--edit-text-primary)]";
+
+export const MOBILE_ADDR_LOCKED_FIELD_BTN =
+  "text-left bg-transparent border-0 p-0 m-0 w-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--edit-teal-300)] rounded-sm";
+
+export const MOBILE_ADDR_LOCKED_RECIPIENT_LINES =
+  "flex flex-col gap-1";
+
+export const MOBILE_ADDR_LOCKED_GEOCODE_ERROR =
+  "text-[var(--edit-error-border)]";

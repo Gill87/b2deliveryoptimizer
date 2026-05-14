@@ -17,6 +17,7 @@ import { PAGE_V2_ROOT, PAGE_V2_BODY, PAGE_V2_MAIN, ADDRESS_SECTION_WITH_PAGINATI
 import VehicleSection from "./components/VehicleSection";
 import AddressSection from "./components/AddressSection";
 import AddressPagination from "./components/AddressPagination";
+import AddressPaginationMobile from "./components/AddressPaginationMobile";
 import EditPageFooter from "./components/EditPageFooter";
 import MobileEditPageFooter from "./components/MobileEditPageFooter";
 import { useVehicles } from "./hooks/useVehicles";
@@ -208,6 +209,7 @@ export default function Page() {
           <div className={ADDRESS_SECTION_WITH_PAGINATION}>
             <AddressSection {...addressState} geocodeFailedIds={geocodeFailedAddressIds} outOfRegionIds={outOfRegionAddressIds} onCSVUpload={handleCSVUpload} />
             <AddressPagination {...addressState} />
+            <AddressPaginationMobile {...addressState} />
           </div>
           <EditPageFooter />
           <MobileEditPageFooter />
