@@ -705,3 +705,17 @@ export const MOBILE_ADDR_LOCKED_RECIPIENT_LINES =
 
 export const MOBILE_ADDR_LOCKED_GEOCODE_ERROR =
   "text-[var(--edit-error-border)]";
+
+// ── Mobile Address Card Summarized State (Figma 8325:7892) ──────────────────
+
+export const MOBILE_ADDR_SUMMARY_CONTENT =
+  "flex flex-col gap-[24px] p-4 w-full";
+
+export const MOBILE_ADDR_SUMMARY_SECTION =
+  "flex flex-col gap-[6px] items-start w-full";
+
+export const MOBILE_ADDR_SUMMARY_ACTION_BAR =
+  "flex items-center justify-between w-full";
+
+export const MOBILE_ADDR_SUMMARY_EXPAND_BTN =
+  "flex gap-[8px] h-[36px] items-center justify-center overflow-clip px-[16px] rounded-[80px] font-['Manrope',sans-serif] font-semibold text-[14px] leading-[20px] text-[var(--edit-text-primary)] cursor-pointer hover:bg-[var(--edit-stone-50)] active:bg-[var(--edit-tertiary-btn-pressed)] transition-colors";

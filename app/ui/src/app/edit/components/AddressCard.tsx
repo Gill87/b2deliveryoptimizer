@@ -6,7 +6,6 @@ import { TIME_OPTIONS } from "../constants/timeOptions";
 import type { AddressCard as AddressCardType } from "../types/delivery";
 import {
   ADDRESS_CARD_ROOT_BASE,
-  ACCORDION_TRIGGER,
 } from "../formStyles";
 import {
   ADDRESS_ROW_EDIT_ROOT,
@@ -64,6 +63,10 @@ import {
   MOBILE_ADDR_LOCKED_FIELD_BTN,
   MOBILE_ADDR_LOCKED_RECIPIENT_LINES,
   MOBILE_ADDR_LOCKED_GEOCODE_ERROR,
+  MOBILE_ADDR_SUMMARY_CONTENT,
+  MOBILE_ADDR_SUMMARY_SECTION,
+  MOBILE_ADDR_SUMMARY_ACTION_BAR,
+  MOBILE_ADDR_SUMMARY_EXPAND_BTN,
 } from "../formStyles.v2";
 import { EditIconButton, ConfirmIconButton, DeleteIconButton } from "./RowIconButtons";
 
@@ -195,7 +198,6 @@ export default function AddressCard({
 
   const addrInvalid = geocodeFailed || (addressTouched && !a.recipientAddress.trim());
 
-  const displayAddr = a.recipientAddress.trim() || a.recipientName.trim() || "Address";
   const panelId = `addr-panel-${a.id}`;
 
   return (
@@ -395,37 +397,45 @@ export default function AddressCard({
         </div>
       </div>
 
-      {/* ── Mobile accordion ── */}
+      {/* ── Mobile ── */}
       <div className={`${ADDRESS_CARD_ROOT_BASE} lg:hidden`}>
-        <button
-          type="button"
-          onClick={() => {
-            if (a.locked) {
-              setManualExpanded((e) => !e);
-            } else {
-              setManualExpanded(false);
-            }
-          }}
-          aria-expanded={expanded}
-          aria-controls={panelId}
-          className={ACCORDION_TRIGGER}
-        >
-          <div className="min-w-0 flex-1">
-            <div className="font-semibold text-black truncate">{displayAddr}</div>
+        {!expanded ? (
+          /* Summarized state (Figma 8325:7892) */
+          <div className={MOBILE_ADDR_SUMMARY_CONTENT}>
+            <div className={MOBILE_ADDR_SUMMARY_SECTION}>
+              <span className={MOBILE_ADDR_EDIT_SECTION_LABEL}>Recipient</span>
+              <div className={MOBILE_ADDR_LOCKED_RECIPIENT_LINES}>
+                {(a.recipientName || a.phoneNumber) && (
+                  <span className={MOBILE_ADDR_LOCKED_VALUE}>
+                    {[a.recipientName, a.phoneNumber].filter(Boolean).join(", ")}
+                  </span>
+                )}
+                <span className={`${MOBILE_ADDR_LOCKED_VALUE}${geocodeFailed || outOfRegionFailed ? ` ${MOBILE_ADDR_LOCKED_GEOCODE_ERROR}` : ""}`}>
+                  {a.recipientAddress || "—"}
+                </span>
+              </div>
+            </div>
+            <div className={MOBILE_ADDR_SUMMARY_ACTION_BAR}>
+              <button
+                type="button"
+                onClick={() => setManualExpanded(true)}
+                className={MOBILE_ADDR_SUMMARY_EXPAND_BTN}
+                aria-label="Expand address card"
+                aria-expanded={false}
+                aria-controls={panelId}
+              >
+                Expand
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path d="M12 12.6L16.6 8L18 9.4L12 15.4L6 9.4L7.4 8L12 12.6Z" fill="var(--edit-primary-icon)" />
+                </svg>
+              </button>
+              <div className={MOBILE_ADDR_EDIT_ICON_BTNS_GROUP}>
+                <EditIconButton onClick={() => unlockAddress(a.id)} />
+                <DeleteIconButton onClick={() => deleteAddress(a.id)} />
+              </div>
+            </div>
           </div>
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            className={`shrink-0 text-black transition-transform mt-0.5 ${expanded ? "rotate-180" : ""}`}
-            aria-hidden
-          >
-            <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-
-        {expanded && (
+        ) : (
           <div id={panelId} role="region" className="p-4">
             {a.locked ? (
               <div className={MOBILE_ADDR_CARD_EDIT_CONTENT}>
@@ -489,9 +499,9 @@ export default function AddressCard({
 
                 {/* Action bar */}
                 <div className={MOBILE_ADDR_EDIT_ACTION_BAR}>
-                  <button type="button" className={MOBILE_ADDR_EDIT_COLLAPSE_BTN} aria-label="Collapse card">
-                    <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden>
-                      <path className={ADDRESS_ROW_ICON_FILL} d="M12 9.4L7.4 14L6 12.6L12 6.6L18 12.6L16.6 14L12 9.4Z" />
+                  <button type="button" onClick={() => setManualExpanded(false)} className={MOBILE_ADDR_EDIT_COLLAPSE_BTN} aria-label="Collapse card">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path d="M12 11.4L7.4 16L6 14.6L12 8.6L18 14.6L16.6 16L12 11.4Z" fill="var(--edit-primary-icon)" />
                     </svg>
                     Collapse
                   </button>
