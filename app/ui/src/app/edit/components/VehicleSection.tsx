@@ -23,6 +23,7 @@ import {
   VEHICLE_SECTION_HEADER,
   VEHICLE_SECTION_HEADING,
   VEHICLE_SECTION_SUBHEADING,
+  MOBILE_EMPTY_STATE_CONTAINER,
 } from "../formStyles.v2";
 
 const BLANK_VEHICLE: VehicleRowType = {
@@ -146,12 +147,17 @@ export default function VehicleSection({
         </div>
       </div>
 
-      {/* Mobile: stacked cards */}
-      <div className="lg:hidden space-y-6">
-        {vehicles.length === 0 ? (
+      {/* Mobile: bordered empty state */}
+      {vehicles.length === 0 && (
+        <div className={MOBILE_EMPTY_STATE_CONTAINER}>
           <VehicleEmptyState />
-        ) : (
-          vehicles.map((v) => (
+        </div>
+      )}
+
+      {/* Mobile: stacked cards */}
+      {vehicles.length > 0 && (
+        <div className="lg:hidden space-y-6">
+          {vehicles.map((v) => (
             <VehicleRow
               key={`vehicle-mobile-${v.id}`}
               layout="mobile"
@@ -164,9 +170,9 @@ export default function VehicleSection({
               geocodeFailed={geocodeFailedSet.has(v.id)}
               outOfRegionFailed={outOfRegionSet.has(v.id)}
             />
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
 
       {isAddOverlayOpen && (
         <VehicleDetailsOverlay

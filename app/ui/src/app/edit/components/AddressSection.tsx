@@ -30,6 +30,7 @@ import {
   ADDRESS_LIST_DIVIDER,
   ADDRESS_SEARCH_DESKTOP_SIZE,
   ADDRESS_TOOLBAR_SPACER,
+  MOBILE_EMPTY_STATE_CONTAINER,
 } from "../formStyles.v2";
 
 type AddressSectionProps = {
@@ -130,29 +131,36 @@ export default function AddressSection({
         </button>
       </div>
 
-      {/* Mobile: stacked cards */}
-      <div className={`lg:hidden ${ADDRESS_LIST_WRAP}`}>
-        {addressesCount === 0 ? (
+      {/* Mobile: bordered empty state */}
+      {addressesCount === 0 && (
+        <div className={MOBILE_EMPTY_STATE_CONTAINER}>
           <AddressEmptyState />
-        ) : searchQuery.trim() !== "" && addressesOnCurrentPage.length === 0 ? (
-          <div className={ADDRESS_EMPTY_STATE}>No Addresses Found</div>
-        ) : (
-          addressesOnCurrentPage.map((a) => (
-            <AddressCard
-              key={`address-${a.id}`}
-              address={a}
-              addressesCount={addressesCount}
-              updateAddress={updateAddress}
-              deleteAddress={deleteAddress}
-              unlockAddress={unlockAddress}
-              confirmAddress={confirmAddress}
-              addressTouched={touchedIds.has(a.id)}
-              geocodeFailed={geocodeFailedIds.includes(a.id)}
-              outOfRegionFailed={outOfRegionIds.includes(a.id)}
-            />
-          ))
-        )}
-      </div>
+        </div>
+      )}
+
+      {/* Mobile: stacked cards or no-results message */}
+      {addressesCount > 0 && (
+        <div className={`lg:hidden ${ADDRESS_LIST_WRAP}`}>
+          {searchQuery.trim() !== "" && addressesOnCurrentPage.length === 0 ? (
+            <div className={ADDRESS_EMPTY_STATE}>No Addresses Found</div>
+          ) : (
+            addressesOnCurrentPage.map((a) => (
+              <AddressCard
+                key={`address-${a.id}`}
+                address={a}
+                addressesCount={addressesCount}
+                updateAddress={updateAddress}
+                deleteAddress={deleteAddress}
+                unlockAddress={unlockAddress}
+                confirmAddress={confirmAddress}
+                addressTouched={touchedIds.has(a.id)}
+                geocodeFailed={geocodeFailedIds.includes(a.id)}
+                outOfRegionFailed={outOfRegionIds.includes(a.id)}
+              />
+            ))
+          )}
+        </div>
+      )}
 
       {/* Desktop hi-fi container: header + divider + rows */}
       <div className={ADDRESS_LIST_CONTAINER}>

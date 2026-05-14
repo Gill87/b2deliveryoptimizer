@@ -85,6 +85,11 @@ export const MOBILE_SIDEBAR_NAV_PILL_INACTIVE =
 export const MOBILE_SIDEBAR_NAV_LABEL =
   "font-bold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap";
 
+// ── MOBILE Empty State Container (Figma 8169:2315 / 8169:2399) ───────────────
+
+export const MOBILE_EMPTY_STATE_CONTAINER =
+  "lg:hidden border border-[var(--edit-stone-200)] rounded-[8px] overflow-hidden p-4";
+
 export const NAVBAR_V2_LOGO =
   "font-bold text-[20px] leading-7 text-[var(--edit-text-primary)] whitespace-nowrap";
 
@@ -128,7 +133,7 @@ const EMPTY_STATE_ICON =
   "size-12 shrink-0";
 
 const EMPTY_STATE_TEXT_GROUP =
-  "flex flex-col gap-2 items-center leading-[1.5] text-[16px] text-[var(--edit-text-primary)] whitespace-nowrap";
+  "flex w-full max-w-full min-w-0 flex-col gap-2 items-center text-center leading-[1.5] text-[16px] text-[var(--edit-text-primary)]";
 
 const EMPTY_STATE_TITLE =
   "font-[650]";
