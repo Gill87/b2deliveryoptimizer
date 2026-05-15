@@ -1,16 +1,28 @@
 "use client";
 
-import { ADDRESS_SEARCH_BAR, ADDRESS_SEARCH_BAR_COMPACT, ADDRESS_SEARCH_ICON, ADDRESS_SEARCH_INPUT } from "../formStyles.v2";
+import {
+  ADDRESS_SEARCH_BAR,
+  ADDRESS_SEARCH_BAR_COMPACT,
+  ADDRESS_SEARCH_BAR_DESKTOP,
+  ADDRESS_SEARCH_ICON,
+  ADDRESS_SEARCH_INPUT,
+} from "../formStyles.v2";
 
 type Props = {
   value: string;
   onChange: (value: string) => void;
   className?: string;
-  variant?: "default" | "compact";
+  variant?: "default" | "compact" | "desktop";
 };
 
 export default function AddressSearchBar({ value, onChange, className, variant = "default" }: Props) {
-  const baseClass = variant === "compact" ? ADDRESS_SEARCH_BAR_COMPACT : ADDRESS_SEARCH_BAR;
+  const baseClass =
+    variant === "desktop"
+      ? ADDRESS_SEARCH_BAR_DESKTOP
+      : variant === "compact"
+        ? ADDRESS_SEARCH_BAR_COMPACT
+        : ADDRESS_SEARCH_BAR;
+
   return (
     <div className={`${baseClass}${className ? ` ${className}` : ""}`}>
       <svg
