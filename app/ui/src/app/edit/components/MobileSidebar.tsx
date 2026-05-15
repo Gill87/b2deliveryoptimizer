@@ -66,6 +66,9 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
     >
       <div
         className={`${MOBILE_SIDEBAR_PANEL} ${isOpen ? MOBILE_SIDEBAR_PANEL_OPEN : MOBILE_SIDEBAR_PANEL_CLOSED}`}
+        role="dialog"
+        aria-modal={isOpen}
+        aria-labelledby="mobile-sidebar-title"
         onClick={(e) => e.stopPropagation()}
       >
         <div className={MOBILE_SIDEBAR_HEADER}>
@@ -76,7 +79,9 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
           >
             {SVG_CLOSE_ICON}
           </button>
-          <span className={MOBILE_SIDEBAR_HEADER_TITLE}>DELIVERY OPTIMIZER</span>
+          <span id="mobile-sidebar-title" className={MOBILE_SIDEBAR_HEADER_TITLE}>
+            DELIVERY OPTIMIZER
+          </span>
         </div>
 
         <nav className={MOBILE_SIDEBAR_NAV} aria-label="Main navigation">
