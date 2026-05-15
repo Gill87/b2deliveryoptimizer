@@ -256,6 +256,23 @@ export const ADDRESS_SEARCH_DESKTOP_SIZE =
 export const ADDRESS_TOOLBAR_SPACER =
   "flex-1 min-w-0";
 
+// ── Mobile Address Toolbar (Figma 8325:7503) ──────────────────────────────────
+
+export const MOBILE_ADDR_TOOLBAR_ROOT =
+  "lg:hidden flex flex-col gap-3 items-end mb-4";
+
+export const MOBILE_ADDR_TOOLBAR_BTN_ROW =
+  "flex gap-2 items-center";
+
+export const MOBILE_ADDR_TOOLBAR_BTN_ENABLED =
+  "h-9 px-4 shrink-0 rounded-[80px] border border-[var(--edit-text-primary)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap hover:bg-[var(--edit-secondary-btn-hover)] active:bg-[var(--edit-secondary-btn-pressed)] transition-colors cursor-pointer";
+
+export const MOBILE_ADDR_TOOLBAR_BTN_DISABLED =
+  "h-9 px-4 shrink-0 rounded-[80px] border border-[var(--edit-stone-200)] font-semibold text-[14px] leading-5 text-[var(--edit-stone-500)] whitespace-nowrap cursor-not-allowed opacity-50";
+
+export const ADDRESS_SEARCH_BAR_COMPACT =
+  "h-9 w-full flex items-center gap-2 px-4 rounded-[80px] border border-[var(--edit-stone-200)] focus-within:border-[var(--edit-teal-300)] transition-colors";
+
 // ── Address Row Header (Figma 8012:2303) ──────────────────────────────────────
 
 export const ADDRESS_ROW_HEADER_ROOT =
