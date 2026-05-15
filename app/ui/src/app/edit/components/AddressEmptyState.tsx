@@ -29,7 +29,7 @@ export default function AddressEmptyState() {
           <path d="M40.1948 41.263H16.875C16.3383 41.263 15.9033 41.7155 15.9033 42.2736V42.7788C15.9033 43.3369 16.3383 43.7893 16.875 43.7893H40.1948C40.7315 43.7893 41.1665 43.3369 41.1665 42.7788V42.2736C41.1665 41.7155 40.7315 41.263 40.1948 41.263Z" fill="var(--edit-address-card-line-light)"/>
           <path d="M48.8421 15.579C50.7024 15.579 52.2105 14.0709 52.2105 12.2106C52.2105 10.3502 50.7024 8.84213 48.8421 8.84213C46.9817 8.84213 45.4736 10.3502 45.4736 12.2106C45.4736 14.0709 46.9817 15.579 48.8421 15.579Z" fill="var(--edit-address-accent)"/>
           <path d="M48.8418 12.7836C49.6557 12.7836 50.3155 12.1239 50.3155 11.31C50.3155 10.4961 49.6557 9.83627 48.8418 9.83627C48.028 9.83627 47.3682 10.4961 47.3682 11.31C47.3682 12.1239 48.028 12.7836 48.8418 12.7836Z" fill="var(--edit-address-on-accent)"/>
-          <path d="M48.8418 12.1416V14.6679" stroke="var(--edit-address-on-accent)" strokeWidth="0.842105" stroke-linecap="round"/>
+          <path d="M48.8418 12.1416V14.6679" stroke="var(--edit-address-on-accent)" strokeWidth="0.842105" strokeLinecap="round"/>
         </svg>
       </div>
       <div className={ADDRESS_EMPTY_STATE_TEXT_GROUP}>
