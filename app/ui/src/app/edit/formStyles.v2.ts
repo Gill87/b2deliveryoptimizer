@@ -50,7 +50,7 @@ export const MOBILE_NAVBAR_TITLE =
 // ── MOBILE Sidebar (Figma 7472:3661) ─────────────────────────────────────────
 
 export const MOBILE_SIDEBAR_OVERLAY =
-  "lg:hidden fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 ease-in-out";
+  "lg:hidden fixed inset-0 z-50 bg-black/50 transition-opacity duration-300 ease-in-out";
 
 export const MOBILE_SIDEBAR_PANEL =
   "absolute left-0 top-0 h-full w-[280px] bg-[var(--edit-stone-50)] rounded-br-[12px] rounded-tr-[12px] shadow-xl flex flex-col transition-transform duration-300 ease-in-out";
