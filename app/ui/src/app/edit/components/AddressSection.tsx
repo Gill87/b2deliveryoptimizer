@@ -12,7 +12,6 @@ import AddressRowHeader from "./AddressRowHeader";
 import type { AddressCard as AddressCardType } from "../types/delivery";
 import {
   ADDRESS_EMPTY_STATE,
-  ADDRESS_LIST_WRAP,
   ADDRESS_TOOLBAR_DESKTOP,
 } from "../formStyles";
 
@@ -33,6 +32,7 @@ import {
   MOBILE_ADDR_TOOLBAR_BTN_ROW,
   MOBILE_ADDR_TOOLBAR_BTN_ENABLED,
   MOBILE_ADDR_TOOLBAR_BTN_DISABLED,
+  ADDRESS_LIST_MOBILE_WRAP,
 } from "../formStyles.v2";
 
 type AddressSectionProps = {
@@ -154,7 +154,7 @@ export default function AddressSection({
 
       {/* Mobile: stacked cards or no-results message */}
       {addressesCount > 0 && (
-        <div className={`lg:hidden ${ADDRESS_LIST_WRAP}`}>
+        <div className={ADDRESS_LIST_MOBILE_WRAP}>
           {searchQuery.trim() !== "" && addressesOnCurrentPage.length === 0 ? (
             <div className={ADDRESS_EMPTY_STATE}>No Addresses Found</div>
           ) : (

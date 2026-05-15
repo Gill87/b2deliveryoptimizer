@@ -5,9 +5,6 @@ import AddressOverlay, { type LocationAddress } from "./AddressOverlay";
 import { TIME_OPTIONS } from "../constants/timeOptions";
 import type { AddressCard as AddressCardType } from "../types/delivery";
 import {
-  ADDRESS_CARD_ROOT_BASE,
-} from "../formStyles";
-import {
   ADDRESS_ROW_EDIT_ROOT,
   ADDRESS_ROW_DESKTOP_WRAPPER,
   ADDRESS_ROW_EDIT_LEFT,
@@ -67,6 +64,9 @@ import {
   MOBILE_ADDR_SUMMARY_SECTION,
   MOBILE_ADDR_SUMMARY_ACTION_BAR,
   MOBILE_ADDR_SUMMARY_EXPAND_BTN,
+  ADDRESS_CARD_MOBILE_ROOT,
+  MOBILE_ADDR_EXPANDED_PANEL,
+  MOBILE_ADDR_LOCKED_NOTES_CLAMP,
 } from "../formStyles.v2";
 import { EditIconButton, ConfirmIconButton, DeleteIconButton } from "./RowIconButtons";
 
@@ -397,7 +397,7 @@ export default function AddressCard({
       </div>
 
       {/* ── Mobile ── */}
-      <div className={`${ADDRESS_CARD_ROOT_BASE} lg:hidden`}>
+      <div className={ADDRESS_CARD_MOBILE_ROOT}>
         {!expanded ? (
           /* Summarized state (Figma 8325:7892) */
           <div className={MOBILE_ADDR_SUMMARY_CONTENT}>
@@ -435,7 +435,7 @@ export default function AddressCard({
             </div>
           </div>
         ) : (
-          <div id={panelId} role="region" className="p-4">
+          <div id={panelId} role="region" className={MOBILE_ADDR_EXPANDED_PANEL}>
             {a.locked ? (
               <div className={MOBILE_ADDR_CARD_EDIT_CONTENT}>
 
@@ -490,7 +490,7 @@ export default function AddressCard({
                 <div className={MOBILE_ADDR_EDIT_SECTION}>
                   <span className={MOBILE_ADDR_EDIT_SECTION_LABEL}>Notes</span>
                   <button type="button" onClick={() => unlockAddress(a.id)} className={MOBILE_ADDR_LOCKED_FIELD_BTN}>
-                    <span className={`${MOBILE_ADDR_LOCKED_VALUE} line-clamp-6`}>
+                    <span className={MOBILE_ADDR_LOCKED_NOTES_CLAMP}>
                       {a.notes || "—"}
                     </span>
                   </button>
@@ -598,7 +598,7 @@ export default function AddressCard({
                           }
                         }}
                         aria-label="Delivery time start"
-                        className={`${ADDRESS_ROW_TIME_SELECT} text-[var(--edit-text-primary)]`}
+                        className={ADDRESS_ROW_TIME_SELECT}
                       >
                         <option value="">Start</option>
                         {TIME_OPTIONS.filter((_, i) => endIdx === -1 || i < endIdx).map((t) => (
@@ -624,7 +624,7 @@ export default function AddressCard({
                           }
                         }}
                         aria-label="Delivery time end"
-                        className={`${ADDRESS_ROW_TIME_SELECT} text-[var(--edit-text-primary)]`}
+                        className={ADDRESS_ROW_TIME_SELECT}
                       >
                         <option value="">End</option>
                         {TIME_OPTIONS.filter((_, i) => startIdx === -1 || i > startIdx).map((t) => (

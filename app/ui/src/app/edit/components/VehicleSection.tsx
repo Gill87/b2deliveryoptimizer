@@ -24,6 +24,7 @@ import {
   VEHICLE_SECTION_HEADING,
   VEHICLE_SECTION_SUBHEADING,
   MOBILE_EMPTY_STATE_CONTAINER,
+  VEHICLE_MOBILE_LIST,
 } from "../formStyles.v2";
 
 const BLANK_VEHICLE: VehicleRowType = {
@@ -150,7 +151,7 @@ export default function VehicleSection({
 
       {/* Mobile: stacked cards */}
       {vehicles.length > 0 && (
-        <div className="lg:hidden space-y-6">
+        <div className={VEHICLE_MOBILE_LIST}>
           {vehicles.map((v) => (
             <VehicleRow
               key={`vehicle-mobile-${v.id}`}

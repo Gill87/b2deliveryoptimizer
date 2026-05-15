@@ -14,7 +14,11 @@ import {
   MOBILE_SIDEBAR_NAV_PILL_ACTIVE,
   MOBILE_SIDEBAR_NAV_PILL_INACTIVE,
   MOBILE_SIDEBAR_OVERLAY,
+  MOBILE_SIDEBAR_OVERLAY_OPEN,
+  MOBILE_SIDEBAR_OVERLAY_CLOSED,
   MOBILE_SIDEBAR_PANEL,
+  MOBILE_SIDEBAR_PANEL_OPEN,
+  MOBILE_SIDEBAR_PANEL_CLOSED,
 } from "../formStyles.v2";
 
 // Reused from SidebarEditButton.tsx
@@ -56,12 +60,12 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
 
   return (
     <div
-      className={`${MOBILE_SIDEBAR_OVERLAY} ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+      className={`${MOBILE_SIDEBAR_OVERLAY} ${isOpen ? MOBILE_SIDEBAR_OVERLAY_OPEN : MOBILE_SIDEBAR_OVERLAY_CLOSED}`}
       onClick={onClose}
       aria-hidden={!isOpen}
     >
       <div
-        className={`${MOBILE_SIDEBAR_PANEL} ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`${MOBILE_SIDEBAR_PANEL} ${isOpen ? MOBILE_SIDEBAR_PANEL_OPEN : MOBILE_SIDEBAR_PANEL_CLOSED}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className={MOBILE_SIDEBAR_HEADER}>

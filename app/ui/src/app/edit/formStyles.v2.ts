@@ -4,6 +4,8 @@
  * Mid-fi tokens live in formStyles.ts (do not modify that file).
  */
 
+import { ADDRESS_CARD_ROOT_BASE, ADDRESS_LIST_WRAP } from "./formStyles";
+
 export const SIDEBAR_ROOT =
   "hidden lg:block w-[68px] shrink-0 self-stretch bg-[var(--edit-stone-50)] overflow-hidden";
 
@@ -55,6 +57,18 @@ export const MOBILE_SIDEBAR_OVERLAY =
 export const MOBILE_SIDEBAR_PANEL =
   "absolute left-0 top-0 h-full w-[280px] bg-[var(--edit-stone-50)] rounded-br-[12px] rounded-tr-[12px] shadow-xl flex flex-col transition-transform duration-300 ease-in-out";
 
+export const MOBILE_SIDEBAR_OVERLAY_OPEN =
+  "opacity-100 pointer-events-auto";
+
+export const MOBILE_SIDEBAR_OVERLAY_CLOSED =
+  "opacity-0 pointer-events-none";
+
+export const MOBILE_SIDEBAR_PANEL_OPEN =
+  "translate-x-0";
+
+export const MOBILE_SIDEBAR_PANEL_CLOSED =
+  "-translate-x-full";
+
 export const MOBILE_SIDEBAR_HEADER =
   "flex items-center gap-2 pt-6 px-4";
 
@@ -89,6 +103,10 @@ export const MOBILE_SIDEBAR_NAV_LABEL =
 
 export const MOBILE_EMPTY_STATE_CONTAINER =
   "lg:hidden border border-[var(--edit-stone-200)] rounded-[8px] overflow-hidden p-4";
+
+export const ADDRESS_CARD_MOBILE_ROOT = `${ADDRESS_CARD_ROOT_BASE} lg:hidden`;
+
+export const ADDRESS_LIST_MOBILE_WRAP = `lg:hidden ${ADDRESS_LIST_WRAP}`;
 
 export const NAVBAR_V2_LOGO =
   "font-bold text-[20px] leading-7 text-[var(--edit-text-primary)] whitespace-nowrap";
@@ -173,6 +191,8 @@ export const VEHICLE_ROW_ACTIONS =
 
 export const VEHICLE_ROW_ICON_BUTTON =
   "relative size-10 shrink-0 rounded-[4px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--edit-teal-300)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--edit-bg-primary)] hover:bg-[var(--edit-tertiary-btn-hover)] active:bg-[var(--edit-tertiary-btn-pressed)] transition-colors";
+
+export const VEHICLE_MOBILE_LIST = "lg:hidden space-y-6";
 
 // Mobile Hi-Fi Locked Vehicle Card (Figma 8325:7475)
 export const VEHICLE_MOBILE_LOCKED_CARD_V2 =
@@ -719,6 +739,11 @@ export const MOBILE_ADDR_EDIT_ICON_BTNS_GROUP =
 
 export const MOBILE_ADDR_LOCKED_VALUE =
   "font-normal text-[16px] leading-[1.5] text-[var(--edit-text-primary)]";
+
+export const MOBILE_ADDR_LOCKED_NOTES_CLAMP =
+  `${MOBILE_ADDR_LOCKED_VALUE} line-clamp-6`;
+
+export const MOBILE_ADDR_EXPANDED_PANEL = "p-4";
 
 export const MOBILE_ADDR_LOCKED_FIELD_BTN =
   "text-left bg-transparent border-0 p-0 m-0 w-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--edit-teal-300)] rounded-sm";
