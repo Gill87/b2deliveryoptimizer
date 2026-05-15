@@ -107,7 +107,7 @@ export const PAGE_V2_ROOT =
 export const PAGE_V2_BODY = "flex flex-1 lg:min-h-0";
 
 export const PAGE_V2_MAIN =
-  "flex-1 min-w-0 bg-[var(--edit-bg-primary)] border-t-0 lg:border-t border-l-0 lg:border-l border-[var(--edit-stone-200)] rounded-none lg:rounded-tl-[12px] p-6 space-y-16";
+  "flex-1 min-w-0 bg-[var(--edit-bg-primary)] border-t-0 lg:border-t border-l-0 lg:border-l border-[var(--edit-stone-200)] rounded-none lg:rounded-tl-[12px] p-6 pb-[136px] lg:pb-6 space-y-16";
 
 export const VEHICLE_INFO_CONTAINER =
   "hidden lg:flex flex-col gap-4 border border-[var(--edit-stone-200)] rounded-[8px] overflow-hidden p-4";
@@ -719,3 +719,26 @@ export const MOBILE_ADDR_SUMMARY_ACTION_BAR =
 
 export const MOBILE_ADDR_SUMMARY_EXPAND_BTN =
   "flex gap-[8px] h-[36px] items-center justify-center overflow-clip px-[16px] rounded-[80px] font-['Manrope',sans-serif] font-semibold text-[14px] leading-[20px] text-[var(--edit-text-primary)] cursor-pointer hover:bg-[var(--edit-stone-50)] active:bg-[var(--edit-tertiary-btn-pressed)] transition-colors";
+
+// ── Mobile Bottom Bar (Figma 8490:12411) ──────────────────────────────────────
+
+export const MOBILE_BOTTOM_BAR_ROOT =
+  "lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[var(--edit-stone-50)] border-t border-l border-r border-[var(--edit-stone-200)] rounded-tl-[12px] rounded-tr-[12px] p-[16px]";
+
+export const MOBILE_BOTTOM_BAR_INNER =
+  "flex flex-col gap-[8px] w-full";
+
+export const MOBILE_BOTTOM_BAR_OPTIMIZE_BTN =
+  "flex items-center justify-center h-[44px] px-[16px] py-[10px] rounded-[80px] w-full overflow-clip bg-[var(--edit-btn-primary)] cursor-pointer";
+
+export const MOBILE_BOTTOM_BAR_OPTIMIZE_LABEL =
+  "font-['Manrope',sans-serif] font-semibold text-[16px] leading-[22px] text-[var(--edit-text-primary)] whitespace-nowrap";
+
+export const MOBILE_BOTTOM_BAR_ACTIONS_ROW =
+  "flex gap-[8px] items-center w-full";
+
+export const MOBILE_BOTTOM_BAR_SECONDARY_BTN =
+  "border border-[var(--edit-stone-700)] flex flex-1 items-center justify-center h-[44px] px-[16px] py-[10px] rounded-[80px] min-w-0 overflow-clip cursor-pointer";
+
+export const MOBILE_BOTTOM_BAR_SECONDARY_LABEL =
+  "font-['Manrope',sans-serif] font-semibold text-[16px] leading-[22px] text-[var(--edit-text-primary)] whitespace-nowrap";

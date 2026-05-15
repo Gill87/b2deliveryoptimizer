@@ -20,6 +20,7 @@ import AddressPagination from "./components/AddressPagination";
 import AddressPaginationMobile from "./components/AddressPaginationMobile";
 import EditPageFooter from "./components/EditPageFooter";
 import MobileEditPageFooter from "./components/MobileEditPageFooter";
+import MobileBottomBar from "./components/MobileBottomBar";
 import { useVehicles } from "./hooks/useVehicles";
 import { useAddresses } from "./hooks/useAddresses";
 import { useOptimize } from "./hooks/useOptimize";
@@ -190,6 +191,12 @@ export default function Page() {
         />
       )}
       <MobileSidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+      <MobileBottomBar
+        onOptimize={() => void optimize()}
+        onSave={handleExportSession}
+        onExport={handleExportSession}
+        isOptimizing={isOptimizing}
+      />
       <MobileNavbar onMenuClick={() => setIsMobileMenuOpen(true)} />
       <Navbar
         onImportSession={handleImportSession}
