@@ -529,7 +529,7 @@ export default function AddressCard({
                     <input
                       value={a.phoneNumber}
                       onChange={(e) => updateAddress(a.id, "phoneNumber", formatPhoneNumber(e.target.value))}
-                      placeholder="123 456 7890"
+                      placeholder="123-456-7890"
                       aria-label="Phone number"
                       type="tel"
                       inputMode="numeric"
