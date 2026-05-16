@@ -161,10 +161,10 @@ export const VEHICLE_ROW_STATUS_CELL =
   "min-w-0 h-[38px] flex items-center overflow-hidden";
 
 export const VEHICLE_ROW_STATUS_BADGE_AVAILABLE =
-  "bg-[var(--edit-container-success)] flex items-center overflow-hidden px-2 py-[7px] rounded-[4px]";
+  "bg-[var(--edit-container-success)] flex items-center overflow-hidden px-2 py-[7px] rounded-[4px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--edit-teal-300)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--edit-bg-primary)]";
 
 export const VEHICLE_ROW_STATUS_BADGE_IN_USE =
-  "bg-[var(--edit-stone-50)] flex items-center overflow-hidden p-[8px] rounded-[4px]";
+  "bg-[var(--edit-stone-50)] flex items-center overflow-hidden p-[8px] rounded-[4px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--edit-teal-300)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--edit-bg-primary)]";
 
 export const VEHICLE_ROW_STATUS_TEXT_AVAILABLE =
   "font-semibold text-[16px] leading-[22px] text-[var(--edit-text-success)] whitespace-nowrap";

@@ -52,6 +52,7 @@ type VehicleRowProps = {
 export default function VehicleRow({
   layout = "desktop",
   vehicle: v,
+  updateVehicle,
   deleteVehicle,
   onEditVehicle,
 }: VehicleRowProps) {
@@ -83,11 +84,14 @@ export default function VehicleRow({
           </div>
         </div>
         <div className={VEHICLE_MOBILE_LOCKED_STATUS_ROW}>
-          <span className={statusBadge}>
-            <span className={statusText}>
-              {v.available ? "Available" : "In use"}
-            </span>
-          </span>
+          <button
+            type="button"
+            onClick={() => updateVehicle(v.id, "available", !v.available)}
+            aria-label={v.available ? "Mark as in use" : "Mark as available"}
+            className={statusBadge}
+          >
+            <span className={statusText}>{v.available ? "Available" : "In use"}</span>
+          </button>
           <span className={VEHICLE_MOBILE_LOCKED_DEPARTURE}>
             {(v.departureTime || "--:--") + " departure time"}
           </span>
@@ -106,11 +110,14 @@ export default function VehicleRow({
       </span>
       <span className={VEHICLE_ROW_CELL}>{formatCapacity(v)}</span>
       <span className={VEHICLE_ROW_STATUS_CELL}>
-        <span className={statusBadge}>
-          <span className={statusText}>
-            {v.available ? "Available" : "In use"}
-          </span>
-        </span>
+        <button
+          type="button"
+          onClick={() => updateVehicle(v.id, "available", !v.available)}
+          aria-label={v.available ? "Mark as in use" : "Mark as available"}
+          className={statusBadge}
+        >
+          <span className={statusText}>{v.available ? "Available" : "In use"}</span>
+        </button>
       </span>
       <span className={VEHICLE_ROW_CELL}>{v.departureTime}</span>
       <div className={VEHICLE_ROW_ACTIONS}>
