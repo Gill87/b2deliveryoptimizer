@@ -72,11 +72,8 @@ export default function AddressSection({
   onCSVUpload,
 }: AddressSectionProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [addressToDeleteId, setAddressToDeleteId] = useState<number | null>(
-    null,
-  );
-  const addEnabled =
-    addressesCount === 0 || allAddressesLocked || activeAddressIsValid;
+  const [addressToDeleteId, setAddressToDeleteId] = useState<number | null>(null);
+  const addEnabled = addressesCount === 0 || allAddressesLocked;
 
   function handleDeleteRequest(id: number) {
     setAddressToDeleteId(id);

@@ -235,6 +235,7 @@ export default function VehicleDetailsOverlay({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Enter name"
+                  maxLength={50}
                   className={nameError ? OVERLAY_INPUT_ERROR : OVERLAY_INPUT}
                   aria-required="true"
                   aria-invalid={nameError}
