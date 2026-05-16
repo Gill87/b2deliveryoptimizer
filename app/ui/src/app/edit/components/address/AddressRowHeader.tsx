@@ -11,7 +11,7 @@ import {
 export default function AddressRowHeader() {
   return (
     <div className={ADDRESS_ROW_HEADER_ROOT}>
-<div className={ADDRESS_ROW_HEADER_COLS}>
+      <div className={ADDRESS_ROW_HEADER_COLS}>
         <span className={ADDRESS_ROW_HEADER_CELL_RECIPIENT}>Recipient</span>
         <span className={ADDRESS_ROW_HEADER_CELL_QUANTITY}>Quantity</span>
         <span className={ADDRESS_ROW_HEADER_CELL_DELIVERY_EST}>Delivery estimation</span>

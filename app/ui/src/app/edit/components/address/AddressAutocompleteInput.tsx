@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef} from "react";
+import { useEffect, useRef } from "react";
 import { useAddressAutocomplete } from "@/app/components/AddressGeocoder/utils/useAddressAutocomplete";
 import { AutocompleteDropdown } from "@/app/components/AddressGeocoder/AutocompleteDropdown";
 import type { AddressSuggestion } from "@/app/components/AddressGeocoder/types";
