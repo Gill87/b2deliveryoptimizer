@@ -112,12 +112,12 @@ export const NAVBAR_V2_BTN_FILLED =
   "h-9 px-4 rounded-[80px] bg-[var(--edit-btn-primary)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
 
 export const PAGE_V2_ROOT =
-  "min-h-screen flex flex-col bg-[var(--edit-stone-50)] font-sans-manrope";
+  "min-h-screen lg:h-screen flex flex-col bg-[var(--edit-stone-50)] font-sans-manrope";
 
-export const PAGE_V2_BODY = "flex flex-1 lg:min-h-0";
+export const PAGE_V2_BODY = "flex flex-1 lg:min-h-0 lg:overflow-hidden";
 
 export const PAGE_V2_MAIN =
-  "flex-1 min-w-0 bg-[var(--edit-bg-primary)] border-t-0 lg:border-t border-l-0 lg:border-l border-[var(--edit-stone-200)] rounded-none lg:rounded-tl-[12px] p-6 pb-[136px] lg:pb-6 space-y-16";
+  "flex-1 min-w-0 bg-[var(--edit-bg-primary)] border-t-0 lg:border-t border-l-0 lg:border-l border-[var(--edit-stone-200)] rounded-none lg:rounded-tl-[12px] p-6 pb-[136px] lg:pb-6 lg:overflow-y-auto space-y-16";
 
 export const VEHICLE_INFO_CONTAINER =
   "hidden lg:flex flex-col gap-4 border border-[var(--edit-stone-200)] rounded-[8px] overflow-hidden p-4";
