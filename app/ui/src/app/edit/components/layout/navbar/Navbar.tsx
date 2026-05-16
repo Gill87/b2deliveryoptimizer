@@ -49,6 +49,7 @@ export default function Navbar({
             className={`${NAVBAR_V2_BTN_FILLED} ${styles.primaryBtnOverlay}`}
             onClick={onOptimize}
             disabled={isOptimizing}
+            aria-busy={isOptimizing}
           >
             {isOptimizing ? "Optimizing…" : "Optimize"}
           </button>

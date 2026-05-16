@@ -98,7 +98,7 @@ export default function AddressSection({
           e.target.value = "";
         }}
         className="hidden"
-        aria-hidden
+        aria-hidden="true"
       />
 
       {/* Mobile: Search top, buttons right-aligned side-by-side (Figma 8325:7503) */}
