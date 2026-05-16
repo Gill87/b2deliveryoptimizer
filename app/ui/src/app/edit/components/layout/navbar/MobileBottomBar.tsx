@@ -25,6 +25,7 @@ export default function MobileBottomBar({ onOptimize, onSave, onExport, isOptimi
           className={`${MOBILE_BOTTOM_BAR_OPTIMIZE_BTN} ${styles.primaryBtnOverlay}`}
           onClick={onOptimize}
           disabled={isOptimizing}
+          aria-busy={isOptimizing}
         >
           <span className={MOBILE_BOTTOM_BAR_OPTIMIZE_LABEL}>Optimize</span>
         </button>
