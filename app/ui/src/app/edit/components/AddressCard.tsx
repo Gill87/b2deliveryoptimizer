@@ -105,6 +105,7 @@ type AddressCardProps = {
 function StepperInput({
   value,
   min = 0,
+  max,
   ariaLabel,
   onIncrement,
   onDecrement,
@@ -112,6 +113,7 @@ function StepperInput({
 }: {
   value: number;
   min?: number;
+  max?: number;
   ariaLabel: string;
   onIncrement: () => void;
   onDecrement: () => void;
@@ -122,10 +124,11 @@ function StepperInput({
       <input
         type="number"
         min={min}
+        max={max}
         value={value || ""}
         onChange={(e) => {
           const parsed = parseInt(e.target.value, 10);
-          onChange(Number.isNaN(parsed) ? min : Math.max(min, parsed));
+          onChange(Number.isNaN(parsed) ? min : Math.min(max ?? Infinity, Math.max(min, parsed)));
         }}
         aria-label={ariaLabel}
         className={ADDRESS_ROW_STEPPER_INPUT}
@@ -151,9 +154,11 @@ function StepperInput({
 function AutoResizeNotesTextarea({
   value,
   onChange,
+  maxLength,
 }: {
   value: string;
   onChange: (value: string) => void;
+  maxLength?: number;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -173,6 +178,7 @@ function AutoResizeNotesTextarea({
       placeholder="Enter notes"
       aria-label="Notes"
       rows={1}
+      maxLength={maxLength}
       className={ADDRESS_ROW_NOTES_TEXTAREA}
     />
   );
@@ -298,9 +304,10 @@ export default function AddressCard({
                   <StepperInput
                     value={a.deliveryQuantity}
                     min={1}
+                    max={1_000_000}
                     ariaLabel="Delivery quantity"
                     onChange={(v) => updateAddress(a.id, "deliveryQuantity", v)}
-                    onIncrement={() => updateAddress(a.id, "deliveryQuantity", (a.deliveryQuantity || 0) + 1)}
+                    onIncrement={() => updateAddress(a.id, "deliveryQuantity", Math.min(1_000_000, (a.deliveryQuantity || 0) + 1))}
                     onDecrement={() => updateAddress(a.id, "deliveryQuantity", Math.max(1, (a.deliveryQuantity || 1) - 1))}
                   />
 
@@ -309,9 +316,10 @@ export default function AddressCard({
                     <StepperInput
                       value={a.timeBuffer}
                       min={0}
+                      max={999}
                       ariaLabel="Delivery estimation in minutes"
                       onChange={(v) => updateAddress(a.id, "timeBuffer", v)}
-                      onIncrement={() => updateAddress(a.id, "timeBuffer", (a.timeBuffer || 0) + 1)}
+                      onIncrement={() => updateAddress(a.id, "timeBuffer", Math.min(999, (a.timeBuffer || 0) + 1))}
                       onDecrement={() => updateAddress(a.id, "timeBuffer", Math.max(0, (a.timeBuffer || 0) - 1))}
                     />
                     <span className={ADDRESS_ROW_INLINE_TEXT}>minutes</span>
@@ -377,6 +385,7 @@ export default function AddressCard({
                     <AutoResizeNotesTextarea
                       value={a.notes}
                       onChange={(value) => updateAddress(a.id, "notes", value)}
+                      maxLength={250}
                     />
                   </div>
                 </>
@@ -561,9 +570,10 @@ export default function AddressCard({
                     <StepperInput
                       value={a.deliveryQuantity}
                       min={1}
+                      max={1_000_000}
                       ariaLabel="Delivery quantity"
                       onChange={(v) => updateAddress(a.id, "deliveryQuantity", v)}
-                      onIncrement={() => updateAddress(a.id, "deliveryQuantity", (a.deliveryQuantity || 0) + 1)}
+                      onIncrement={() => updateAddress(a.id, "deliveryQuantity", Math.min(1_000_000, (a.deliveryQuantity || 0) + 1))}
                       onDecrement={() => updateAddress(a.id, "deliveryQuantity", Math.max(1, (a.deliveryQuantity || 1) - 1))}
                     />
                   </div>
@@ -573,9 +583,10 @@ export default function AddressCard({
                       <StepperInput
                         value={a.timeBuffer}
                         min={0}
+                        max={999}
                         ariaLabel="Delivery estimation in minutes"
                         onChange={(v) => updateAddress(a.id, "timeBuffer", v)}
-                        onIncrement={() => updateAddress(a.id, "timeBuffer", (a.timeBuffer || 0) + 1)}
+                        onIncrement={() => updateAddress(a.id, "timeBuffer", Math.min(999, (a.timeBuffer || 0) + 1))}
                         onDecrement={() => updateAddress(a.id, "timeBuffer", Math.max(0, (a.timeBuffer || 0) - 1))}
                       />
                       <span className={ADDRESS_ROW_INLINE_TEXT}>minutes</span>
@@ -648,6 +659,7 @@ export default function AddressCard({
                     <AutoResizeNotesTextarea
                       value={a.notes}
                       onChange={(value) => updateAddress(a.id, "notes", value)}
+                      maxLength={250}
                     />
                   </div>
                 </div>

@@ -72,7 +72,7 @@ export default function AddressSection({
 }: AddressSectionProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [addressToDeleteId, setAddressToDeleteId] = useState<number | null>(null);
-  const addEnabled = addressesCount === 0 || allAddressesLocked || activeAddressIsValid;
+  const addEnabled = addressesCount === 0 || allAddressesLocked;
 
   function handleDeleteRequest(id: number) {
     setAddressToDeleteId(id);
