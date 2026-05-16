@@ -32,7 +32,9 @@ export default function MobileBottomBar({
           disabled={isOptimizing}
           aria-busy={isOptimizing}
         >
-          <span className={MOBILE_BOTTOM_BAR_OPTIMIZE_LABEL}>Optimize</span>
+          <span className={MOBILE_BOTTOM_BAR_OPTIMIZE_LABEL}>
+            {isOptimizing ? "Optimizing…" : "Optimize"}
+          </span>
         </button>
         <div className={MOBILE_BOTTOM_BAR_ACTIONS_ROW}>
           <button
