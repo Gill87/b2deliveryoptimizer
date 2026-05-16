@@ -142,7 +142,7 @@ export default function VehicleDetailsOverlay({
   function handleSave() {
     setSubmitted(true);
     if (!name.trim() || !type || capacity <= 0 || !capacityUnit || !isValidTime(hours, minutes)) return;
-    const departureTime = `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")} ${meridiem.toUpperCase()}`;
+    const departureTime = `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}${meridiem}`;
     onSave({ ...vehicle, name, type, capacity, capacityUnit, available, departureTime });
   }
 
