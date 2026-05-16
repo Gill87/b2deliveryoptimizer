@@ -173,7 +173,7 @@ export default function VehicleSection({
           vehicle={BLANK_VEHICLE}
           mode="add"
           onClose={() => setIsAddOverlayOpen(false)}
-          onSave={(updated) => {
+          onSave={(updated: VehicleRowType) => {
             addVehicleWithDetails({
               name: updated.name,
               type: updated.type,
