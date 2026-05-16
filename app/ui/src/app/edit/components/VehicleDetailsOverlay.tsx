@@ -151,7 +151,9 @@ export default function VehicleDetailsOverlay({
   }
 
   function handleCapacityChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setCapacity(e.target.value === "" ? 0 : parseInt(e.target.value, 10) || 0);
+    if (e.target.value === "") { setCapacity(0); return; }
+    const parsed = parseInt(e.target.value, 10);
+    setCapacity(Number.isNaN(parsed) ? 0 : Math.min(1_000_000, Math.max(0, parsed)));
   }
 
   const typeLabel = type ? type.charAt(0).toUpperCase() + type.slice(1) : null;
@@ -252,6 +254,7 @@ export default function VehicleDetailsOverlay({
                   id="overlay-vehicle-capacity"
                   type="number"
                   min={0}
+                  max={1_000_000}
                   value={capacity || ""}
                   onChange={handleCapacityChange}
                   placeholder="1500"
