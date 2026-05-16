@@ -145,9 +145,8 @@ export default function AddressOverlay({
       blurTimeoutRef.current = null;
     }
     const a = s.address ?? {};
-    const streetLine =
-      [a.house_number, a.road].filter(Boolean).join(" ") || s.display_name;
-    setLine1(streetLine);
+    const streetLine = [a.house_number, a.road].filter(Boolean).join(" ") || s.display_name;
+    setLine1(streetLine.slice(0, 150));
     setCity(a.city ?? a.town ?? a.village ?? a.municipality ?? "");
     setState(a.state ?? "");
     setZipCode((a.postcode ?? "").slice(0, 5));
@@ -254,6 +253,7 @@ export default function AddressOverlay({
                     blurTimeoutRef.current = setTimeout(clearSuggestions, 150);
                   }}
                   placeholder="Street number and name"
+                  maxLength={150}
                   className={line1Error ? OVERLAY_INPUT_ERROR : OVERLAY_INPUT}
                   aria-required="true"
                   aria-invalid={line1Error}
@@ -281,6 +281,7 @@ export default function AddressOverlay({
                 value={line2}
                 onChange={(e) => setLine2(e.target.value)}
                 placeholder="Apt/Suite/Unit"
+                maxLength={150}
                 className={OVERLAY_INPUT}
               />
             </div>
