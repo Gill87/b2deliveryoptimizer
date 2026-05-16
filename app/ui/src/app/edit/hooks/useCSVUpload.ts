@@ -5,11 +5,11 @@
 
 import { useCallback, useState } from "react";
 import Papa from "papaparse";
-import type { AddressCard } from "../types/delivery";
+import type { AddressCard } from "@/app/edit/types/delivery";
 import { resolveColumns, normalizeTimeOption, bufferSecondsToMinutes } from "@/app/edit/utils/csvParserUtils";
 import { hasAtLeastOneLetter } from "@/app/components/AddressGeocoder/utils";
 import { migrateSessionSaveFile } from "@/lib/validation/session.schema";
-import { mapOptimizeRequestToEditState } from "../utils/sessionMapper";
+import { mapOptimizeRequestToEditState } from "@/app/edit/utils/sessionMapper";
 
 type UseCSVUploadArgs = {
   importAddresses: (addresses: AddressCard[]) => void;

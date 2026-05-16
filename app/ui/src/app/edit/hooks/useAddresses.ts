@@ -3,7 +3,7 @@
  */
 
 import { useState, useCallback, useMemo } from "react";
-import type { AddressCard } from "../types/delivery";
+import type { AddressCard } from "@/app/edit/types/delivery";
 import Fuse from "fuse.js";
 
 export const ADDRESS_PAGE_SIZE_OPTIONS = [5, 10, 20, 30] as const;
