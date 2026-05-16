@@ -159,14 +159,40 @@ export function useAddresses() {
   }, [addressesPerPage]);
 
   // Re-open a saved row for editing (shows Confirm in the card).
+  // If another row is currently unlocked and valid, auto-lock it first.
+  // If the open row is invalid, block the switch and surface its errors.
   const unlockAddress = useCallback((id: number) => {
-    setAddresses((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, locked: false, editingExisting: true } : a))
-    );
-    setTouchedIds((t) => {
-      const next = new Set(t);
-      next.delete(id);
-      return next;
+    setAddresses((prev) => {
+      const activeUnlocked = prev.find((a) => !a.locked);
+
+      if (activeUnlocked) {
+        const valid =
+          activeUnlocked.recipientAddress.trim() !== "" &&
+          activeUnlocked.deliveryQuantity > 0;
+
+        if (!valid) {
+          setTouchedIds((t) => new Set([...t, activeUnlocked.id]));
+          return prev;
+        }
+
+        setTouchedIds((t) => {
+          const next = new Set(t);
+          next.delete(id);
+          return next;
+        });
+        return prev.map((a) => {
+          if (a.id === activeUnlocked.id) return { ...a, locked: true, editingExisting: false };
+          if (a.id === id) return { ...a, locked: false, editingExisting: true };
+          return a;
+        });
+      }
+
+      setTouchedIds((t) => {
+        const next = new Set(t);
+        next.delete(id);
+        return next;
+      });
+      return prev.map((a) => (a.id === id ? { ...a, locked: false, editingExisting: true } : a));
     });
   }, []);
 
