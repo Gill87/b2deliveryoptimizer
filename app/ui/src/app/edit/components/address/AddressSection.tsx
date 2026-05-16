@@ -45,7 +45,6 @@ type AddressSectionProps = {
   confirmAddress: (id: number) => void;
   touchedIds: Set<number>;
   allAddressesLocked: boolean;
-  activeAddressIsValid: boolean;
   geocodeFailedIds: number[];
   searchQuery: string;
   setSearchQuery: (q: string) => void;
@@ -63,7 +62,6 @@ export default function AddressSection({
   confirmAddress,
   touchedIds,
   allAddressesLocked,
-  activeAddressIsValid,
   geocodeFailedIds,
   searchQuery,
   setSearchQuery,
