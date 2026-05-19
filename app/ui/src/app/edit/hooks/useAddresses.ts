@@ -172,6 +172,8 @@ export function useAddresses() {
     const activeUnlocked = addresses.find((a) => !a.locked);
 
     if (activeUnlocked) {
+      if (activeUnlocked.id === id) return;
+
       const valid =
         activeUnlocked.recipientAddress.trim() !== "" &&
         activeUnlocked.deliveryQuantity > 0;
@@ -188,6 +190,7 @@ export function useAddresses() {
       }));
       setTouchedIds((t) => {
         const next = new Set(t);
+        next.delete(activeUnlocked.id);
         next.delete(id);
         return next;
       });
