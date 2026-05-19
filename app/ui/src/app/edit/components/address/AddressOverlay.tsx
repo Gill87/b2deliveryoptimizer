@@ -145,7 +145,8 @@ export default function AddressOverlay({
       blurTimeoutRef.current = null;
     }
     const a = s.address ?? {};
-    const streetLine = [a.house_number, a.road].filter(Boolean).join(" ") || s.display_name;
+    const streetLine =
+      [a.house_number, a.road].filter(Boolean).join(" ") || s.display_name;
     setLine1(streetLine.slice(0, 150));
     setCity(a.city ?? a.town ?? a.village ?? a.municipality ?? "");
     setState(a.state ?? "");

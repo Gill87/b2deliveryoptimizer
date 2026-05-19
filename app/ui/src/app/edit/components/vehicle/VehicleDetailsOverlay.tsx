@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { VehicleRow as VehicleRowType, VehicleType, CapacityUnit } from "@/app/edit/types/delivery";
+import type {
+  VehicleRow as VehicleRowType,
+  VehicleType,
+  CapacityUnit,
+} from "@/app/edit/types/delivery";
 import { useFocusTrap } from "@/app/edit/hooks/useFocusTrap";
 import OverlayFieldError from "@/app/edit/components/shared/OverlayFieldError";
 import {
@@ -149,9 +153,24 @@ export default function VehicleDetailsOverlay({
 
   function handleSave() {
     setSubmitted(true);
-    if (!name.trim() || !type || capacity <= 0 || !capacityUnit || !isValidTime(hours, minutes)) return;
+    if (
+      !name.trim() ||
+      !type ||
+      capacity <= 0 ||
+      !capacityUnit ||
+      !isValidTime(hours, minutes)
+    )
+      return;
     const departureTime = `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}${meridiem}`;
-    onSave({ ...vehicle, name, type, capacity, capacityUnit, available, departureTime });
+    onSave({
+      ...vehicle,
+      name,
+      type,
+      capacity,
+      capacityUnit,
+      available,
+      departureTime,
+    });
   }
 
   function handleBackdropClick(e: React.MouseEvent<HTMLDivElement>) {
@@ -159,9 +178,14 @@ export default function VehicleDetailsOverlay({
   }
 
   function handleCapacityChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.value === "") { setCapacity(0); return; }
+    if (e.target.value === "") {
+      setCapacity(0);
+      return;
+    }
     const parsed = parseInt(e.target.value, 10);
-    setCapacity(Number.isNaN(parsed) ? 0 : Math.min(1_000_000, Math.max(0, parsed)));
+    setCapacity(
+      Number.isNaN(parsed) ? 0 : Math.min(1_000_000, Math.max(0, parsed)),
+    );
   }
 
   const typeLabel = type ? type.charAt(0).toUpperCase() + type.slice(1) : null;

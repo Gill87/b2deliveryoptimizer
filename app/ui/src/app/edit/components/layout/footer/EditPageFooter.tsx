@@ -1,4 +1,8 @@
-import { FOOTER_LOGO, FOOTER_ROOT, FOOTER_TEXT } from "@/app/edit/formStyles.v2";
+import {
+  FOOTER_LOGO,
+  FOOTER_ROOT,
+  FOOTER_TEXT,
+} from "@/app/edit/formStyles.v2";
 
 export default function EditPageFooter() {
   return (

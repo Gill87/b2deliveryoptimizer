@@ -98,20 +98,22 @@ export function useAddresses() {
   // Lock any in-progress row, append a new empty row, and jump to its page.
   const addAddress = useCallback(() => {
     if (addresses.length === 0) {
-      setAddresses([{
-        id: 1,
-        locked: false,
-        editingExisting: false,
-        recipientName: "",
-        phoneNumber: "",
-        recipientAddress: "",
-        cachedLocation: undefined,
-        timeBuffer: 0,
-        deliveryTimeStart: "",
-        deliveryTimeEnd: "",
-        deliveryQuantity: 0,
-        notes: "",
-      }]);
+      setAddresses([
+        {
+          id: 1,
+          locked: false,
+          editingExisting: false,
+          recipientName: "",
+          phoneNumber: "",
+          recipientAddress: "",
+          cachedLocation: undefined,
+          timeBuffer: 0,
+          deliveryTimeStart: "",
+          deliveryTimeEnd: "",
+          deliveryQuantity: 0,
+          notes: "",
+        },
+      ]);
       setTouchedIds(new Set());
       setAddressPage(1);
       return;
@@ -131,7 +133,9 @@ export function useAddresses() {
 
     const newId = addresses.reduce((max, a) => Math.max(max, a.id), 0) + 1;
     setAddresses([
-      ...addresses.map((a) => (a.locked ? a : { ...a, locked: true, editingExisting: false })),
+      ...addresses.map((a) =>
+        a.locked ? a : { ...a, locked: true, editingExisting: false },
+      ),
       {
         id: newId,
         locked: false,
@@ -152,77 +156,96 @@ export function useAddresses() {
     setAddressPage(Math.ceil((addresses.length + 1) / addressesPerPage));
   }, [addresses, addressesPerPage]);
 
-  const deleteAddress = useCallback((id: number) => {
-    if (addresses.length === 0) return;
-    const next = addresses.filter((a) => a.id !== id);
-    const maxPage = Math.max(1, Math.ceil(next.length / addressesPerPage));
-    setAddresses(next);
-    setAddressPage((p) => Math.min(p, maxPage));
-    setTouchedIds((t) => {
-      const updated = new Set(t);
-      updated.delete(id);
-      return updated;
-    });
-  }, [addresses, addressesPerPage]);
+  const deleteAddress = useCallback(
+    (id: number) => {
+      if (addresses.length === 0) return;
+      const next = addresses.filter((a) => a.id !== id);
+      const maxPage = Math.max(1, Math.ceil(next.length / addressesPerPage));
+      setAddresses(next);
+      setAddressPage((p) => Math.min(p, maxPage));
+      setTouchedIds((t) => {
+        const updated = new Set(t);
+        updated.delete(id);
+        return updated;
+      });
+    },
+    [addresses, addressesPerPage],
+  );
 
   // Re-open a saved row for editing (shows Confirm in the card).
   // If another row is currently unlocked and valid, auto-lock it first.
   // If the open row is invalid, block the switch and surface its errors.
-  const unlockAddress = useCallback((id: number) => {
-    const activeUnlocked = addresses.find((a) => !a.locked);
+  const unlockAddress = useCallback(
+    (id: number) => {
+      const activeUnlocked = addresses.find((a) => !a.locked);
 
-    if (activeUnlocked) {
-      if (activeUnlocked.id === id) return;
+      if (activeUnlocked) {
+        if (activeUnlocked.id === id) return;
 
-      const valid =
-        activeUnlocked.recipientAddress.trim() !== "" &&
-        activeUnlocked.deliveryQuantity > 0;
+        const valid =
+          activeUnlocked.recipientAddress.trim() !== "" &&
+          activeUnlocked.deliveryQuantity > 0;
 
-      if (!valid) {
-        setTouchedIds((t) => new Set([...t, activeUnlocked.id]));
+        if (!valid) {
+          setTouchedIds((t) => new Set([...t, activeUnlocked.id]));
+          return;
+        }
+
+        setAddresses(
+          addresses.map((a) => {
+            if (a.id === activeUnlocked.id)
+              return { ...a, locked: true, editingExisting: false };
+            if (a.id === id)
+              return { ...a, locked: false, editingExisting: true };
+            return a;
+          }),
+        );
+        setTouchedIds((t) => {
+          const next = new Set(t);
+          next.delete(activeUnlocked.id);
+          next.delete(id);
+          return next;
+        });
         return;
       }
 
-      setAddresses(addresses.map((a) => {
-        if (a.id === activeUnlocked.id) return { ...a, locked: true, editingExisting: false };
-        if (a.id === id) return { ...a, locked: false, editingExisting: true };
-        return a;
-      }));
+      setAddresses(
+        addresses.map((a) =>
+          a.id === id ? { ...a, locked: false, editingExisting: true } : a,
+        ),
+      );
       setTouchedIds((t) => {
         const next = new Set(t);
-        next.delete(activeUnlocked.id);
         next.delete(id);
         return next;
       });
-      return;
-    }
-
-    setAddresses(addresses.map((a) => (a.id === id ? { ...a, locked: false, editingExisting: true } : a)));
-    setTouchedIds((t) => {
-      const next = new Set(t);
-      next.delete(id);
-      return next;
-    });
-  }, [addresses]);
+    },
+    [addresses],
+  );
 
   // Validate required fields, then lock the row back to read-only gray cells.
-  const confirmAddress = useCallback((id: number) => {
-    const a = addresses.find((x) => x.id === id);
-    if (!a) return;
-    const valid =
-      a.recipientAddress.trim() !== "" &&
-      a.deliveryQuantity > 0;
-    if (!valid) {
-      setTouchedIds((t) => new Set([...t, id]));
-      return;
-    }
-    setAddresses(addresses.map((x) => (x.id === id ? { ...x, locked: true, editingExisting: false } : x)));
-    setTouchedIds((t) => {
-      const next = new Set(t);
-      next.delete(id);
-      return next;
-    });
-  }, [addresses]);
+  const confirmAddress = useCallback(
+    (id: number) => {
+      const a = addresses.find((x) => x.id === id);
+      if (!a) return;
+      const valid = a.recipientAddress.trim() !== "" && a.deliveryQuantity > 0;
+      if (!valid) {
+        setTouchedIds((t) => new Set([...t, id]));
+        return;
+      }
+      setAddresses(
+        addresses.map((x) =>
+          x.id === id ? { ...x, locked: true, editingExisting: false } : x,
+        ),
+      );
+      setTouchedIds((t) => {
+        const next = new Set(t);
+        next.delete(id);
+        return next;
+      });
+    },
+    [addresses],
+  );
 
   const importAddresses = useCallback((incoming: AddressCard[]) => {
     if (incoming.length === 0) return;

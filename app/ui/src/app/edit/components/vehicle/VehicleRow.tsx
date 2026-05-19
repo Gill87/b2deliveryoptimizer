@@ -7,7 +7,10 @@
  * grid fragments), not only responsive CSS on one tree.
  */
 
-import type { VehicleRow as VehicleRowType, VehicleType } from "@/app/edit/types/delivery";
+import type {
+  VehicleRow as VehicleRowType,
+  VehicleType,
+} from "@/app/edit/types/delivery";
 import { capitalize } from "@/app/edit/utils/deliveryHelpers";
 import {
   VEHICLE_ROW_CELL,
@@ -27,7 +30,10 @@ import {
   VEHICLE_MOBILE_LOCKED_STATUS_ROW,
   VEHICLE_MOBILE_LOCKED_DEPARTURE,
 } from "@/app/edit/formStyles.v2";
-import { EditIconButton, DeleteIconButton } from "@/app/edit/components/shared/RowIconButtons";
+import {
+  EditIconButton,
+  DeleteIconButton,
+} from "@/app/edit/components/shared/RowIconButtons";
 
 type VehicleLayout = "desktop" | "mobile";
 
@@ -87,7 +93,9 @@ export default function VehicleRow({
             aria-label={v.available ? "Mark as in use" : "Mark as available"}
             className={statusBadge}
           >
-            <span className={statusText}>{v.available ? "Available" : "In use"}</span>
+            <span className={statusText}>
+              {v.available ? "Available" : "In use"}
+            </span>
           </button>
           <span className={VEHICLE_MOBILE_LOCKED_DEPARTURE}>
             {(v.departureTime || "--:--") + " departure time"}
@@ -113,7 +121,9 @@ export default function VehicleRow({
           aria-label={v.available ? "Mark as in use" : "Mark as available"}
           className={statusBadge}
         >
-          <span className={statusText}>{v.available ? "Available" : "In use"}</span>
+          <span className={statusText}>
+            {v.available ? "Available" : "In use"}
+          </span>
         </button>
       </span>
       <span className={VEHICLE_ROW_CELL}>{v.departureTime}</span>

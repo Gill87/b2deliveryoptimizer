@@ -1,7 +1,9 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
-import AddressOverlay, { type LocationAddress } from "@/app/edit/components/address/AddressOverlay";
+import AddressOverlay, {
+  type LocationAddress,
+} from "@/app/edit/components/address/AddressOverlay";
 import { TIME_OPTIONS } from "@/app/edit/constants/timeOptions";
 import type { AddressCard as AddressCardType } from "@/app/edit/types/delivery";
 import {
@@ -68,7 +70,11 @@ import {
   MOBILE_ADDR_EXPANDED_PANEL,
   MOBILE_ADDR_LOCKED_NOTES_CLAMP,
 } from "@/app/edit/formStyles.v2";
-import { EditIconButton, ConfirmIconButton, DeleteIconButton } from "@/app/edit/components/shared/RowIconButtons";
+import {
+  EditIconButton,
+  ConfirmIconButton,
+  DeleteIconButton,
+} from "@/app/edit/components/shared/RowIconButtons";
 
 function formatPhoneNumber(raw: string): string {
   const digits = raw.replace(/\D/g, "").slice(0, 10);
@@ -132,7 +138,11 @@ function StepperInput({
         value={value || ""}
         onChange={(e) => {
           const parsed = parseInt(e.target.value, 10);
-          onChange(Number.isNaN(parsed) ? min : Math.min(max ?? Infinity, Math.max(min, parsed)));
+          onChange(
+            Number.isNaN(parsed)
+              ? min
+              : Math.min(max ?? Infinity, Math.max(min, parsed)),
+          );
         }}
         aria-label={ariaLabel}
         className={ADDRESS_ROW_STEPPER_INPUT}
@@ -379,8 +389,20 @@ export default function AddressCard({
                     max={1_000_000}
                     ariaLabel="Delivery quantity"
                     onChange={(v) => updateAddress(a.id, "deliveryQuantity", v)}
-                    onIncrement={() => updateAddress(a.id, "deliveryQuantity", Math.min(1_000_000, (a.deliveryQuantity || 0) + 1))}
-                    onDecrement={() => updateAddress(a.id, "deliveryQuantity", Math.max(1, (a.deliveryQuantity || 1) - 1))}
+                    onIncrement={() =>
+                      updateAddress(
+                        a.id,
+                        "deliveryQuantity",
+                        Math.min(1_000_000, (a.deliveryQuantity || 0) + 1),
+                      )
+                    }
+                    onDecrement={() =>
+                      updateAddress(
+                        a.id,
+                        "deliveryQuantity",
+                        Math.max(1, (a.deliveryQuantity || 1) - 1),
+                      )
+                    }
                   />
 
                   {/* Delivery estimation — edit */}
@@ -391,8 +413,20 @@ export default function AddressCard({
                       max={999}
                       ariaLabel="Delivery estimation in minutes"
                       onChange={(v) => updateAddress(a.id, "timeBuffer", v)}
-                      onIncrement={() => updateAddress(a.id, "timeBuffer", Math.min(999, (a.timeBuffer || 0) + 1))}
-                      onDecrement={() => updateAddress(a.id, "timeBuffer", Math.max(0, (a.timeBuffer || 0) - 1))}
+                      onIncrement={() =>
+                        updateAddress(
+                          a.id,
+                          "timeBuffer",
+                          Math.min(999, (a.timeBuffer || 0) + 1),
+                        )
+                      }
+                      onDecrement={() =>
+                        updateAddress(
+                          a.id,
+                          "timeBuffer",
+                          Math.max(0, (a.timeBuffer || 0) - 1),
+                        )
+                      }
                     />
                     <span className={ADDRESS_ROW_INLINE_TEXT}>minutes</span>
                   </div>
@@ -765,9 +799,23 @@ export default function AddressCard({
                       min={1}
                       max={1_000_000}
                       ariaLabel="Delivery quantity"
-                      onChange={(v) => updateAddress(a.id, "deliveryQuantity", v)}
-                      onIncrement={() => updateAddress(a.id, "deliveryQuantity", Math.min(1_000_000, (a.deliveryQuantity || 0) + 1))}
-                      onDecrement={() => updateAddress(a.id, "deliveryQuantity", Math.max(1, (a.deliveryQuantity || 1) - 1))}
+                      onChange={(v) =>
+                        updateAddress(a.id, "deliveryQuantity", v)
+                      }
+                      onIncrement={() =>
+                        updateAddress(
+                          a.id,
+                          "deliveryQuantity",
+                          Math.min(1_000_000, (a.deliveryQuantity || 0) + 1),
+                        )
+                      }
+                      onDecrement={() =>
+                        updateAddress(
+                          a.id,
+                          "deliveryQuantity",
+                          Math.max(1, (a.deliveryQuantity || 1) - 1),
+                        )
+                      }
                     />
                   </div>
                   <div className={MOBILE_ADDR_EDIT_DELIVERY_GROUP}>
@@ -781,8 +829,20 @@ export default function AddressCard({
                         max={999}
                         ariaLabel="Delivery estimation in minutes"
                         onChange={(v) => updateAddress(a.id, "timeBuffer", v)}
-                        onIncrement={() => updateAddress(a.id, "timeBuffer", Math.min(999, (a.timeBuffer || 0) + 1))}
-                        onDecrement={() => updateAddress(a.id, "timeBuffer", Math.max(0, (a.timeBuffer || 0) - 1))}
+                        onIncrement={() =>
+                          updateAddress(
+                            a.id,
+                            "timeBuffer",
+                            Math.min(999, (a.timeBuffer || 0) + 1),
+                          )
+                        }
+                        onDecrement={() =>
+                          updateAddress(
+                            a.id,
+                            "timeBuffer",
+                            Math.max(0, (a.timeBuffer || 0) - 1),
+                          )
+                        }
                       />
                       <span className={ADDRESS_ROW_INLINE_TEXT}>minutes</span>
                     </div>
