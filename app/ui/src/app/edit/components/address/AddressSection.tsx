@@ -49,6 +49,7 @@ type AddressSectionProps = {
   confirmAddress: (id: number) => void;
   touchedIds: Set<number>;
   allAddressesLocked: boolean;
+  activeAddressIsValid: boolean;
   geocodeFailedIds: number[];
   searchQuery: string;
   setSearchQuery: (q: string) => void;
@@ -66,6 +67,7 @@ export default function AddressSection({
   confirmAddress,
   touchedIds,
   allAddressesLocked,
+  activeAddressIsValid,
   geocodeFailedIds,
   searchQuery,
   setSearchQuery,
@@ -76,7 +78,7 @@ export default function AddressSection({
   const [addressToDeleteId, setAddressToDeleteId] = useState<number | null>(
     null,
   );
-  const addEnabled = addressesCount === 0 || allAddressesLocked;
+  const addEnabled = addressesCount === 0 || allAddressesLocked || activeAddressIsValid;
 
   function handleDeleteRequest(id: number) {
     setAddressToDeleteId(id);
