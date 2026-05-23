@@ -16,11 +16,11 @@ import {
   VEHICLE_ROW_CELL,
   VEHICLE_ROW_ACTIONS,
   VEHICLE_ROW_DESKTOP,
-  VEHICLE_ROW_STATUS_BADGE_AVAILABLE,
-  VEHICLE_ROW_STATUS_BADGE_IN_USE,
   VEHICLE_ROW_STATUS_CELL,
-  VEHICLE_ROW_STATUS_TEXT_AVAILABLE,
-  VEHICLE_ROW_STATUS_TEXT_IN_USE,
+  STATUS_TOGGLE_WRAPPER,
+  STATUS_TOGGLE_BTN_ACTIVE,
+  STATUS_TOGGLE_BTN_INACTIVE,
+  STATUS_TOGGLE_TEXT,
   VEHICLE_MOBILE_LOCKED_CARD_V2,
   VEHICLE_MOBILE_LOCKED_HEADER,
   VEHICLE_MOBILE_LOCKED_INFO,
@@ -59,13 +59,6 @@ export default function VehicleRow({
   deleteVehicle,
   onEditVehicle,
 }: VehicleRowProps) {
-  const statusBadge = v.available
-    ? VEHICLE_ROW_STATUS_BADGE_AVAILABLE
-    : VEHICLE_ROW_STATUS_BADGE_IN_USE;
-  const statusText = v.available
-    ? VEHICLE_ROW_STATUS_TEXT_AVAILABLE
-    : VEHICLE_ROW_STATUS_TEXT_IN_USE;
-
   if (layout === "mobile") {
     return (
       <div className={VEHICLE_MOBILE_LOCKED_CARD_V2}>
@@ -87,16 +80,36 @@ export default function VehicleRow({
           </div>
         </div>
         <div className={VEHICLE_MOBILE_LOCKED_STATUS_ROW}>
-          <button
-            type="button"
-            onClick={() => updateVehicle(v.id, "available", !v.available)}
-            aria-label={v.available ? "Mark as in use" : "Mark as available"}
-            className={statusBadge}
+          <div
+            className={STATUS_TOGGLE_WRAPPER}
+            role="group"
+            aria-label="Vehicle availability"
           >
-            <span className={statusText}>
-              {v.available ? "Available" : "In use"}
-            </span>
-          </button>
+            <button
+              type="button"
+              onClick={() => updateVehicle(v.id, "available", true)}
+              aria-pressed={v.available}
+              className={
+                v.available
+                  ? STATUS_TOGGLE_BTN_ACTIVE
+                  : STATUS_TOGGLE_BTN_INACTIVE
+              }
+            >
+              <span className={STATUS_TOGGLE_TEXT}>Available</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => updateVehicle(v.id, "available", false)}
+              aria-pressed={!v.available}
+              className={
+                !v.available
+                  ? STATUS_TOGGLE_BTN_ACTIVE
+                  : STATUS_TOGGLE_BTN_INACTIVE
+              }
+            >
+              <span className={STATUS_TOGGLE_TEXT}>In use</span>
+            </button>
+          </div>
           <span className={VEHICLE_MOBILE_LOCKED_DEPARTURE}>
             {(v.departureTime || "--:--") + " departure time"}
           </span>
@@ -115,16 +128,34 @@ export default function VehicleRow({
       </span>
       <span className={VEHICLE_ROW_CELL}>{formatCapacity(v)}</span>
       <span className={VEHICLE_ROW_STATUS_CELL}>
-        <button
-          type="button"
-          onClick={() => updateVehicle(v.id, "available", !v.available)}
-          aria-label={v.available ? "Mark as in use" : "Mark as available"}
-          className={statusBadge}
+        <div
+          className={STATUS_TOGGLE_WRAPPER}
+          role="group"
+          aria-label="Vehicle availability"
         >
-          <span className={statusText}>
-            {v.available ? "Available" : "In use"}
-          </span>
-        </button>
+          <button
+            type="button"
+            onClick={() => updateVehicle(v.id, "available", true)}
+            aria-pressed={v.available}
+            className={
+              v.available ? STATUS_TOGGLE_BTN_ACTIVE : STATUS_TOGGLE_BTN_INACTIVE
+            }
+          >
+            <span className={STATUS_TOGGLE_TEXT}>Available</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => updateVehicle(v.id, "available", false)}
+            aria-pressed={!v.available}
+            className={
+              !v.available
+                ? STATUS_TOGGLE_BTN_ACTIVE
+                : STATUS_TOGGLE_BTN_INACTIVE
+            }
+          >
+            <span className={STATUS_TOGGLE_TEXT}>In use</span>
+          </button>
+        </div>
       </span>
       <span className={VEHICLE_ROW_CELL}>{v.departureTime}</span>
       <div className={VEHICLE_ROW_ACTIONS}>

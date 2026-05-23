@@ -36,12 +36,12 @@ import {
   OVERLAY_SELECT_ICON,
   OVERLAY_SELECT_WRAPPER,
   OVERLAY_SELECT_WRAPPER_ERROR,
-  OVERLAY_STATUS_BADGE_AVAILABLE,
-  OVERLAY_STATUS_BADGE_TEXT_AVAILABLE,
-  OVERLAY_STATUS_BADGE_TEXT_IN_USE,
-  OVERLAY_STATUS_BADGE_IN_USE,
   OVERLAY_STATUS_HINT,
   OVERLAY_STATUS_ROW,
+  STATUS_TOGGLE_WRAPPER,
+  STATUS_TOGGLE_BTN_ACTIVE,
+  STATUS_TOGGLE_BTN_INACTIVE,
+  STATUS_TOGGLE_TEXT,
   OVERLAY_SCROLL_BODY,
   OVERLAY_TIME_SEGMENTS,
   OVERLAY_TITLE,
@@ -383,27 +383,36 @@ export default function VehicleDetailsOverlay({
               <div className={OVERLAY_FIELD}>
                 <span className={OVERLAY_LABEL}>Status</span>
                 <div className={OVERLAY_STATUS_ROW}>
-                  <button
-                    type="button"
-                    onClick={() => setAvailable((prev) => !prev)}
-                    className={
-                      available
-                        ? OVERLAY_STATUS_BADGE_AVAILABLE
-                        : OVERLAY_STATUS_BADGE_IN_USE
-                    }
-                    aria-pressed={available}
-                    aria-label="Toggle availability"
+                  <div
+                    className={STATUS_TOGGLE_WRAPPER}
+                    role="group"
+                    aria-label="Vehicle availability"
                   >
-                    <span
+                    <button
+                      type="button"
+                      onClick={() => setAvailable(true)}
+                      aria-pressed={available}
                       className={
                         available
-                          ? OVERLAY_STATUS_BADGE_TEXT_AVAILABLE
-                          : OVERLAY_STATUS_BADGE_TEXT_IN_USE
+                          ? STATUS_TOGGLE_BTN_ACTIVE
+                          : STATUS_TOGGLE_BTN_INACTIVE
                       }
                     >
-                      {available ? "Available" : "In use"}
-                    </span>
-                  </button>
+                      <span className={STATUS_TOGGLE_TEXT}>Available</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setAvailable(false)}
+                      aria-pressed={!available}
+                      className={
+                        !available
+                          ? STATUS_TOGGLE_BTN_ACTIVE
+                          : STATUS_TOGGLE_BTN_INACTIVE
+                      }
+                    >
+                      <span className={STATUS_TOGGLE_TEXT}>In use</span>
+                    </button>
+                  </div>
                   <p className={OVERLAY_STATUS_HINT}>Tap to toggle</p>
                 </div>
               </div>
