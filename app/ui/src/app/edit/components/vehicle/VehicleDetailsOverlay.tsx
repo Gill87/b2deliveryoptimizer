@@ -520,7 +520,7 @@ export default function VehicleDetailsOverlay({
             onClick={handleSave}
             className={`${OVERLAY_PRIMARY_BTN} ${styles.primaryBtnOverlay}`}
           >
-            Done
+            Confirm
           </button>
         </div>
       </div>
