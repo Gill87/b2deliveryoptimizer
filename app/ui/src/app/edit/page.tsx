@@ -10,6 +10,7 @@ import Navbar from "@/app/edit/components/layout/navbar/Navbar";
 import MobileNavbar from "@/app/edit/components/layout/navbar/MobileNavbar";
 import MobileSidebar from "@/app/edit/components/layout/sidebar/MobileSidebar";
 import OptimizingModal from "@/app/edit/components/shared/OptimizingModal";
+import ErrorPopup from "@/app/edit/components/shared/ErrorPopup";
 import Sidebar from "@/app/edit/components/layout/sidebar/Sidebar";
 import SidebarEditButton from "@/app/edit/components/layout/sidebar/SidebarEditButton";
 import SidebarResultsButton from "@/app/edit/components/layout/sidebar/SidebarResultsButton";
@@ -192,6 +193,7 @@ export default function Page() {
         />
       )}
 
+      <ErrorPopup message={optimizeError} onClose={clearOptimizeError} />
       <OptimizingModal isOpen={isOptimizing} />
       {needsDepotAddress && (
         <AddressOverlay
@@ -217,6 +219,8 @@ export default function Page() {
             {...vehicleState}
             geocodeFailedVehicleIds={geocodeFailedVehicleIds}
             outOfRegionVehicleIds={outOfRegionVehicleIds}
+            onOptimize={() => void optimize()}
+            isOptimizing={isOptimizing}
           />
           <div className={ADDRESS_SECTION_WITH_PAGINATION}>
             <AddressSection
