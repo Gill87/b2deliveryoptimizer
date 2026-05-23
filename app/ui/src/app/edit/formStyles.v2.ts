@@ -105,6 +105,9 @@ export const NAVBAR_V2_LOGO =
 
 export const NAVBAR_V2_ACTIONS = "flex items-center gap-2";
 
+export const NAVBAR_V2_BTN_SAVE =
+  "h-9 px-[16px] rounded-[5px] border border-[var(--edit-stone-700)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap overflow-clip hover:bg-[var(--edit-secondary-btn-hover)] active:bg-[var(--edit-secondary-btn-pressed)] transition-colors cursor-pointer";
+
 export const NAVBAR_V2_BTN_OUTLINE =
   "h-9 px-4 rounded-[80px] border border-[var(--edit-stone-700)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap hover:bg-[var(--edit-secondary-btn-hover)] active:bg-[var(--edit-secondary-btn-pressed)] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
 
