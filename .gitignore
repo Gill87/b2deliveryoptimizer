@@ -94,3 +94,4 @@ services/vroom/data/
 
 # Claude
 Claude.md
+.claude/

@@ -60,7 +60,7 @@ export default function Page() {
     optimize,
     isOptimizing,
     optimizeError,
-    clearOptimizeError,
+    clearOptimizeError,    
     needsDepotAddress,
     dismissDepotAddressPrompt,
     geocodeFailedAddressIds,
@@ -204,26 +204,9 @@ export default function Page() {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
       />
-      <MobileBottomBar
-        onOptimize={() => void optimize()}
-        onSave={handleExportSession}
-        onExport={handleExportSession}
-        isOptimizing={isOptimizing}
-      />
+      <MobileBottomBar onSave={() => {}} />
       <MobileNavbar onMenuClick={() => setIsMobileMenuOpen(true)} />
-      <Navbar
-        onImportSession={handleImportSession}
-        onExportSession={handleExportSession}
-        onOptimize={() => void optimize()}
-        isOptimizing={isOptimizing}
-        error={sessionError ?? optimizeError ?? csvError ?? parseError}
-        onClearError={() => {
-          clearSessionError();
-          clearOptimizeError();
-          clearCsvError();
-          closeImportModal();
-        }}
-      />
+      <Navbar onSave={() => {}} />
       <div className={PAGE_V2_BODY}>
         <Sidebar>
           <SidebarEditButton />
