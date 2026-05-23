@@ -109,7 +109,7 @@ export const NAVBAR_V2_BTN_SAVE =
   "h-9 px-[16px] rounded-[5px] border border-[var(--edit-stone-700)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap overflow-clip hover:bg-[var(--edit-secondary-btn-hover)] active:bg-[var(--edit-secondary-btn-pressed)] transition-colors cursor-pointer";
 
 export const NAVBAR_V2_BTN_OUTLINE =
-  "h-9 px-4 rounded-[80px] border border-[var(--edit-stone-700)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap hover:bg-[var(--edit-secondary-btn-hover)] active:bg-[var(--edit-secondary-btn-pressed)] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
+  "h-9 px-4 rounded-[5px] border border-[var(--edit-stone-700)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap overflow-clip hover:bg-[var(--edit-secondary-btn-hover)] active:bg-[var(--edit-secondary-btn-pressed)] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
 
 export const NAVBAR_V2_BTN_FILLED =
   "h-9 px-4 rounded-[80px] bg-[var(--edit-btn-primary)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap cursor-pointer disabled:cursor-not-allowed";
@@ -232,38 +232,46 @@ export const VEHICLE_SECTION_OPTIMIZE_BTN =
 export const VEHICLE_SECTION_HEADER = "flex flex-col gap-2 mb-4";
 
 export const VEHICLE_SECTION_HEADING =
-  "font-bold text-[20px] leading-[28px] text-[var(--edit-text-primary)]";
+  "font-[650] text-[16px] leading-[1.5] text-[var(--edit-text-primary)]";
 
 export const VEHICLE_SECTION_SUBHEADING =
-  "text-[16px] leading-normal text-[var(--edit-text-secondary)]";
+  "font-normal text-[16px] leading-[1.5] text-[var(--edit-text-secondary)] whitespace-nowrap";
+
+export const MANAGE_SECTION_HEADER_ROOT =
+  "flex items-center justify-between w-full";
+
+export const MANAGE_SECTION_HEADING =
+  "font-bold text-[20px] leading-[28px] text-[var(--edit-manage-heading)] whitespace-nowrap";
+
+export const MANAGE_VEHICLE_GROUP = "flex flex-col gap-4";
 
 export const ADDRESS_SECTION_WITH_PAGINATION = "flex flex-col gap-4";
 
 export const ADDRESS_SECTION_HEADER = "flex flex-col gap-2 mb-4";
 
 export const ADDRESS_SECTION_HEADING =
-  "font-bold text-[20px] leading-[28px] text-[var(--edit-text-primary)]";
+  "font-[650] text-[16px] leading-[1.5] text-[var(--edit-text-primary)]";
 
 export const ADDRESS_SECTION_SUBHEADING =
-  "text-[16px] leading-normal text-[var(--edit-text-secondary)]";
+  "font-normal text-[16px] leading-[1.5] text-[var(--edit-text-secondary)] whitespace-nowrap";
 
 export const ADDRESS_BTN_V2_DESKTOP_ENABLED =
-  "h-10 px-4 shrink-0 rounded-[80px] border border-[var(--edit-stone-700)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap hover:bg-[var(--edit-secondary-btn-hover)] active:bg-[var(--edit-secondary-btn-pressed)] transition-colors cursor-pointer";
+  "h-10 px-4 shrink-0 rounded-[5px] border border-[var(--edit-stone-700)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap overflow-clip hover:bg-[var(--edit-secondary-btn-hover)] active:bg-[var(--edit-secondary-btn-pressed)] transition-colors cursor-pointer";
 
 export const ADDRESS_BTN_V2_DESKTOP_DISABLED =
-  "h-10 px-4 shrink-0 rounded-[80px] border border-[var(--edit-stone-200)] font-semibold text-[14px] leading-5 text-[var(--edit-stone-500)] whitespace-nowrap cursor-not-allowed opacity-50";
+  "h-10 px-4 shrink-0 rounded-[5px] border border-[var(--edit-stone-200)] font-semibold text-[14px] leading-5 text-[var(--edit-stone-500)] whitespace-nowrap overflow-clip cursor-not-allowed opacity-50";
 
 export const ADDRESS_BTN_V2_MOBILE_ENABLED =
-  "w-full h-10 px-4 rounded-[80px] border border-[var(--edit-stone-700)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap hover:bg-[var(--edit-secondary-btn-hover)] active:bg-[var(--edit-secondary-btn-pressed)] transition-colors cursor-pointer";
+  "w-full h-10 px-4 rounded-[5px] border border-[var(--edit-stone-700)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap overflow-clip hover:bg-[var(--edit-secondary-btn-hover)] active:bg-[var(--edit-secondary-btn-pressed)] transition-colors cursor-pointer";
 
 export const ADDRESS_BTN_V2_MOBILE_DISABLED =
-  "w-full h-10 px-4 rounded-[80px] border border-[var(--edit-stone-200)] font-semibold text-[14px] leading-5 text-[var(--edit-stone-500)] whitespace-nowrap cursor-not-allowed opacity-50";
+  "w-full h-10 px-4 rounded-[5px] border border-[var(--edit-stone-200)] font-semibold text-[14px] leading-5 text-[var(--edit-stone-500)] whitespace-nowrap overflow-clip cursor-not-allowed opacity-50";
 
 export const ADDRESS_SEARCH_BAR =
-  "flex items-center gap-2 px-4 py-[11px] rounded-[80px] border border-[var(--edit-stone-200)] bg-[var(--edit-stone-50)] focus-within:border-[var(--edit-teal-300)] transition-colors";
+  "flex items-center gap-2 px-4 py-[11px] rounded-[4px] border border-[var(--edit-stone-200)] bg-[var(--edit-stone-50)] focus-within:border-[var(--edit-teal-300)] transition-colors";
 
 export const ADDRESS_SEARCH_BAR_DESKTOP =
-  "flex items-center gap-2 h-9 px-4 rounded-[80px] border border-[var(--edit-stone-200)] bg-transparent focus-within:border-[var(--edit-teal-300)] transition-colors";
+  "flex items-center gap-2 h-9 px-4 rounded-[4px] border border-[var(--edit-stone-200)] bg-transparent focus-within:border-[var(--edit-teal-300)] transition-colors";
 
 export const ADDRESS_SEARCH_INPUT =
   "flex-1 font-normal text-[16px] leading-[1.5] text-[var(--edit-text-primary)] placeholder:text-[var(--edit-stone-500)] outline-none bg-transparent min-w-0 [&::-webkit-search-cancel-button]:hidden";
@@ -284,13 +292,13 @@ export const MOBILE_ADDR_TOOLBAR_ROOT =
 export const MOBILE_ADDR_TOOLBAR_BTN_ROW = "flex gap-2 items-center";
 
 export const MOBILE_ADDR_TOOLBAR_BTN_ENABLED =
-  "h-9 px-4 shrink-0 rounded-[80px] border border-[var(--edit-text-primary)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap hover:bg-[var(--edit-secondary-btn-hover)] active:bg-[var(--edit-secondary-btn-pressed)] transition-colors cursor-pointer";
+  "h-9 px-4 shrink-0 rounded-[5px] border border-[var(--edit-text-primary)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap overflow-clip hover:bg-[var(--edit-secondary-btn-hover)] active:bg-[var(--edit-secondary-btn-pressed)] transition-colors cursor-pointer";
 
 export const MOBILE_ADDR_TOOLBAR_BTN_DISABLED =
-  "h-9 px-4 shrink-0 rounded-[80px] border border-[var(--edit-stone-200)] font-semibold text-[14px] leading-5 text-[var(--edit-stone-500)] whitespace-nowrap cursor-not-allowed opacity-50";
+  "h-9 px-4 shrink-0 rounded-[5px] border border-[var(--edit-stone-200)] font-semibold text-[14px] leading-5 text-[var(--edit-stone-500)] whitespace-nowrap overflow-clip cursor-not-allowed opacity-50";
 
 export const ADDRESS_SEARCH_BAR_COMPACT =
-  "h-9 w-full flex items-center gap-2 px-4 rounded-[80px] border border-[var(--edit-stone-200)] focus-within:border-[var(--edit-teal-300)] transition-colors";
+  "h-9 w-full flex items-center gap-2 px-4 rounded-[4px] border border-[var(--edit-stone-200)] focus-within:border-[var(--edit-teal-300)] transition-colors";
 
 // ── Address Row Header (Figma 8012:2303) ──────────────────────────────────────
 
