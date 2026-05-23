@@ -77,6 +77,9 @@
   --edit-vehicle-light: #fcd34d;
   --edit-vehicle-back-panel: #312e81;
 
+  /* ── Drag-drop overlay ──────────────────────────────────────── */
+  --edit-drag-overlay-bg: rgba(213, 242, 232, 0.48);
+
   /* Address illustration */
   --edit-address-accent: #f97316;
   --edit-address-on-accent: #ffffff;
