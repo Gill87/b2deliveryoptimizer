@@ -19,8 +19,10 @@ import {
   PAGE_V2_BODY,
   PAGE_V2_MAIN,
   ADDRESS_SECTION_WITH_PAGINATION,
+  MANAGE_VEHICLE_GROUP,
 } from "@/app/edit/formStyles.v2";
 import VehicleSection from "@/app/edit/components/vehicle/VehicleSection";
+import ManageSectionHeader from "@/app/edit/components/layout/ManageSectionHeader";
 import AddressSection from "@/app/edit/components/address/AddressSection";
 import AddressPagination from "@/app/edit/components/address/AddressPagination";
 import AddressPaginationMobile from "@/app/edit/components/address/AddressPaginationMobile";
@@ -215,13 +217,17 @@ export default function Page() {
           <SidebarResultsButton />
         </Sidebar>
         <main className={PAGE_V2_MAIN}>
-          <VehicleSection
-            {...vehicleState}
-            geocodeFailedVehicleIds={geocodeFailedVehicleIds}
-            outOfRegionVehicleIds={outOfRegionVehicleIds}
-            onOptimize={() => void optimize()}
-            isOptimizing={isOptimizing}
-          />
+          <div className={MANAGE_VEHICLE_GROUP}>
+            <ManageSectionHeader
+              onOptimize={() => void optimize()}
+              isOptimizing={isOptimizing}
+            />
+            <VehicleSection
+              {...vehicleState}
+              geocodeFailedVehicleIds={geocodeFailedVehicleIds}
+              outOfRegionVehicleIds={outOfRegionVehicleIds}
+            />
+          </div>
           <div className={ADDRESS_SECTION_WITH_PAGINATION}>
             <AddressSection
               {...addressState}

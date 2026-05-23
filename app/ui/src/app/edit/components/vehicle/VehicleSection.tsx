@@ -5,7 +5,6 @@
  */
 
 import { useState } from "react";
-import styles from "@/app/edit/edit.module.css";
 import VehicleRow from "@/app/edit/components/vehicle/VehicleRow";
 import VehicleEmptyState from "@/app/edit/components/vehicle/VehicleEmptyState";
 import VehicleDetailsOverlay from "@/app/edit/components/vehicle/VehicleDetailsOverlay";
@@ -23,8 +22,6 @@ import {
   VEHICLE_SECTION_ACTIONS,
   VEHICLE_SECTION_HEADER,
   VEHICLE_SECTION_HEADING,
-  VEHICLE_SECTION_HEADING_ROW,
-  VEHICLE_SECTION_OPTIMIZE_BTN,
   VEHICLE_SECTION_SUBHEADING,
   MOBILE_EMPTY_STATE_CONTAINER,
   VEHICLE_MOBILE_LIST,
@@ -69,8 +66,6 @@ type VehicleSectionProps = {
   activeVehicleIsValid: boolean;
   geocodeFailedVehicleIds: number[];
   outOfRegionVehicleIds: number[];
-  onOptimize: () => void;
-  isOptimizing: boolean;
 };
 
 export default function VehicleSection({
@@ -84,8 +79,6 @@ export default function VehicleSection({
   activeVehicleIsValid,
   geocodeFailedVehicleIds,
   outOfRegionVehicleIds,
-  onOptimize,
-  isOptimizing,
 }: VehicleSectionProps) {
   const [isAddOverlayOpen, setIsAddOverlayOpen] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<VehicleRowType | null>(
@@ -117,18 +110,7 @@ export default function VehicleSection({
   return (
     <section>
       <div className={VEHICLE_SECTION_HEADER}>
-        <div className={VEHICLE_SECTION_HEADING_ROW}>
-          <h2 className={VEHICLE_SECTION_HEADING}>Vehicle details</h2>
-          <button
-            type="button"
-            className={`${VEHICLE_SECTION_OPTIMIZE_BTN} ${styles.primaryBtnOverlay}`}
-            onClick={onOptimize}
-            disabled={isOptimizing}
-            aria-busy={isOptimizing}
-          >
-            {isOptimizing ? "Optimizing…" : "Optimize"}
-          </button>
-        </div>
+        <h2 className={VEHICLE_SECTION_HEADING}>Vehicle details</h2>
         <p className={VEHICLE_SECTION_SUBHEADING}>Manage your delivery fleet</p>
       </div>
 
