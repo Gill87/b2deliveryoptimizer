@@ -42,7 +42,6 @@ import {
   mapEditStateToOptimizeRequest,
   mapOptimizeRequestToEditState,
 } from "@/app/edit/utils/sessionMapper";
-import { useRouter } from "next/navigation";
 import AddressOverlay, {
   type LocationAddress,
 } from "@/app/edit/components/address/AddressOverlay";
@@ -50,7 +49,6 @@ import AddressOverlay, {
 type StoredUploadFile = { name: string; content: string };
 
 export default function Page() {
-  const router = useRouter();
   const vehicleState = useVehicles();
   const addressState = useAddresses();
   const [sessionError, setSessionError] = useState<string | null>(null);
@@ -144,12 +142,6 @@ export default function Page() {
     };
   }, [importAddresses, importVehicles]);
 
-  // Routes to /upload-save-point so the user can upload a .json save file
-  // or a .csv/.json address list through the column-mapper modal flow.
-  const handleImportSession = useCallback(() => {
-    router.push("/upload-save-point");
-  }, [router]);
-
   const handleExportSession = useCallback(async () => {
     setSessionError(null);
     try {
@@ -196,6 +188,7 @@ export default function Page() {
 
       <ErrorPopup message={optimizeError} onClose={clearOptimizeError} />
       <ErrorPopup message={parseError} onClose={closeImportModal} />
+      <ErrorPopup message={sessionError} onClose={clearSessionError} />
       <OptimizingModal isOpen={isOptimizing} />
       {needsDepotAddress && (
         <AddressOverlay
@@ -208,9 +201,9 @@ export default function Page() {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
       />
-      <MobileBottomBar onSave={() => {}} />
+      <MobileBottomBar onSave={handleExportSession} />
       <MobileNavbar onMenuClick={() => setIsMobileMenuOpen(true)} />
-      <Navbar onSave={() => {}} />
+      <Navbar onSave={handleExportSession} />
       <div className={PAGE_V2_BODY}>
         <Sidebar>
           <SidebarEditButton />
