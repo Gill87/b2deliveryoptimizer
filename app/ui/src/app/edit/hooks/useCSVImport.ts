@@ -30,9 +30,7 @@ export function useCSVImport() {
 
   const openImportModal = useCallback((file: File) => {
     if (file.size > 10 * 1024 * 1024) {
-      setParseError(
-        "Your file exceeds 10MB limit, please use a smaller file.",
-      );
+      setParseError("Your file exceeds 10MB limit, please use a smaller file.");
       return;
     }
 

@@ -12,7 +12,10 @@ type Props = {
   isOptimizing: boolean;
 };
 
-export default function ManageSectionHeader({ onOptimize, isOptimizing }: Props) {
+export default function ManageSectionHeader({
+  onOptimize,
+  isOptimizing,
+}: Props) {
   return (
     <div className={MANAGE_SECTION_HEADER_ROOT}>
       <h1 className={MANAGE_SECTION_HEADING}>Manage</h1>

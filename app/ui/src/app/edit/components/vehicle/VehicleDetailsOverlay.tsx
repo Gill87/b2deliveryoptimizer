@@ -292,9 +292,7 @@ export default function VehicleDetailsOverlay({
                     <option value="bicycle">Bicycle</option>
                   </select>
                 </div>
-                {typeError && (
-                  <FieldError message="Enter a vehicle type" />
-                )}
+                {typeError && <FieldError message="Enter a vehicle type" />}
               </div>
             </div>
 
@@ -324,9 +322,7 @@ export default function VehicleDetailsOverlay({
                   aria-required="true"
                   aria-invalid={capacityError}
                 />
-                {capacityError && (
-                  <FieldError message="Enter capacity > 0" />
-                )}
+                {capacityError && <FieldError message="Enter capacity > 0" />}
               </div>
 
               <div className={OVERLAY_FIELD}>
@@ -507,9 +503,7 @@ export default function VehicleDetailsOverlay({
                     </button>
                   </div>
                 </div>
-                {departureError && (
-                  <FieldError message="Enter a valid time" />
-                )}
+                {departureError && <FieldError message="Enter a valid time" />}
               </div>
             </div>
           </div>

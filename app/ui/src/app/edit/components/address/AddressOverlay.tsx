@@ -376,9 +376,7 @@ export default function AddressOverlay({
                   aria-required="true"
                   aria-invalid={zipError}
                 />
-                {zipError && (
-                  <FieldError message="Zip code must be 5 digits" />
-                )}
+                {zipError && <FieldError message="Zip code must be 5 digits" />}
               </div>
 
               <div className={OVERLAY_FIELD}>
@@ -425,9 +423,7 @@ export default function AddressOverlay({
                     ))}
                   </select>
                 </div>
-                {countryError && (
-                  <FieldError message="Enter a valid region" />
-                )}
+                {countryError && <FieldError message="Enter a valid region" />}
               </div>
             </div>
           </div>

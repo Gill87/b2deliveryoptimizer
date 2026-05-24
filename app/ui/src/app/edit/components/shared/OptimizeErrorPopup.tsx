@@ -18,7 +18,10 @@ type OptimizeErrorPopupProps = {
   onClose: () => void;
 };
 
-export default function OptimizeErrorPopup({ message, onClose }: OptimizeErrorPopupProps) {
+export default function OptimizeErrorPopup({
+  message,
+  onClose,
+}: OptimizeErrorPopupProps) {
   const panelRef = useFocusTrap<HTMLDivElement>(!!message);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

@@ -113,7 +113,9 @@ export default function VehicleSection({
       <div className={VEHICLE_SECTION_HEADER}>
         <h2 className={VEHICLE_SECTION_HEADING}>Vehicle details</h2>
         <div className={VEHICLE_SECTION_HEADING_ROW}>
-          <p className={VEHICLE_SECTION_SUBHEADING}>Manage your delivery fleet</p>
+          <p className={VEHICLE_SECTION_SUBHEADING}>
+            Manage your delivery fleet
+          </p>
           <div className={VEHICLE_SECTION_BTN_GROUP}>
             <button
               type="button"

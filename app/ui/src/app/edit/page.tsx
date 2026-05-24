@@ -66,7 +66,7 @@ export default function Page() {
     optimize,
     isOptimizing,
     optimizeError,
-    clearOptimizeError,    
+    clearOptimizeError,
     needsDepotAddress,
     dismissDepotAddressPrompt,
     geocodeFailedAddressIds,
@@ -248,7 +248,10 @@ export default function Page() {
         />
       )}
 
-      <OptimizeErrorPopup message={optimizeError} onClose={clearOptimizeError} />
+      <OptimizeErrorPopup
+        message={optimizeError}
+        onClose={clearOptimizeError}
+      />
       <OptimizeErrorPopup message={parseError} onClose={closeImportModal} />
       <OptimizeErrorPopup message={sessionError} onClose={clearSessionError} />
       <OptimizeErrorPopup
@@ -284,29 +287,29 @@ export default function Page() {
             onDragOver={handlePageDragOver}
             onDrop={handlePageDrop}
           >
-          <div className={MANAGE_VEHICLE_GROUP}>
-            <ManageSectionHeader
-              onOptimize={() => void optimize()}
-              isOptimizing={isOptimizing}
-            />
-            <VehicleSection
-              {...vehicleState}
-              geocodeFailedVehicleIds={geocodeFailedVehicleIds}
-              outOfRegionVehicleIds={outOfRegionVehicleIds}
-            />
-          </div>
-          <div className={ADDRESS_SECTION_WITH_PAGINATION}>
-            <AddressSection
-              {...addressState}
-              geocodeFailedIds={geocodeFailedAddressIds}
-              outOfRegionIds={outOfRegionAddressIds}
-              onOpenUploadOverlay={() => setIsUploadOverlayOpen(true)}
-            />
-            <AddressPagination {...addressState} />
-            <AddressPaginationMobile {...addressState} />
-          </div>
-          <EditPageFooter />
-          <MobileEditPageFooter />
+            <div className={MANAGE_VEHICLE_GROUP}>
+              <ManageSectionHeader
+                onOptimize={() => void optimize()}
+                isOptimizing={isOptimizing}
+              />
+              <VehicleSection
+                {...vehicleState}
+                geocodeFailedVehicleIds={geocodeFailedVehicleIds}
+                outOfRegionVehicleIds={outOfRegionVehicleIds}
+              />
+            </div>
+            <div className={ADDRESS_SECTION_WITH_PAGINATION}>
+              <AddressSection
+                {...addressState}
+                geocodeFailedIds={geocodeFailedAddressIds}
+                outOfRegionIds={outOfRegionAddressIds}
+                onOpenUploadOverlay={() => setIsUploadOverlayOpen(true)}
+              />
+              <AddressPagination {...addressState} />
+              <AddressPaginationMobile {...addressState} />
+            </div>
+            <EditPageFooter />
+            <MobileEditPageFooter />
           </main>
         </div>
       </div>
