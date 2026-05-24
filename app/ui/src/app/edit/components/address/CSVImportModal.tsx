@@ -1,4 +1,4 @@
-// app/edit/components/CSVImportModal.tsx
+// app/edit/components/address/CSVImportModal.tsx
 "use client";
 
 /**
@@ -18,7 +18,7 @@
 
 import { useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import type { AddressCard } from "../types/delivery";
+import type { AddressCard } from "@/app/edit/types/delivery";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
