@@ -17,6 +17,7 @@ import SidebarResultsButton from "@/app/components/sidebar/SidebarResultsButton"
 import {
   PAGE_V2_ROOT,
   PAGE_V2_BODY,
+  PAGE_V2_MAIN_OUTER,
   PAGE_V2_MAIN,
   ADDRESS_SECTION_WITH_PAGINATION,
   MANAGE_VEHICLE_GROUP,
@@ -274,14 +275,15 @@ export default function Page() {
           <SidebarEditButton />
           <SidebarResultsButton />
         </Sidebar>
-        <main
-          className={PAGE_V2_MAIN}
-          onDragEnter={handlePageDragEnter}
-          onDragLeave={handlePageDragLeave}
-          onDragOver={handlePageDragOver}
-          onDrop={handlePageDrop}
-        >
+        <div className={PAGE_V2_MAIN_OUTER}>
           {isDraggingOverPage && <DragDropOverlay />}
+          <main
+            className={PAGE_V2_MAIN}
+            onDragEnter={handlePageDragEnter}
+            onDragLeave={handlePageDragLeave}
+            onDragOver={handlePageDragOver}
+            onDrop={handlePageDrop}
+          >
           <div className={MANAGE_VEHICLE_GROUP}>
             <ManageSectionHeader
               onOptimize={() => void optimize()}
@@ -305,7 +307,8 @@ export default function Page() {
           </div>
           <EditPageFooter />
           <MobileEditPageFooter />
-        </main>
+          </main>
+        </div>
       </div>
     </div>
   );
