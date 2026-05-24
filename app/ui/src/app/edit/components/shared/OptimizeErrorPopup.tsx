@@ -15,12 +15,12 @@ import {
 } from "@/app/edit/formStyles";
 import { useFocusTrap } from "@/app/edit/hooks/useFocusTrap";
 
-type ErrorPopupProps = {
+type OptimizeErrorPopupProps = {
   message: string | null;
   onClose: () => void;
 };
 
-export default function ErrorPopup({ message, onClose }: ErrorPopupProps) {
+export default function OptimizeErrorPopup({ message, onClose }: OptimizeErrorPopupProps) {
   const panelRef = useFocusTrap<HTMLDivElement>(!!message);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
