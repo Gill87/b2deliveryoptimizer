@@ -31,6 +31,7 @@ import SpinnerIcon from "@/app/edit/components/shared/SpinnerIcon";
 type CSVUploadOverlayProps = {
   onClose: () => void;
   onFileSelect: (file: File) => void;
+  onInvalidFile?: () => void;
 };
 
 function formatFileSize(bytes: number): string {
@@ -41,6 +42,7 @@ function formatFileSize(bytes: number): string {
 export default function CSVUploadOverlay({
   onClose,
   onFileSelect,
+  onInvalidFile,
 }: CSVUploadOverlayProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -82,7 +84,12 @@ export default function CSVUploadOverlay({
     e.stopPropagation();
     setIsDragOver(false);
     const file = e.dataTransfer.files[0] ?? null;
-    if (file) setSelectedFile(file);
+    if (!file) return;
+    if (file.name.toLowerCase().endsWith(".csv")) {
+      setSelectedFile(file);
+    } else {
+      onInvalidFile?.();
+    }
   }
 
   return (

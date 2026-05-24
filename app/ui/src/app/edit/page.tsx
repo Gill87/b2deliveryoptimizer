@@ -53,6 +53,7 @@ export default function Page() {
   const vehicleState = useVehicles();
   const addressState = useAddresses();
   const [sessionError, setSessionError] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { importVehicles } = vehicleState;
   const { importAddresses } = addressState;
@@ -186,6 +187,12 @@ export default function Page() {
         <CSVUploadOverlay
           onClose={() => setIsUploadOverlayOpen(false)}
           onFileSelect={openImportModal}
+          onInvalidFile={() => {
+            setIsUploadOverlayOpen(false);
+            setUploadError(
+              "This file type is not accepted. Please upload a CSV file.",
+            );
+          }}
         />
       )}
 
@@ -203,6 +210,10 @@ export default function Page() {
       <OptimizeErrorPopup message={optimizeError} onClose={clearOptimizeError} />
       <OptimizeErrorPopup message={parseError} onClose={closeImportModal} />
       <OptimizeErrorPopup message={sessionError} onClose={clearSessionError} />
+      <OptimizeErrorPopup
+        message={uploadError}
+        onClose={() => setUploadError(null)}
+      />
       <OptimizingModal isOpen={isOptimizing} />
       {needsDepotAddress && (
         <AddressOverlay
