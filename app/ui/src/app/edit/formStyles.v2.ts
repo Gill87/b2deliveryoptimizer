@@ -759,3 +759,10 @@ export const MOBILE_BOTTOM_BAR_SECONDARY_BTN =
 
 export const MOBILE_BOTTOM_BAR_SECONDARY_LABEL =
   "font-['Manrope',sans-serif] font-semibold text-[16px] leading-[22px] text-[var(--edit-text-primary)] whitespace-nowrap";
+
+// ── OptimizeErrorPopup ────────────────────────────────────────────────────────
+
+export const ERROR_POPUP_MESSAGE =
+  "text-[14px] leading-5 text-[var(--edit-text-secondary)] w-full";
+
+export const ERROR_POPUP_FOOTER = "flex items-center justify-end";
