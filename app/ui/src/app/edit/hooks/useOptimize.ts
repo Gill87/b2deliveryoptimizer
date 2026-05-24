@@ -361,6 +361,7 @@ export function useOptimize(
               resultBody as VroomResponse,
               lockedVehicles,
               addresses,
+              trimmedDepotAddress!,
             );
             sessionStorage.setItem("optimizeResults", JSON.stringify(routes));
             router.push("/results");

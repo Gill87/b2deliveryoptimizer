@@ -57,7 +57,7 @@ function buildRoutePath(
   pendingPinMove: PendingPinMove | null,
 ): google.maps.LatLngLiteral[] {
   const sorted = [...route.stops].sort((a, b) => a.sequence - b.sequence);
-  return sorted.map((s) => {
+  const deliveryPoints = sorted.map((s) => {
     if (
       pendingPinMove?.vehicleId === route.vehicleId &&
       pendingPinMove.stopId === s.id
@@ -66,6 +66,13 @@ function buildRoutePath(
     }
     return { lat: s.lat, lng: s.lng };
   });
+  if (route.startLocation) {
+    return [
+      { lat: route.startLocation.lat, lng: route.startLocation.lng },
+      ...deliveryPoints,
+    ];
+  }
+  return deliveryPoints;
 }
 
 function RoutePolylinesOverlay({
@@ -308,6 +315,25 @@ function AdvancedMarkers({
         if (cancelled) return;
 
         routes.forEach((route) => {
+          // Depot marker — distinct non-draggable pin labeled "S"
+          if (route.startLocation) {
+            const depotEl = document.createElement("div");
+            depotEl.style.cssText =
+              "display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#374151;color:#fff;font-size:11px;font-weight:700;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.4)";
+            depotEl.textContent = "S";
+            const depotMarker = new AdvancedMarkerElement({
+              map,
+              position: {
+                lat: route.startLocation.lat,
+                lng: route.startLocation.lng,
+              },
+              title: route.startLocation.address || "Starting point",
+              content: depotEl,
+              gmpDraggable: false,
+            });
+            markers.push(depotMarker);
+          }
+
           const sorted = [...route.stops].sort(
             (a, b) => a.sequence - b.sequence,
           );
@@ -403,6 +429,12 @@ export default function MapComponent({
       const bounds = new google.maps.LatLngBounds();
       routes.forEach((route) => {
         route.stops.forEach((s) => bounds.extend({ lat: s.lat, lng: s.lng }));
+        if (route.startLocation) {
+          bounds.extend({
+            lat: route.startLocation.lat,
+            lng: route.startLocation.lng,
+          });
+        }
       });
       mapInstance.fitBounds(bounds, 48);
     },
@@ -472,6 +504,18 @@ export default function MapComponent({
               );
               return (
                 <Fragment key={route.vehicleId}>
+                  {route.startLocation && (
+                    <Marker
+                      key={`depot-${route.vehicleId}`}
+                      position={{
+                        lat: route.startLocation.lat,
+                        lng: route.startLocation.lng,
+                      }}
+                      title={route.startLocation.address || "Starting point"}
+                      draggable={false}
+                      label={{ text: "S", color: "#fff", fontWeight: "bold" }}
+                    />
+                  )}
                   {sorted.map((stop) => {
                     const atPending =
                       pendingPinMove != null &&
