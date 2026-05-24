@@ -769,6 +769,9 @@ export const ERROR_POPUP_FOOTER = "flex items-center justify-end";
 
 // ── CSV Upload Overlay (Figma 8102:1548 desktop / 7472:5765 mobile) ───────────
 
+export const CSV_UPLOAD_OVERLAY_PANEL =
+  "bg-[var(--edit-bg-primary)] flex flex-col gap-[14px] items-end overflow-hidden p-4 lg:p-6 rounded-[6px] w-full lg:max-w-[800px] mx-2 lg:mx-4 shadow-lg max-h-[90dvh]";
+
 export const CSV_UPLOAD_OVERLAY_INNER =
   "flex flex-col gap-[16px] items-end w-full";
 
