@@ -3,13 +3,13 @@
 import { useRef, useState } from "react";
 import {
   OVERLAY_BACKDROP,
-  OVERLAY_PANEL,
   OVERLAY_HEADER,
   OVERLAY_TITLE,
   OVERLAY_CLOSE_BTN,
   OVERLAY_FOOTER,
   OVERLAY_CANCEL_BTN,
   OVERLAY_PRIMARY_BTN,
+  CSV_UPLOAD_OVERLAY_PANEL,
   CSV_UPLOAD_OVERLAY_INNER,
   CSV_UPLOAD_OVERLAY_CONTENT,
   CSV_UPLOAD_OVERLAY_TOP,
@@ -60,7 +60,7 @@ export default function CSVUploadOverlay({
   return (
     <div className={OVERLAY_BACKDROP} onClick={onClose}>
       <div
-        className={OVERLAY_PANEL}
+        className={CSV_UPLOAD_OVERLAY_PANEL}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
