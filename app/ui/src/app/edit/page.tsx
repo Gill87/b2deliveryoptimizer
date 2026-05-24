@@ -22,7 +22,7 @@ import {
   MANAGE_VEHICLE_GROUP,
 } from "@/app/edit/formStyles.v2";
 import VehicleSection from "@/app/edit/components/vehicle/VehicleSection";
-import ManageSectionHeader from "@/app/edit/components/layout/ManageSectionHeader";
+import ManageSectionHeader from "@/app/edit/components/shared/ManageSectionHeader";
 import AddressSection from "@/app/edit/components/address/AddressSection";
 import AddressPagination from "@/app/edit/components/address/AddressPagination";
 import AddressPaginationMobile from "@/app/edit/components/address/AddressPaginationMobile";
