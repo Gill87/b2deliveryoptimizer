@@ -9,7 +9,6 @@ import AddressCard from "@/app/edit/components/address/AddressCard";
 import ConfirmDeletionOverlay from "@/app/edit/components/shared/ConfirmDeletionOverlay";
 import AddressEmptyState from "@/app/edit/components/address/AddressEmptyState";
 import AddressRowHeader from "@/app/edit/components/address/AddressRowHeader";
-import CSVUploadOverlay from "@/app/edit/components/address/CSVUploadOverlay";
 import type { AddressCard as AddressCardType } from "@/app/edit/types/delivery";
 import {
   ADDRESS_EMPTY_STATE,
@@ -55,7 +54,7 @@ type AddressSectionProps = {
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   outOfRegionIds: number[];
-  onOpenImportModal: (file: File) => void;
+  onOpenUploadOverlay: () => void;
 };
 
 export default function AddressSection({
@@ -73,9 +72,8 @@ export default function AddressSection({
   searchQuery,
   setSearchQuery,
   outOfRegionIds,
-  onOpenImportModal,
+  onOpenUploadOverlay,
 }: AddressSectionProps) {
-  const [isUploadOverlayOpen, setIsUploadOverlayOpen] = useState(false);
   const [addressToDeleteId, setAddressToDeleteId] = useState<number | null>(
     null,
   );
@@ -105,7 +103,7 @@ export default function AddressSection({
         <div className={MOBILE_ADDR_TOOLBAR_BTN_ROW}>
           <button
             type="button"
-            onClick={() => setIsUploadOverlayOpen(true)}
+            onClick={onOpenUploadOverlay}
             className={MOBILE_ADDR_TOOLBAR_BTN_ENABLED}
           >
             Import
@@ -136,7 +134,7 @@ export default function AddressSection({
         <div className={ADDRESS_TOOLBAR_SPACER} />
         <button
           type="button"
-          onClick={() => setIsUploadOverlayOpen(true)}
+          onClick={onOpenUploadOverlay}
           className={ADDRESS_BTN_V2_DESKTOP_ENABLED}
         >
           Import
@@ -212,16 +210,6 @@ export default function AddressSection({
           )}
         </div>
       </div>
-
-      {isUploadOverlayOpen && (
-        <CSVUploadOverlay
-          onClose={() => setIsUploadOverlayOpen(false)}
-          onFileSelect={(file) => {
-            onOpenImportModal(file);
-            setIsUploadOverlayOpen(false);
-          }}
-        />
-      )}
 
       {addressToDeleteId !== null && (
         <ConfirmDeletionOverlay

@@ -30,6 +30,7 @@ import EditPageFooter from "@/app/edit/components/footer/EditPageFooter";
 import MobileEditPageFooter from "@/app/edit/components/footer/MobileEditPageFooter";
 import MobileBottomBar from "@/app/components/navbar/MobileBottomBar";
 import { CSVImportModal } from "@/app/edit/components/address/CSVImportModal";
+import CSVUploadOverlay from "@/app/edit/components/address/CSVUploadOverlay";
 import { useVehicles } from "@/app/edit/hooks/useVehicles";
 import { useAddresses } from "@/app/edit/hooks/useAddresses";
 import { useOptimize } from "@/app/edit/hooks/useOptimize";
@@ -81,6 +82,12 @@ export default function Page() {
     openImportModal,
     closeImportModal,
   } = useCSVImport();
+
+  const [isUploadOverlayOpen, setIsUploadOverlayOpen] = useState(false);
+
+  useEffect(() => {
+    if (isImportModalOpen || parseError) setIsUploadOverlayOpen(false);
+  }, [isImportModalOpen, parseError]);
 
   useEffect(() => {
     let cancelled = false;
@@ -175,6 +182,13 @@ export default function Page() {
 
   return (
     <div className={`${PAGE_V2_ROOT} ${styles.root}`}>
+      {isUploadOverlayOpen && (
+        <CSVUploadOverlay
+          onClose={() => setIsUploadOverlayOpen(false)}
+          onFileSelect={openImportModal}
+        />
+      )}
+
       {/* In-page import modal — stays on edit page after confirm */}
       {isImportModalOpen && (
         <CSVImportModal
@@ -226,7 +240,7 @@ export default function Page() {
               {...addressState}
               geocodeFailedIds={geocodeFailedAddressIds}
               outOfRegionIds={outOfRegionAddressIds}
-              onOpenImportModal={openImportModal}
+              onOpenUploadOverlay={() => setIsUploadOverlayOpen(true)}
             />
             <AddressPagination {...addressState} />
             <AddressPaginationMobile {...addressState} />
