@@ -25,7 +25,7 @@ export default function SidebarResultsButton() {
     <Link
       href="#"
       className={SIDEBAR_NAV_ITEM_DISABLED}
-      aria-disabled="true"
+      aria-disabled={true}
       tabIndex={-1}
     >
       {" "}
