@@ -10,11 +10,6 @@ import ConfirmDeletionOverlay from "@/app/edit/components/shared/ConfirmDeletion
 import AddressEmptyState from "@/app/edit/components/address/AddressEmptyState";
 import AddressRowHeader from "@/app/edit/components/address/AddressRowHeader";
 import type { AddressCard as AddressCardType } from "@/app/edit/types/delivery";
-import {
-  ADDRESS_EMPTY_STATE,
-  ADDRESS_TOOLBAR_DESKTOP,
-} from "@/app/edit/formStyles";
-
 import AddressSearchBar from "@/app/edit/components/address/AddressSearchBar";
 import {
   ADDRESS_SECTION_HEADER,
@@ -26,6 +21,8 @@ import {
   ADDRESS_LIST_CONTAINER_INNER,
   ADDRESS_LIST_DIVIDER,
   ADDRESS_SEARCH_DESKTOP_SIZE,
+  ADDRESS_SEARCH_NO_RESULTS,
+  ADDRESS_TOOLBAR_DESKTOP,
   ADDRESS_TOOLBAR_SPACER,
   MOBILE_EMPTY_STATE_CONTAINER,
   MOBILE_ADDR_TOOLBAR_ROOT,
@@ -164,7 +161,7 @@ export default function AddressSection({
       {addressesCount > 0 && (
         <div className={ADDRESS_LIST_MOBILE_WRAP}>
           {searchQuery.trim() !== "" && addressesOnCurrentPage.length === 0 ? (
-            <div className={ADDRESS_EMPTY_STATE}>No Addresses Found</div>
+            <div className={ADDRESS_SEARCH_NO_RESULTS}>No Addresses Found</div>
           ) : (
             addressesOnCurrentPage.map((a) => (
               <AddressCard
@@ -192,7 +189,7 @@ export default function AddressSection({
             <AddressEmptyState />
           ) : searchQuery.trim() !== "" &&
             addressesOnCurrentPage.length === 0 ? (
-            <div className={ADDRESS_EMPTY_STATE}>No Addresses Found</div>
+            <div className={ADDRESS_SEARCH_NO_RESULTS}>No Addresses Found</div>
           ) : (
             addressesOnCurrentPage.map((a) => (
               <AddressCard

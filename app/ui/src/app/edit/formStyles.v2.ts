@@ -1,10 +1,7 @@
 /**
  * Hi-fi Tailwind class tokens for the edit page redesign.
  * References CSS variables from edit.module.css — do not use hard-coded hex values here.
- * Mid-fi tokens live in formStyles.ts (do not modify that file).
  */
-
-import { ADDRESS_CARD_ROOT_BASE, ADDRESS_LIST_WRAP } from "./formStyles";
 
 export const SIDEBAR_ROOT =
   "hidden lg:block w-[68px] shrink-0 self-stretch bg-[var(--edit-stone-50)] overflow-hidden";
@@ -96,9 +93,10 @@ export const MOBILE_SIDEBAR_NAV_LABEL =
 export const MOBILE_EMPTY_STATE_CONTAINER =
   "lg:hidden border border-[var(--edit-stone-200)] rounded-[8px] overflow-hidden p-4";
 
-export const ADDRESS_CARD_MOBILE_ROOT = `${ADDRESS_CARD_ROOT_BASE} lg:hidden`;
+export const ADDRESS_CARD_MOBILE_ROOT =
+  "lg:hidden rounded-[8px] border border-[var(--edit-stone-200)] overflow-hidden bg-white";
 
-export const ADDRESS_LIST_MOBILE_WRAP = `lg:hidden ${ADDRESS_LIST_WRAP}`;
+export const ADDRESS_LIST_MOBILE_WRAP = "lg:hidden flex flex-col gap-4";
 
 export const NAVBAR_V2_LOGO =
   "font-bold text-[20px] leading-7 text-[var(--edit-text-primary)] whitespace-nowrap";
@@ -300,6 +298,9 @@ export const MOBILE_ADDR_TOOLBAR_BTN_ENABLED =
 export const MOBILE_ADDR_TOOLBAR_BTN_DISABLED =
   "h-9 px-4 shrink-0 rounded-[5px] border border-[var(--edit-stone-200)] font-semibold text-[14px] leading-5 text-[var(--edit-stone-500)] whitespace-nowrap overflow-clip cursor-not-allowed opacity-50";
 
+export const ADDRESS_TOOLBAR_DESKTOP =
+  "hidden lg:flex items-center gap-3 mb-5 xl:gap-4 xl:mb-6";
+
 export const ADDRESS_SEARCH_BAR_COMPACT =
   "h-9 w-full flex items-center gap-2 px-4 rounded-[4px] border border-[var(--edit-stone-200)] focus-within:border-[var(--edit-teal-300)] transition-colors";
 
@@ -336,6 +337,9 @@ export const ADDRESS_EMPTY_STATE_ICON = EMPTY_STATE_ICON;
 export const ADDRESS_EMPTY_STATE_TEXT_GROUP = EMPTY_STATE_TEXT_GROUP;
 export const ADDRESS_EMPTY_STATE_TITLE = EMPTY_STATE_TITLE;
 export const ADDRESS_EMPTY_STATE_SUBTITLE = EMPTY_STATE_SUBTITLE;
+
+export const ADDRESS_SEARCH_NO_RESULTS =
+  "flex items-center justify-center py-16 text-sm text-[var(--edit-stone-500)] xl:text-base";
 
 // ── Address Row Edit State (Figma 7758:2610) ──────────────────────────────────
 
