@@ -6,14 +6,14 @@
  */
 
 import styles from "@/app/edit/edit.module.css";
-import Navbar from "@/app/edit/components/layout/navbar/Navbar";
-import MobileNavbar from "@/app/edit/components/layout/navbar/MobileNavbar";
-import MobileSidebar from "@/app/edit/components/layout/sidebar/MobileSidebar";
+import Navbar from "@/app/components/navbar/Navbar";
+import MobileNavbar from "@/app/components/navbar/MobileNavbar";
+import MobileSidebar from "@/app/components/sidebar/MobileSidebar";
 import OptimizingModal from "@/app/edit/components/shared/OptimizingModal";
 import ErrorPopup from "@/app/edit/components/shared/ErrorPopup";
-import Sidebar from "@/app/edit/components/layout/sidebar/Sidebar";
-import SidebarEditButton from "@/app/edit/components/layout/sidebar/SidebarEditButton";
-import SidebarResultsButton from "@/app/edit/components/layout/sidebar/SidebarResultsButton";
+import Sidebar from "@/app/components/sidebar/Sidebar";
+import SidebarEditButton from "@/app/components/sidebar/SidebarEditButton";
+import SidebarResultsButton from "@/app/components/sidebar/SidebarResultsButton";
 import {
   PAGE_V2_ROOT,
   PAGE_V2_BODY,
@@ -26,9 +26,9 @@ import ManageSectionHeader from "@/app/edit/components/shared/ManageSectionHeade
 import AddressSection from "@/app/edit/components/address/AddressSection";
 import AddressPagination from "@/app/edit/components/address/AddressPagination";
 import AddressPaginationMobile from "@/app/edit/components/address/AddressPaginationMobile";
-import EditPageFooter from "@/app/edit/components/layout/footer/EditPageFooter";
-import MobileEditPageFooter from "@/app/edit/components/layout/footer/MobileEditPageFooter";
-import MobileBottomBar from "@/app/edit/components/layout/navbar/MobileBottomBar";
+import EditPageFooter from "@/app/edit/components/footer/EditPageFooter";
+import MobileEditPageFooter from "@/app/edit/components/footer/MobileEditPageFooter";
+import MobileBottomBar from "@/app/components/navbar/MobileBottomBar";
 import { CSVImportModal } from "@/app/edit/components/address/CSVImportModal";
 import { useVehicles } from "@/app/edit/hooks/useVehicles";
 import { useAddresses } from "@/app/edit/hooks/useAddresses";
