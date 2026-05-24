@@ -205,8 +205,23 @@ function AutoResizeNotesTextarea({
     const textarea = textareaRef.current;
     if (!textarea) return;
 
-    textarea.style.height = "auto";
-    textarea.style.height = `${textarea.scrollHeight}px`;
+    const fitHeight = () => {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    };
+
+    fitHeight();
+
+    const mq = window.matchMedia("(min-width: 1024px)");
+    mq.addEventListener("change", fitHeight);
+
+    const ro = new ResizeObserver(fitHeight);
+    ro.observe(textarea);
+
+    return () => {
+      mq.removeEventListener("change", fitHeight);
+      ro.disconnect();
+    };
   }, [value]);
 
   return (
@@ -405,7 +420,7 @@ export default function AddressCard({
                         )
                       }
                     />
-                    {qtyInvalid && <FieldError message="Qty?" />}
+                    {qtyInvalid && <FieldError message="qty" />}
                   </div>
 
                   {/* Delivery estimation — edit */}
@@ -819,7 +834,7 @@ export default function AddressCard({
                         )
                       }
                     />
-                    {qtyInvalid && <FieldError message="Qty?" />}
+                    {qtyInvalid && <FieldError message="qty" />}
                   </div>
                   <div className={MOBILE_ADDR_EDIT_DELIVERY_GROUP}>
                     <span className={MOBILE_ADDR_EDIT_SECTION_LABEL}>
