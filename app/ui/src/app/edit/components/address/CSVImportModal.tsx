@@ -698,8 +698,16 @@ export function CSVImportModal({
       // Store the fully-built AddressCard[] directly — no re-parsing needed.
       // edit/page.tsx reads "importedCards" on mount and calls importAddresses()
       // directly, bypassing parseAddressUpload entirely.
-      sessionStorage.setItem("importedCards", JSON.stringify(cards));
-      router.push("/edit");
+      try {
+        sessionStorage.setItem("importedCards", JSON.stringify(cards));
+        router.push("/edit");
+      } catch (e) {
+        if (e instanceof DOMException && e.name === "QuotaExceededError") {
+          alert("Import is too large to save. Please reduce the number of selected rows.");
+        } else {
+          throw e;
+        }
+      }
     } else if (importAddresses) {
       importAddresses(cards);
       onClose();
