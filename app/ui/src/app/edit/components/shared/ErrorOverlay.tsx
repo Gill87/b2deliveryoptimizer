@@ -18,10 +18,7 @@ type ErrorOverlayProps = {
   onClose: () => void;
 };
 
-export default function ErrorOverlay({
-  message,
-  onClose,
-}: ErrorOverlayProps) {
+export default function ErrorOverlay({ message, onClose }: ErrorOverlayProps) {
   const panelRef = useFocusTrap<HTMLDivElement>(!!message);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

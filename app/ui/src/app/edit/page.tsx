@@ -248,10 +248,7 @@ export default function Page() {
         />
       )}
 
-      <ErrorOverlay
-        message={optimizeError}
-        onClose={clearOptimizeError}
-      />
+      <ErrorOverlay message={optimizeError} onClose={clearOptimizeError} />
       <ErrorOverlay message={parseError} onClose={closeImportModal} />
       <ErrorOverlay message={sessionError} onClose={clearSessionError} />
       <ErrorOverlay
