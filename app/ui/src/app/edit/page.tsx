@@ -10,7 +10,7 @@ import Navbar from "@/app/components/navbar/Navbar";
 import MobileNavbar from "@/app/components/navbar/MobileNavbar";
 import MobileSidebar from "@/app/components/sidebar/MobileSidebar";
 import OptimizingModal from "@/app/edit/components/shared/OptimizingModal";
-import ErrorPopup from "@/app/edit/components/shared/ErrorPopup";
+import OptimizeErrorPopup from "@/app/edit/components/shared/OptimizeErrorPopup";
 import Sidebar from "@/app/components/sidebar/Sidebar";
 import SidebarEditButton from "@/app/components/sidebar/SidebarEditButton";
 import SidebarResultsButton from "@/app/components/sidebar/SidebarResultsButton";
@@ -186,9 +186,9 @@ export default function Page() {
         />
       )}
 
-      <ErrorPopup message={optimizeError} onClose={clearOptimizeError} />
-      <ErrorPopup message={parseError} onClose={closeImportModal} />
-      <ErrorPopup message={sessionError} onClose={clearSessionError} />
+      <OptimizeErrorPopup message={optimizeError} onClose={clearOptimizeError} />
+      <OptimizeErrorPopup message={parseError} onClose={closeImportModal} />
+      <OptimizeErrorPopup message={sessionError} onClose={clearSessionError} />
       <OptimizingModal isOpen={isOptimizing} />
       {needsDepotAddress && (
         <AddressOverlay
