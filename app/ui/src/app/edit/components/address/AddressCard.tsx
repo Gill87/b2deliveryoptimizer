@@ -19,6 +19,7 @@ import {
   ADDRESS_ROW_ADDR_TRIGGER_TEXT,
   ADDRESS_ROW_ADDR_TRIGGER_PLACEHOLDER,
   ADDRESS_ROW_STEPPER_CONTAINER_NARROW,
+  ADDRESS_ROW_STEPPER_CONTAINER_NARROW_ERROR,
   ADDRESS_ROW_STEPPER_INPUT,
   ADDRESS_ROW_STEPPER_CONTROLS,
   ADDRESS_ROW_STEPPER_BUTTON,
@@ -68,7 +69,6 @@ import {
   ADDRESS_CARD_MOBILE_ROOT,
   MOBILE_ADDR_EXPANDED_PANEL,
   MOBILE_ADDR_LOCKED_NOTES_CLAMP,
-  ADDRESS_ROW_QTY_FIELD_COL,
 } from "@/app/edit/formStyles.v2";
 import FieldError from "@/app/edit/components/shared/FieldError";
 import {
@@ -118,6 +118,7 @@ function StepperInput({
   min = 0,
   max,
   ariaLabel,
+  invalid = false,
   onIncrement,
   onDecrement,
   onChange,
@@ -126,12 +127,19 @@ function StepperInput({
   min?: number;
   max?: number;
   ariaLabel: string;
+  invalid?: boolean;
   onIncrement: () => void;
   onDecrement: () => void;
   onChange: (v: number) => void;
 }) {
   return (
-    <div className={ADDRESS_ROW_STEPPER_CONTAINER_NARROW}>
+    <div
+      className={
+        invalid
+          ? ADDRESS_ROW_STEPPER_CONTAINER_NARROW_ERROR
+          : ADDRESS_ROW_STEPPER_CONTAINER_NARROW
+      }
+    >
       <input
         type="number"
         min={min}
@@ -146,6 +154,7 @@ function StepperInput({
           );
         }}
         aria-label={ariaLabel}
+        aria-invalid={invalid ? true : undefined}
         className={ADDRESS_ROW_STEPPER_INPUT}
       />
       <div className={ADDRESS_ROW_STEPPER_CONTROLS}>
@@ -398,32 +407,30 @@ export default function AddressCard({
                   </div>
 
                   {/* Quantity — edit */}
-                  <div className={ADDRESS_ROW_QTY_FIELD_COL}>
-                    <StepperInput
-                      value={a.deliveryQuantity}
-                      min={1}
-                      max={1_000_000}
-                      ariaLabel="Delivery quantity"
-                      onChange={(v) =>
-                        updateAddress(a.id, "deliveryQuantity", v)
-                      }
-                      onIncrement={() =>
-                        updateAddress(
-                          a.id,
-                          "deliveryQuantity",
-                          Math.min(1_000_000, (a.deliveryQuantity || 0) + 1),
-                        )
-                      }
-                      onDecrement={() =>
-                        updateAddress(
-                          a.id,
-                          "deliveryQuantity",
-                          Math.max(1, (a.deliveryQuantity || 1) - 1),
-                        )
-                      }
-                    />
-                    {qtyInvalid && <FieldError message="qty" />}
-                  </div>
+                  <StepperInput
+                    value={a.deliveryQuantity}
+                    min={1}
+                    max={1_000_000}
+                    ariaLabel="Delivery quantity"
+                    invalid={qtyInvalid}
+                    onChange={(v) =>
+                      updateAddress(a.id, "deliveryQuantity", v)
+                    }
+                    onIncrement={() =>
+                      updateAddress(
+                        a.id,
+                        "deliveryQuantity",
+                        Math.min(1_000_000, (a.deliveryQuantity || 0) + 1),
+                      )
+                    }
+                    onDecrement={() =>
+                      updateAddress(
+                        a.id,
+                        "deliveryQuantity",
+                        Math.max(1, (a.deliveryQuantity || 1) - 1),
+                      )
+                    }
+                  />
 
                   {/* Delivery estimation — edit */}
                   <div className={ADDRESS_ROW_EST_GROUP}>
@@ -818,6 +825,7 @@ export default function AddressCard({
                       min={1}
                       max={1_000_000}
                       ariaLabel="Delivery quantity"
+                      invalid={qtyInvalid}
                       onChange={(v) =>
                         updateAddress(a.id, "deliveryQuantity", v)
                       }
@@ -836,7 +844,6 @@ export default function AddressCard({
                         )
                       }
                     />
-                    {qtyInvalid && <FieldError message="qty" />}
                   </div>
                   <div className={MOBILE_ADDR_EDIT_DELIVERY_GROUP}>
                     <span className={MOBILE_ADDR_EDIT_SECTION_LABEL}>
