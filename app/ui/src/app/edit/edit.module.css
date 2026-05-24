@@ -81,6 +81,10 @@
   /* ── Drag-drop overlay ──────────────────────────────────────── */
   --edit-drag-overlay-bg: rgba(213, 242, 232, 0.48);
 
+  /* ── CSV drop zone drag-active state ────────────────────────── */
+  --edit-drop-zone-active-border: #57ac91;
+  --edit-drop-zone-active-bg: #f0faf6;
+
   /* Address illustration */
   --edit-address-accent: #f97316;
   --edit-address-on-accent: #ffffff;

@@ -801,6 +801,9 @@ export const CSV_UPLOAD_OVERLAY_TOP =
 export const CSV_UPLOAD_DROP_ZONE =
   "bg-[var(--edit-stone-50)] border border-[var(--edit-stone-200)] border-dashed flex flex-col h-[200px] items-center justify-center overflow-clip pt-[24px] pb-[16px] rounded-[6px] w-full";
 
+export const CSV_UPLOAD_DROP_ZONE_ACTIVE =
+  "bg-[var(--edit-drop-zone-active-bg)] border border-[var(--edit-drop-zone-active-border)] border-dashed flex flex-col h-[200px] items-center justify-center overflow-clip pt-[24px] pb-[16px] rounded-[6px] w-full";
+
 export const CSV_UPLOAD_DROP_ZONE_INNER =
   "flex flex-col gap-[8px] items-center justify-center";
 
