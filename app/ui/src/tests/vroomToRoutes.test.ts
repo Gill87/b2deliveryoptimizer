@@ -162,7 +162,12 @@ describe("vroomToRoutes", () => {
         },
       ],
     };
-    const [route] = vroomToRoutes(response, [makeVehicle(1)], [makeAddress(1)], "");
+    const [route] = vroomToRoutes(
+      response,
+      [makeVehicle(1)],
+      [makeAddress(1)],
+      "",
+    );
     expect(route.stops).toHaveLength(1);
   });
 
@@ -200,7 +205,12 @@ describe("vroomToRoutes", () => {
         },
       ],
     };
-    const [route] = vroomToRoutes(response, [makeVehicle(1)], [makeAddress(1)], "");
+    const [route] = vroomToRoutes(
+      response,
+      [makeVehicle(1)],
+      [makeAddress(1)],
+      "",
+    );
     expect(route.stops[0].timeWindow.time).toBe("9:00 AM");
   });
 
