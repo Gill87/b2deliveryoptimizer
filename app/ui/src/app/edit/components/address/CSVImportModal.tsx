@@ -19,6 +19,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import type { AddressCard } from "@/app/edit/types/delivery";
+import OptimizeErrorPopup from "@/app/edit/components/shared/OptimizeErrorPopup";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -649,6 +650,7 @@ export function CSVImportModal({
 }: CSVImportModalProps) {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2>(1);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const headers = useMemo(() => csvData[0] ?? [], [csvData]);
   const dataRows = useMemo(
@@ -703,11 +705,12 @@ export function CSVImportModal({
         router.push("/edit");
       } catch (e) {
         if (e instanceof DOMException && e.name === "QuotaExceededError") {
-          alert(
+          setErrorMessage(
             "Import is too large to save. Please reduce the number of selected rows.",
           );
         } else {
-          throw e;
+          console.error(e);
+          setErrorMessage("Something went wrong");
         }
       }
     } else if (importAddresses) {
@@ -728,6 +731,10 @@ export function CSVImportModal({
   return (
     <>
       <ModalBackdrop onClose={onClose} />
+      <OptimizeErrorPopup
+        message={errorMessage}
+        onClose={() => setErrorMessage(null)}
+      />
       <ModalShell width={step === 1 ? 580 : 680}>
         {step === 1 ? (
           <StepOne
