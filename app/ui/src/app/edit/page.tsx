@@ -10,7 +10,7 @@ import Navbar from "@/app/components/navbar/Navbar";
 import MobileNavbar from "@/app/components/navbar/MobileNavbar";
 import MobileSidebar from "@/app/components/sidebar/MobileSidebar";
 import OptimizingModal from "@/app/edit/components/shared/OptimizingModal";
-import OptimizeErrorPopup from "@/app/edit/components/shared/OptimizeErrorPopup";
+import ErrorOverlay from "@/app/edit/components/shared/ErrorOverlay";
 import Sidebar from "@/app/components/sidebar/Sidebar";
 import SidebarEditButton from "@/app/components/sidebar/SidebarEditButton";
 import SidebarResultsButton from "@/app/components/sidebar/SidebarResultsButton";
@@ -248,13 +248,13 @@ export default function Page() {
         />
       )}
 
-      <OptimizeErrorPopup
+      <ErrorOverlay
         message={optimizeError}
         onClose={clearOptimizeError}
       />
-      <OptimizeErrorPopup message={parseError} onClose={closeImportModal} />
-      <OptimizeErrorPopup message={sessionError} onClose={clearSessionError} />
-      <OptimizeErrorPopup
+      <ErrorOverlay message={parseError} onClose={closeImportModal} />
+      <ErrorOverlay message={sessionError} onClose={clearSessionError} />
+      <ErrorOverlay
         message={uploadError}
         onClose={() => setUploadError(null)}
       />

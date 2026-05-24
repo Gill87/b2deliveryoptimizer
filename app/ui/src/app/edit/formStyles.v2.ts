@@ -781,12 +781,12 @@ export const MOBILE_BOTTOM_BAR_SECONDARY_BTN =
 export const MOBILE_BOTTOM_BAR_SECONDARY_LABEL =
   "font-['Manrope',sans-serif] font-semibold text-[16px] leading-[22px] text-[var(--edit-text-primary)] whitespace-nowrap";
 
-// ── OptimizeErrorPopup ────────────────────────────────────────────────────────
+// ── ErrorOverlay ──────────────────────────────────────────────────────────────
 
-export const ERROR_POPUP_MESSAGE =
+export const ERROR_OVERLAY_MESSAGE =
   "text-[14px] leading-5 text-[var(--edit-text-secondary)] w-full";
 
-export const ERROR_POPUP_FOOTER = "flex items-center justify-end";
+export const ERROR_OVERLAY_FOOTER = "flex items-center justify-end";
 
 // ── CSV Upload Overlay (Figma 8102:1548 desktop / 7472:5765 mobile) ───────────
 

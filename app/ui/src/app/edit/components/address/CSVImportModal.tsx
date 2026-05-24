@@ -19,7 +19,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import type { AddressCard } from "@/app/edit/types/delivery";
-import OptimizeErrorPopup from "@/app/edit/components/shared/OptimizeErrorPopup";
+import ErrorOverlay from "@/app/edit/components/shared/ErrorOverlay";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -731,7 +731,7 @@ export function CSVImportModal({
   return (
     <>
       <ModalBackdrop onClose={onClose} />
-      <OptimizeErrorPopup
+      <ErrorOverlay
         message={errorMessage}
         onClose={() => setErrorMessage(null)}
       />

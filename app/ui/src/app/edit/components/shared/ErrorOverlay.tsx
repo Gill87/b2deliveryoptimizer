@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  ERROR_POPUP_FOOTER,
-  ERROR_POPUP_MESSAGE,
+  ERROR_OVERLAY_FOOTER,
+  ERROR_OVERLAY_MESSAGE,
   OVERLAY_BACKDROP,
   OVERLAY_CLOSE_BTN,
   OVERLAY_HEADER,
@@ -13,15 +13,15 @@ import {
 import styles from "@/app/edit/edit.module.css";
 import { useFocusTrap } from "@/app/edit/hooks/useFocusTrap";
 
-type OptimizeErrorPopupProps = {
+type ErrorOverlayProps = {
   message: string | null;
   onClose: () => void;
 };
 
-export default function OptimizeErrorPopup({
+export default function ErrorOverlay({
   message,
   onClose,
-}: OptimizeErrorPopupProps) {
+}: ErrorOverlayProps) {
   const panelRef = useFocusTrap<HTMLDivElement>(!!message);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -37,12 +37,12 @@ export default function OptimizeErrorPopup({
       className={OVERLAY_BACKDROP}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="error-popup-title"
+      aria-labelledby="error-overlay-title"
       onKeyDown={handleKeyDown}
     >
       <div ref={panelRef} className={OVERLAY_PANEL}>
         <div className={OVERLAY_HEADER}>
-          <h2 id="error-popup-title" className={OVERLAY_TITLE}>
+          <h2 id="error-overlay-title" className={OVERLAY_TITLE}>
             Something went wrong
           </h2>
           <button
@@ -66,8 +66,8 @@ export default function OptimizeErrorPopup({
             </svg>
           </button>
         </div>
-        <p className={ERROR_POPUP_MESSAGE}>{message}</p>
-        <div className={ERROR_POPUP_FOOTER}>
+        <p className={ERROR_OVERLAY_MESSAGE}>{message}</p>
+        <div className={ERROR_OVERLAY_FOOTER}>
           <button
             type="button"
             onClick={onClose}
