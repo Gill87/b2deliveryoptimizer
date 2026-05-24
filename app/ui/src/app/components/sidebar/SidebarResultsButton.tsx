@@ -59,7 +59,14 @@ export default function SidebarResultsButton() {
   }
 
   return (
-    <span className={SIDEBAR_NAV_ITEM_DISABLED} aria-disabled="true">
+    <Link
+      href="#"
+      className={SIDEBAR_NAV_ITEM_DISABLED}
+      aria-disabled={true}
+      tabIndex={-1}
+    >
+      {" "}
+      {/* TODO: add results page link when at least one route exists */}
       <span className={SIDEBAR_NAV_PILL_INACTIVE}>{SIDEBAR_RESULTS_ICON}</span>
       <span className={SIDEBAR_NAV_LABEL_INACTIVE}>Results</span>
     </span>
