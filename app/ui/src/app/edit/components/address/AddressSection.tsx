@@ -4,11 +4,12 @@
  * Addresses region: toolbar (find / add / import) and a stacked list of delivery cards for the current page.
  */
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import AddressCard from "@/app/edit/components/address/AddressCard";
 import ConfirmDeletionOverlay from "@/app/edit/components/shared/ConfirmDeletionOverlay";
 import AddressEmptyState from "@/app/edit/components/address/AddressEmptyState";
 import AddressRowHeader from "@/app/edit/components/address/AddressRowHeader";
+import CSVUploadOverlay from "@/app/edit/components/address/CSVUploadOverlay";
 import type { AddressCard as AddressCardType } from "@/app/edit/types/delivery";
 import {
   ADDRESS_EMPTY_STATE,
@@ -74,7 +75,7 @@ export default function AddressSection({
   outOfRegionIds,
   onOpenImportModal,
 }: AddressSectionProps) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploadOverlayOpen, setIsUploadOverlayOpen] = useState(false);
   const [addressToDeleteId, setAddressToDeleteId] = useState<number | null>(
     null,
   );
@@ -94,19 +95,6 @@ export default function AddressSection({
         </p>
       </div>
 
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".csv,text/csv,.json"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) onOpenImportModal(file);
-          e.target.value = "";
-        }}
-        className="hidden"
-        aria-hidden="true"
-      />
-
       {/* Mobile: Search top, buttons right-aligned side-by-side (Figma 8325:7503) */}
       <div className={MOBILE_ADDR_TOOLBAR_ROOT}>
         <AddressSearchBar
@@ -117,7 +105,7 @@ export default function AddressSection({
         <div className={MOBILE_ADDR_TOOLBAR_BTN_ROW}>
           <button
             type="button"
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => setIsUploadOverlayOpen(true)}
             className={MOBILE_ADDR_TOOLBAR_BTN_ENABLED}
           >
             Import
@@ -148,7 +136,7 @@ export default function AddressSection({
         <div className={ADDRESS_TOOLBAR_SPACER} />
         <button
           type="button"
-          onClick={() => fileInputRef.current?.click()}
+          onClick={() => setIsUploadOverlayOpen(true)}
           className={ADDRESS_BTN_V2_DESKTOP_ENABLED}
         >
           Import
@@ -224,6 +212,16 @@ export default function AddressSection({
           )}
         </div>
       </div>
+
+      {isUploadOverlayOpen && (
+        <CSVUploadOverlay
+          onClose={() => setIsUploadOverlayOpen(false)}
+          onFileSelect={(file) => {
+            onOpenImportModal(file);
+            setIsUploadOverlayOpen(false);
+          }}
+        />
+      )}
 
       {addressToDeleteId !== null && (
         <ConfirmDeletionOverlay

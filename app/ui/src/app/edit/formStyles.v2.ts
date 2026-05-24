@@ -766,3 +766,45 @@ export const ERROR_POPUP_MESSAGE =
   "text-[14px] leading-5 text-[var(--edit-text-secondary)] w-full";
 
 export const ERROR_POPUP_FOOTER = "flex items-center justify-end";
+
+// ── CSV Upload Overlay (Figma 8102:1548 desktop / 7472:5765 mobile) ───────────
+
+export const CSV_UPLOAD_OVERLAY_INNER =
+  "flex flex-col gap-[16px] items-end w-full";
+
+export const CSV_UPLOAD_OVERLAY_CONTENT =
+  "flex flex-col gap-[16px] items-center w-full";
+
+export const CSV_UPLOAD_OVERLAY_TOP =
+  "flex flex-col gap-[24px] items-start w-full";
+
+export const CSV_UPLOAD_DROP_ZONE =
+  "bg-[var(--edit-stone-50)] border border-[var(--edit-stone-200)] border-dashed flex flex-col h-[200px] items-center justify-center overflow-clip pt-[24px] pb-[16px] rounded-[6px] w-full";
+
+export const CSV_UPLOAD_DROP_ZONE_INNER =
+  "flex flex-col gap-[8px] items-center justify-center";
+
+export const CSV_UPLOAD_DROP_ZONE_TEXT =
+  "font-normal leading-[1.5] text-[16px] text-[var(--edit-text-primary)] whitespace-nowrap";
+
+export const CSV_UPLOAD_BROWSE_BTN =
+  "flex flex-col h-[36px] items-center justify-center overflow-clip px-[16px] py-[10px] rounded-[4px] font-semibold text-[14px] leading-[20px] text-[var(--edit-text-primary)] hover:bg-[var(--edit-tertiary-btn-hover)] active:bg-[var(--edit-tertiary-btn-pressed)] transition-colors cursor-pointer";
+
+export const CSV_UPLOAD_DESCRIPTION =
+  "font-normal text-[14px] leading-[1.5] text-[var(--edit-text-secondary)] w-full";
+
+export const CSV_UPLOAD_FILE_CHIP =
+  "bg-[var(--edit-container-active)] flex items-center justify-between p-[16px] rounded-[6px] w-full";
+
+export const CSV_UPLOAD_FILE_CHIP_LEFT = "flex gap-[8px] items-center";
+
+export const CSV_UPLOAD_FILE_CHIP_FILENAME =
+  "font-normal leading-[1.5] text-[16px] text-[var(--edit-text-primary)] whitespace-nowrap";
+
+export const CSV_UPLOAD_FILE_CHIP_RIGHT = "flex gap-[8px] items-center";
+
+export const CSV_UPLOAD_FILE_CHIP_SIZE =
+  "font-normal text-[14px] leading-[1.5] text-[var(--edit-text-secondary)] whitespace-nowrap";
+
+export const CSV_UPLOAD_FILE_CHIP_REMOVE =
+  "flex items-center justify-center size-4 text-[var(--edit-text-primary)] hover:opacity-70 transition-opacity cursor-pointer";
