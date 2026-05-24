@@ -14,6 +14,7 @@ import {
   CSV_UPLOAD_OVERLAY_CONTENT,
   CSV_UPLOAD_OVERLAY_TOP,
   CSV_UPLOAD_DROP_ZONE,
+  CSV_UPLOAD_DROP_ZONE_ACTIVE,
   CSV_UPLOAD_DROP_ZONE_INNER,
   CSV_UPLOAD_DROP_ZONE_TEXT,
   CSV_UPLOAD_BROWSE_BTN,
@@ -44,6 +45,7 @@ export default function CSVUploadOverlay({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0] ?? null;
@@ -60,6 +62,27 @@ export default function CSVUploadOverlay({
       setIsUploading(true);
       onFileSelect(selectedFile);
     }
+  }
+
+  function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  }
+
+  function handleDragLeave(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setIsDragOver(false);
+    }
+  }
+
+  function handleDrop(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    const file = e.dataTransfer.files[0] ?? null;
+    if (file) setSelectedFile(file);
   }
 
   return (
@@ -103,7 +126,14 @@ export default function CSVUploadOverlay({
               </div>
 
               {/* Drop zone */}
-              <div className={CSV_UPLOAD_DROP_ZONE}>
+              <div
+                className={
+                  isDragOver ? CSV_UPLOAD_DROP_ZONE_ACTIVE : CSV_UPLOAD_DROP_ZONE
+                }
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
                 <div className={CSV_UPLOAD_DROP_ZONE_INNER}>
                   {isUploading ? (
                     <SpinnerIcon />
