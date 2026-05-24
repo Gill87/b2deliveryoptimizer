@@ -1,18 +1,16 @@
 "use client";
 
-/**
- * Modal popup for surfacing a single error message to the user.
- * Renders nothing when `message` is null.
- */
-
 import {
-  ERROR_POPUP_CLOSE_ICON,
-  ERROR_POPUP_DISMISS_BUTTON,
-  MODAL_MESSAGE,
-  MODAL_OVERLAY,
-  MODAL_PANEL,
-  MODAL_TITLE,
-} from "@/app/edit/formStyles";
+  ERROR_POPUP_FOOTER,
+  ERROR_POPUP_MESSAGE,
+  OVERLAY_BACKDROP,
+  OVERLAY_CLOSE_BTN,
+  OVERLAY_HEADER,
+  OVERLAY_PANEL,
+  OVERLAY_PRIMARY_BTN,
+  OVERLAY_TITLE,
+} from "@/app/edit/formStyles.v2";
+import styles from "@/app/edit/edit.module.css";
 import { useFocusTrap } from "@/app/edit/hooks/useFocusTrap";
 
 type OptimizeErrorPopupProps = {
@@ -33,45 +31,48 @@ export default function OptimizeErrorPopup({ message, onClose }: OptimizeErrorPo
 
   return (
     <div
-      className={MODAL_OVERLAY}
+      className={OVERLAY_BACKDROP}
       role="dialog"
       aria-modal="true"
       aria-labelledby="error-popup-title"
       onKeyDown={handleKeyDown}
     >
-      <div ref={panelRef} className={MODAL_PANEL}>
-        <button
-          type="button"
-          onClick={onClose}
-          className={ERROR_POPUP_CLOSE_ICON}
-          aria-label="Close"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-            aria-hidden
+      <div ref={panelRef} className={OVERLAY_PANEL}>
+        <div className={OVERLAY_HEADER}>
+          <h2 id="error-popup-title" className={OVERLAY_TITLE}>
+            Something went wrong
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className={OVERLAY_CLOSE_BTN}
+            aria-label="Close"
           >
-            <path
-              d="M1 1L13 13M13 1L1 13"
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
               stroke="currentColor"
-              strokeWidth="1.5"
+              strokeWidth="2"
               strokeLinecap="round"
-            />
-          </svg>
-        </button>
-        <h2 id="error-popup-title" className={MODAL_TITLE}>
-          Something went wrong
-        </h2>
-        <p className={MODAL_MESSAGE}>{message}</p>
-        <button
-          type="button"
-          onClick={onClose}
-          className={ERROR_POPUP_DISMISS_BUTTON}
-        >
-          Dismiss
-        </button>
+              aria-hidden
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <p className={ERROR_POPUP_MESSAGE}>{message}</p>
+        <div className={ERROR_POPUP_FOOTER}>
+          <button
+            type="button"
+            onClick={onClose}
+            className={`${OVERLAY_PRIMARY_BTN} ${styles.primaryBtnOverlay}`}
+          >
+            Dismiss
+          </button>
+        </div>
       </div>
     </div>
   );
