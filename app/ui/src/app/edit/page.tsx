@@ -29,7 +29,7 @@ import AddressPaginationMobile from "@/app/edit/components/address/AddressPagina
 import EditPageFooter from "@/app/edit/components/layout/footer/EditPageFooter";
 import MobileEditPageFooter from "@/app/edit/components/layout/footer/MobileEditPageFooter";
 import MobileBottomBar from "@/app/edit/components/layout/navbar/MobileBottomBar";
-import { CSVImportModal } from "@/app/edit/components/CSVImportModal";
+import { CSVImportModal } from "@/app/edit/components/address/CSVImportModal";
 import { useVehicles } from "@/app/edit/hooks/useVehicles";
 import { useAddresses } from "@/app/edit/hooks/useAddresses";
 import { useOptimize } from "@/app/edit/hooks/useOptimize";
@@ -188,7 +188,7 @@ export default function Page() {
         <CSVImportModal
           csvData={csvData}
           onClose={closeImportModal}
-          importAddresses={(cards) =>
+          importAddresses={(cards: AddressCard[]) =>
             addressState.importAddresses(reindexAddresses(cards))
           }
         />
