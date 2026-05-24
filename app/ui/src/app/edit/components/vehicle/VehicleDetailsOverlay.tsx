@@ -7,7 +7,7 @@ import type {
   CapacityUnit,
 } from "@/app/edit/types/delivery";
 import { useFocusTrap } from "@/app/edit/hooks/useFocusTrap";
-import OverlayFieldError from "@/app/edit/components/shared/OverlayFieldError";
+import FieldError from "@/app/edit/components/shared/FieldError";
 import {
   OVERLAY_BACKDROP,
   OVERLAY_BODY,
@@ -247,7 +247,7 @@ export default function VehicleDetailsOverlay({
                   aria-required="true"
                   aria-invalid={nameError}
                 />
-                {nameError && <OverlayFieldError message="Enter a name" />}
+                {nameError && <FieldError message="Enter a name" />}
               </div>
 
               <div className={OVERLAY_FIELD}>
@@ -293,7 +293,7 @@ export default function VehicleDetailsOverlay({
                   </select>
                 </div>
                 {typeError && (
-                  <OverlayFieldError message="Enter a vehicle type" />
+                  <FieldError message="Enter a vehicle type" />
                 )}
               </div>
             </div>
@@ -325,7 +325,7 @@ export default function VehicleDetailsOverlay({
                   aria-invalid={capacityError}
                 />
                 {capacityError && (
-                  <OverlayFieldError message="Enter capacity > 0" />
+                  <FieldError message="Enter capacity > 0" />
                 )}
               </div>
 
@@ -374,7 +374,7 @@ export default function VehicleDetailsOverlay({
                     <option value="cubic_feet">Cubic Feet</option>
                   </select>
                 </div>
-                {unitError && <OverlayFieldError message="Enter a unit type" />}
+                {unitError && <FieldError message="Enter a unit type" />}
               </div>
             </div>
 
@@ -508,7 +508,7 @@ export default function VehicleDetailsOverlay({
                   </div>
                 </div>
                 {departureError && (
-                  <OverlayFieldError message="Enter a valid time" />
+                  <FieldError message="Enter a valid time" />
                 )}
               </div>
             </div>

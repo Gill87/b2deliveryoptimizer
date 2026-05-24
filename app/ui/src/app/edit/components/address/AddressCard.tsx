@@ -15,7 +15,6 @@ import {
   ADDRESS_ROW_NAME_ROW,
   ADDRESS_ROW_FIELD_INPUT_FILL,
   ADDRESS_ROW_ADDR_WRAP,
-  ADDRESS_ROW_ADDR_WRAP_ERROR,
   ADDRESS_ROW_ADDR_GRADIENT,
   ADDRESS_ROW_ADDR_TRIGGER_TEXT,
   ADDRESS_ROW_ADDR_TRIGGER_PLACEHOLDER,
@@ -69,7 +68,9 @@ import {
   ADDRESS_CARD_MOBILE_ROOT,
   MOBILE_ADDR_EXPANDED_PANEL,
   MOBILE_ADDR_LOCKED_NOTES_CLAMP,
+  ADDRESS_ROW_QTY_FIELD_COL,
 } from "@/app/edit/formStyles.v2";
+import FieldError from "@/app/edit/components/shared/FieldError";
 import {
   EditIconButton,
   ConfirmIconButton,
@@ -239,8 +240,8 @@ export default function AddressCard({
   const startIdx = TIME_OPTIONS.indexOf(a.deliveryTimeStart);
   const endIdx = TIME_OPTIONS.indexOf(a.deliveryTimeEnd);
 
-  const addrInvalid =
-    geocodeFailed || (addressTouched && !a.recipientAddress.trim());
+  const addressMissing = addressTouched && !a.recipientAddress.trim();
+  const qtyInvalid = addressTouched && a.deliveryQuantity <= 0;
 
   const panelId = `addr-panel-${a.id}`;
 
@@ -355,11 +356,7 @@ export default function AddressCard({
                     <button
                       type="button"
                       onClick={() => setOverlayOpen(true)}
-                      className={
-                        addrInvalid
-                          ? ADDRESS_ROW_ADDR_WRAP_ERROR
-                          : ADDRESS_ROW_ADDR_WRAP
-                      }
+                      className={ADDRESS_ROW_ADDR_WRAP}
                       aria-label="Edit recipient address"
                     >
                       <span className={ADDRESS_ROW_ADDR_TRIGGER_TEXT}>
@@ -380,30 +377,36 @@ export default function AddressCard({
                         </svg>
                       </div>
                     </button>
+                    {addressMissing && (
+                      <FieldError message="No Address Entered" />
+                    )}
                   </div>
 
                   {/* Quantity — edit */}
-                  <StepperInput
-                    value={a.deliveryQuantity}
-                    min={1}
-                    max={1_000_000}
-                    ariaLabel="Delivery quantity"
-                    onChange={(v) => updateAddress(a.id, "deliveryQuantity", v)}
-                    onIncrement={() =>
-                      updateAddress(
-                        a.id,
-                        "deliveryQuantity",
-                        Math.min(1_000_000, (a.deliveryQuantity || 0) + 1),
-                      )
-                    }
-                    onDecrement={() =>
-                      updateAddress(
-                        a.id,
-                        "deliveryQuantity",
-                        Math.max(1, (a.deliveryQuantity || 1) - 1),
-                      )
-                    }
-                  />
+                  <div className={ADDRESS_ROW_QTY_FIELD_COL}>
+                    <StepperInput
+                      value={a.deliveryQuantity}
+                      min={1}
+                      max={1_000_000}
+                      ariaLabel="Delivery quantity"
+                      onChange={(v) => updateAddress(a.id, "deliveryQuantity", v)}
+                      onIncrement={() =>
+                        updateAddress(
+                          a.id,
+                          "deliveryQuantity",
+                          Math.min(1_000_000, (a.deliveryQuantity || 0) + 1),
+                        )
+                      }
+                      onDecrement={() =>
+                        updateAddress(
+                          a.id,
+                          "deliveryQuantity",
+                          Math.max(1, (a.deliveryQuantity || 1) - 1),
+                        )
+                      }
+                    />
+                    {qtyInvalid && <FieldError message="Qty?" />}
+                  </div>
 
                   {/* Delivery estimation — edit */}
                   <div className={ADDRESS_ROW_EST_GROUP}>
@@ -763,11 +766,7 @@ export default function AddressCard({
                   <button
                     type="button"
                     onClick={() => setOverlayOpen(true)}
-                    className={
-                      addrInvalid
-                        ? ADDRESS_ROW_ADDR_WRAP_ERROR
-                        : ADDRESS_ROW_ADDR_WRAP
-                    }
+                    className={ADDRESS_ROW_ADDR_WRAP}
                     aria-label="Edit recipient address"
                   >
                     <span className={ADDRESS_ROW_ADDR_TRIGGER_TEXT}>
@@ -786,6 +785,9 @@ export default function AddressCard({
                       </svg>
                     </div>
                   </button>
+                  {addressMissing && (
+                    <FieldError message="No Address Entered" />
+                  )}
                 </div>
 
                 {/* Delivery Info */}
@@ -817,6 +819,7 @@ export default function AddressCard({
                         )
                       }
                     />
+                    {qtyInvalid && <FieldError message="Qty?" />}
                   </div>
                   <div className={MOBILE_ADDR_EDIT_DELIVERY_GROUP}>
                     <span className={MOBILE_ADDR_EDIT_SECTION_LABEL}>
