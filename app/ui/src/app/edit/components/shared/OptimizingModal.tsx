@@ -35,7 +35,9 @@ export default function OptimizingModal({ isOpen }: OptimizingModalProps) {
         </h2>
         <div id="optimizing-desc" className={OPTIMIZING_MODAL_STATUS_ROW}>
           <SpinnerIcon />
-          <p className={OPTIMIZING_MODAL_STATUS_TEXT}>Creating your delivery routes</p>
+          <p className={OPTIMIZING_MODAL_STATUS_TEXT}>
+            Creating your delivery routes
+          </p>
         </div>
       </div>
     </div>

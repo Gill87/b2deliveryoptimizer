@@ -139,7 +139,9 @@ export default function CSVUploadOverlay({
               {/* Drop zone */}
               <div
                 className={
-                  isDragOver ? CSV_UPLOAD_DROP_ZONE_ACTIVE : CSV_UPLOAD_DROP_ZONE
+                  isDragOver
+                    ? CSV_UPLOAD_DROP_ZONE_ACTIVE
+                    : CSV_UPLOAD_DROP_ZONE
                 }
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -192,7 +194,8 @@ export default function CSVUploadOverlay({
 
               {/* Description */}
               <p className={CSV_UPLOAD_DESCRIPTION}>
-                Import delivery details from a CSV file. Maximum file size of 10 MB.
+                Import delivery details from a CSV file. Maximum file size of 10
+                MB.
               </p>
             </div>
 

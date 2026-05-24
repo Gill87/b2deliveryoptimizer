@@ -227,7 +227,8 @@ export const VEHICLE_SECTION_ACTIONS =
 export const VEHICLE_SECTION_HEADING_ROW =
   "flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between";
 
-export const VEHICLE_SECTION_BTN_GROUP = "flex items-center gap-2 self-end lg:self-auto";
+export const VEHICLE_SECTION_BTN_GROUP =
+  "flex items-center gap-2 self-end lg:self-auto";
 
 export const VEHICLE_SECTION_OPTIMIZE_BTN =
   "h-9 px-[16px] rounded-[4px] bg-[var(--edit-btn-primary)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap overflow-clip cursor-pointer disabled:cursor-not-allowed";

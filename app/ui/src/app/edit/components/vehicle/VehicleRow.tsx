@@ -138,7 +138,9 @@ export default function VehicleRow({
             onClick={() => updateVehicle(v.id, "available", true)}
             aria-pressed={v.available}
             className={
-              v.available ? STATUS_TOGGLE_BTN_ACTIVE : STATUS_TOGGLE_BTN_INACTIVE
+              v.available
+                ? STATUS_TOGGLE_BTN_ACTIVE
+                : STATUS_TOGGLE_BTN_INACTIVE
             }
           >
             <span className={STATUS_TOGGLE_TEXT}>Available</span>
