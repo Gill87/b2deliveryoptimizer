@@ -117,8 +117,10 @@ export const PAGE_V2_ROOT =
 
 export const PAGE_V2_BODY = "flex flex-1 lg:min-h-0 lg:overflow-hidden";
 
+export const PAGE_V2_MAIN_OUTER = "relative flex-1 min-w-0";
+
 export const PAGE_V2_MAIN =
-  "relative flex-1 min-w-0 bg-[var(--edit-bg-primary)] border-t-0 lg:border-t border-l-0 lg:border-l border-[var(--edit-stone-200)] rounded-none lg:rounded-tl-[12px] p-6 pb-[136px] lg:pb-6 lg:overflow-y-auto space-y-16";
+  "h-full bg-[var(--edit-bg-primary)] border-t-0 lg:border-t border-l-0 lg:border-l border-[var(--edit-stone-200)] rounded-none lg:rounded-tl-[12px] p-6 pb-[136px] lg:pb-6 lg:overflow-y-auto space-y-16";
 
 export const VEHICLE_INFO_CONTAINER =
   "hidden lg:flex flex-col gap-4 border border-[var(--edit-stone-200)] rounded-[8px] overflow-hidden p-4";
@@ -678,7 +680,7 @@ export const OPTIMIZING_MODAL_STATUS_TEXT =
 // ── Drag-Drop Overlay (Figma 8080:3134) ──────────────────────────────────────
 
 export const DRAG_DROP_OVERLAY_ROOT =
-  "absolute inset-0 z-50 flex items-center justify-center bg-[var(--edit-drag-overlay-bg)] border-4 border-[var(--edit-teal-600)] rounded-tl-[12px]";
+  "absolute inset-0 z-50 flex items-center justify-center pointer-events-none bg-[var(--edit-drag-overlay-bg)] border-4 border-[var(--edit-teal-600)] rounded-tl-[12px]";
 
 export const DRAG_DROP_OVERLAY_CONTENT =
   "flex flex-col gap-4 items-center w-[250px]";
