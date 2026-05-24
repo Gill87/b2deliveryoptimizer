@@ -811,3 +811,14 @@ export const CSV_UPLOAD_FILE_CHIP_SIZE =
 
 export const CSV_UPLOAD_FILE_CHIP_REMOVE =
   "flex items-center justify-center size-4 text-[var(--edit-text-primary)] hover:opacity-70 transition-opacity cursor-pointer";
+
+export const CSV_UPLOAD_UPLOADING_TEXT =
+  "font-normal leading-[1.5] text-[16px] text-[var(--edit-text-primary)] whitespace-nowrap";
+
+// ── SpinnerIcon ───────────────────────────────────────────────────────────────
+
+export const SPINNER_ICON_WRAPPER = "relative size-[33px]";
+
+export const SPINNER_ICON_RING = "absolute inset-0";
+
+export const SPINNER_ICON_ARC = "absolute inset-0 animate-spin";
