@@ -33,7 +33,6 @@ import { CSVImportModal } from "@/app/edit/components/CSVImportModal";
 import { useVehicles } from "@/app/edit/hooks/useVehicles";
 import { useAddresses } from "@/app/edit/hooks/useAddresses";
 import { useOptimize } from "@/app/edit/hooks/useOptimize";
-import { useCSVUpload } from "@/app/edit/hooks/useCSVUpload";
 import { useCSVImport } from "@/app/edit/hooks/useCSVImport";
 import { useCallback, useEffect, useState } from "react";
 import type { AddressCard } from "@/app/edit/types/delivery";
@@ -77,13 +76,13 @@ export default function Page() {
     addressState.cacheAddressLocation,
   );
 
-  const { handleCSVUpload, csvError, clearCsvError } = useCSVUpload({
-    importAddresses: addressState.importAddresses,
-  });
-
-  // In-page modal for CSV/JSON imports triggered from AddressSection
-  const { csvData, isImportModalOpen, parseError, closeImportModal } =
-    useCSVImport();
+  const {
+    csvData,
+    isImportModalOpen,
+    parseError,
+    openImportModal,
+    closeImportModal,
+  } = useCSVImport();
 
   useEffect(() => {
     let cancelled = false;
@@ -196,6 +195,7 @@ export default function Page() {
       )}
 
       <ErrorPopup message={optimizeError} onClose={clearOptimizeError} />
+      <ErrorPopup message={parseError} onClose={closeImportModal} />
       <OptimizingModal isOpen={isOptimizing} />
       {needsDepotAddress && (
         <AddressOverlay
@@ -233,7 +233,7 @@ export default function Page() {
               {...addressState}
               geocodeFailedIds={geocodeFailedAddressIds}
               outOfRegionIds={outOfRegionAddressIds}
-              onCSVUpload={handleCSVUpload}
+              onOpenImportModal={openImportModal}
             />
             <AddressPagination {...addressState} />
             <AddressPaginationMobile {...addressState} />

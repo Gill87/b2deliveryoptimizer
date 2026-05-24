@@ -54,7 +54,7 @@ type AddressSectionProps = {
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   outOfRegionIds: number[];
-  onCSVUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onOpenImportModal: (file: File) => void;
 };
 
 export default function AddressSection({
@@ -72,7 +72,7 @@ export default function AddressSection({
   searchQuery,
   setSearchQuery,
   outOfRegionIds,
-  onCSVUpload,
+  onOpenImportModal,
 }: AddressSectionProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [addressToDeleteId, setAddressToDeleteId] = useState<number | null>(
@@ -97,9 +97,10 @@ export default function AddressSection({
       <input
         ref={fileInputRef}
         type="file"
-        accept=".csv,text/csv"
+        accept=".csv,text/csv,.json"
         onChange={(e) => {
-          onCSVUpload(e);
+          const file = e.target.files?.[0];
+          if (file) onOpenImportModal(file);
           e.target.value = "";
         }}
         className="hidden"
