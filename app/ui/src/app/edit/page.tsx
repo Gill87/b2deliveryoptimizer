@@ -31,6 +31,7 @@ import MobileEditPageFooter from "@/app/edit/components/footer/MobileEditPageFoo
 import MobileBottomBar from "@/app/components/navbar/MobileBottomBar";
 import { CSVImportModal } from "@/app/edit/components/address/CSVImportModal";
 import CSVUploadOverlay from "@/app/edit/components/address/CSVUploadOverlay";
+import DragDropOverlay from "@/app/edit/components/shared/DragDropOverlay";
 import { useVehicles } from "@/app/edit/hooks/useVehicles";
 import { useAddresses } from "@/app/edit/hooks/useAddresses";
 import { useOptimize } from "@/app/edit/hooks/useOptimize";
@@ -54,6 +55,8 @@ export default function Page() {
   const addressState = useAddresses();
   const [sessionError, setSessionError] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [dragCount, setDragCount] = useState(0);
+  const [pendingDropFile, setPendingDropFile] = useState<File | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { importVehicles } = vehicleState;
   const { importAddresses } = addressState;
@@ -85,6 +88,9 @@ export default function Page() {
   } = useCSVImport();
 
   const [isUploadOverlayOpen, setIsUploadOverlayOpen] = useState(false);
+
+  const isDraggingOverPage =
+    dragCount > 0 && !isUploadOverlayOpen && !isImportModalOpen;
 
   useEffect(() => {
     if (isImportModalOpen || parseError) setIsUploadOverlayOpen(false);
@@ -181,6 +187,39 @@ export default function Page() {
     [optimize],
   );
 
+  useEffect(() => {
+    if (!isUploadOverlayOpen) setPendingDropFile(null);
+  }, [isUploadOverlayOpen]);
+
+  function handlePageDragEnter(e: React.DragEvent<HTMLElement>) {
+    e.preventDefault();
+    setDragCount((c) => c + 1);
+  }
+
+  function handlePageDragLeave(e: React.DragEvent<HTMLElement>) {
+    e.preventDefault();
+    setDragCount((c) => Math.max(0, c - 1));
+  }
+
+  function handlePageDragOver(e: React.DragEvent<HTMLElement>) {
+    e.preventDefault();
+  }
+
+  function handlePageDrop(e: React.DragEvent<HTMLElement>) {
+    e.preventDefault();
+    setDragCount(0);
+    const file = e.dataTransfer.files[0] ?? null;
+    if (!file) return;
+    if (file.name.toLowerCase().endsWith(".csv")) {
+      setPendingDropFile(file);
+      setIsUploadOverlayOpen(true);
+    } else {
+      setUploadError(
+        "This file type is not accepted. Please upload a CSV file.",
+      );
+    }
+  }
+
   return (
     <div className={`${PAGE_V2_ROOT} ${styles.root}`}>
       {isUploadOverlayOpen && (
@@ -193,6 +232,7 @@ export default function Page() {
               "This file type is not accepted. Please upload a CSV file.",
             );
           }}
+          initialFile={pendingDropFile ?? undefined}
         />
       )}
 
@@ -234,7 +274,14 @@ export default function Page() {
           <SidebarEditButton />
           <SidebarResultsButton />
         </Sidebar>
-        <main className={PAGE_V2_MAIN}>
+        <main
+          className={PAGE_V2_MAIN}
+          onDragEnter={handlePageDragEnter}
+          onDragLeave={handlePageDragLeave}
+          onDragOver={handlePageDragOver}
+          onDrop={handlePageDrop}
+        >
+          {isDraggingOverPage && <DragDropOverlay />}
           <div className={MANAGE_VEHICLE_GROUP}>
             <ManageSectionHeader
               onOptimize={() => void optimize()}
