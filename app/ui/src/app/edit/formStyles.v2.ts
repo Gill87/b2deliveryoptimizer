@@ -661,6 +661,16 @@ export const MOBILE_FOOTER_TEXT_LINE = "relative shrink-0";
 
 export const OPTIMIZING_SPINNER_WRAP = "flex justify-center mt-2";
 
+// ── OptimizingModal ───────────────────────────────────────────────────────────
+
+export const OPTIMIZING_MODAL_PANEL =
+  "bg-[var(--edit-bg-primary)] flex flex-col gap-6 overflow-hidden p-6 rounded-[6px] w-full max-w-[480px] mx-2 lg:mx-4 shadow-lg";
+
+export const OPTIMIZING_MODAL_STATUS_ROW = "flex items-center gap-2 w-full";
+
+export const OPTIMIZING_MODAL_STATUS_TEXT =
+  "font-normal text-[16px] leading-[1.5] text-[var(--edit-text-primary)] whitespace-nowrap";
+
 // ── Drag-Drop Overlay (Figma 8080:3134) ──────────────────────────────────────
 
 export const DRAG_DROP_OVERLAY_ROOT =
