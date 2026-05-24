@@ -703,7 +703,9 @@ export function CSVImportModal({
         router.push("/edit");
       } catch (e) {
         if (e instanceof DOMException && e.name === "QuotaExceededError") {
-          alert("Import is too large to save. Please reduce the number of selected rows.");
+          alert(
+            "Import is too large to save. Please reduce the number of selected rows.",
+          );
         } else {
           throw e;
         }

@@ -413,9 +413,7 @@ export default function AddressCard({
                     max={1_000_000}
                     ariaLabel="Delivery quantity"
                     invalid={qtyInvalid}
-                    onChange={(v) =>
-                      updateAddress(a.id, "deliveryQuantity", v)
-                    }
+                    onChange={(v) => updateAddress(a.id, "deliveryQuantity", v)}
                     onIncrement={() =>
                       updateAddress(
                         a.id,
