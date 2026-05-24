@@ -32,6 +32,7 @@ type CSVUploadOverlayProps = {
   onClose: () => void;
   onFileSelect: (file: File) => void;
   onInvalidFile?: () => void;
+  initialFile?: File;
 };
 
 function formatFileSize(bytes: number): string {
@@ -43,9 +44,12 @@ export default function CSVUploadOverlay({
   onClose,
   onFileSelect,
   onInvalidFile,
+  initialFile,
 }: CSVUploadOverlayProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(
+    initialFile ?? null,
+  );
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
 
