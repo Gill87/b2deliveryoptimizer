@@ -55,8 +55,8 @@ export default function CSVUploadOverlay({
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0] ?? null;
-    if(!file) return;
-    if(file.name.toLowerCase().endsWith(".csv")) {
+    if (!file) return;
+    if (file.name.toLowerCase().endsWith(".csv")) {
       setSelectedFile(file);
     } else {
       onInvalidFile?.();
