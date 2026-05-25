@@ -13,6 +13,7 @@ import {
   OVERLAY_BODY,
   OVERLAY_CANCEL_BTN,
   OVERLAY_CLOSE_BTN,
+  OVERLAY_DEPARTURE_ROW,
   OVERLAY_DEPARTURE_WRAPPER,
   OVERLAY_DEPARTURE_WRAPPER_ERROR,
   OVERLAY_TIME_COLON,
@@ -421,54 +422,56 @@ export default function VehicleDetailsOverlay({
                     *
                   </span>
                 </label>
-                <div
-                  className={
-                    departureError
-                      ? OVERLAY_DEPARTURE_WRAPPER_ERROR
-                      : OVERLAY_DEPARTURE_WRAPPER
-                  }
-                >
-                  <div className={OVERLAY_TIME_SEGMENTS}>
-                    <input
-                      ref={hoursRef}
-                      id="overlay-departure-time"
-                      value={hours}
-                      onChange={(e) => {
-                        const val = e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 2);
-                        setHours(val);
-                        if (val.length === 2) minutesRef.current?.focus();
-                      }}
-                      placeholder="HH"
-                      maxLength={2}
-                      inputMode="numeric"
-                      className={OVERLAY_TIME_SEGMENT_INPUT}
-                      aria-required="true"
-                      aria-label="Departure hours"
-                      aria-invalid={departureError}
-                    />
-                    <span className={OVERLAY_TIME_COLON}>:</span>
-                    <input
-                      ref={minutesRef}
-                      value={minutes}
-                      onChange={(e) => {
-                        const val = e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 2);
-                        setMinutes(val);
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Backspace" && minutes === "")
-                          hoursRef.current?.focus();
-                      }}
-                      placeholder="MM"
-                      maxLength={2}
-                      inputMode="numeric"
-                      className={OVERLAY_TIME_SEGMENT_INPUT}
-                      aria-label="Departure minutes"
-                      aria-invalid={departureError}
-                    />
+                <div className={OVERLAY_DEPARTURE_ROW}>
+                  <div
+                    className={
+                      departureError
+                        ? OVERLAY_DEPARTURE_WRAPPER_ERROR
+                        : OVERLAY_DEPARTURE_WRAPPER
+                    }
+                  >
+                    <div className={OVERLAY_TIME_SEGMENTS}>
+                      <input
+                        ref={hoursRef}
+                        id="overlay-departure-time"
+                        value={hours}
+                        onChange={(e) => {
+                          const val = e.target.value
+                            .replace(/\D/g, "")
+                            .slice(0, 2);
+                          setHours(val);
+                          if (val.length === 2) minutesRef.current?.focus();
+                        }}
+                        placeholder="HH"
+                        maxLength={2}
+                        inputMode="numeric"
+                        className={OVERLAY_TIME_SEGMENT_INPUT}
+                        aria-required="true"
+                        aria-label="Departure hours"
+                        aria-invalid={departureError}
+                      />
+                      <span className={OVERLAY_TIME_COLON}>:</span>
+                      <input
+                        ref={minutesRef}
+                        value={minutes}
+                        onChange={(e) => {
+                          const val = e.target.value
+                            .replace(/\D/g, "")
+                            .slice(0, 2);
+                          setMinutes(val);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Backspace" && minutes === "")
+                            hoursRef.current?.focus();
+                        }}
+                        placeholder="MM"
+                        maxLength={2}
+                        inputMode="numeric"
+                        className={OVERLAY_TIME_SEGMENT_INPUT}
+                        aria-label="Departure minutes"
+                        aria-invalid={departureError}
+                      />
+                    </div>
                   </div>
                   <div
                     className={OVERLAY_MERIDIEM_WRAPPER}

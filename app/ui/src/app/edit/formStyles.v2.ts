@@ -519,8 +519,10 @@ export const OVERLAY_STATUS_BADGE_TEXT_IN_USE =
 
 export const OVERLAY_STATUS_ROW = "flex gap-2 items-center";
 
+export const OVERLAY_DEPARTURE_ROW = "flex gap-[6px] items-start w-full";
+
 export const OVERLAY_DEPARTURE_WRAPPER =
-  "border border-[var(--edit-stone-200)] flex h-11 items-center justify-between px-3 rounded-[6px] w-full gap-2 focus-within:border-[var(--edit-teal-300)] transition-colors";
+  "border border-[var(--edit-stone-200)] flex flex-1 min-w-0 h-[40px] items-center pl-[12px] pr-[3px] py-[8px] rounded-[6px] focus-within:border-[var(--edit-teal-300)] transition-colors";
 
 export const OVERLAY_DEPARTURE_INPUT =
   "flex-1 font-normal text-[16px] leading-6 text-[var(--edit-text-primary)] placeholder:text-[var(--edit-stone-500)] outline-none bg-transparent min-w-0";
@@ -533,13 +535,13 @@ export const OVERLAY_TIME_SEGMENTS = "flex items-center";
 export const OVERLAY_TIME_COLON =
   "font-normal text-[16px] leading-6 text-[var(--edit-text-primary)] select-none";
 
-export const OVERLAY_MERIDIEM_WRAPPER = "flex gap-1 items-center shrink-0";
+export const OVERLAY_MERIDIEM_WRAPPER = "flex gap-[4px] items-start shrink-0";
 
 export const OVERLAY_MERIDIEM_BTN_ACTIVE =
-  "bg-[var(--edit-container-active)] flex items-center justify-center rounded-[2px] size-8 font-normal text-[16px] leading-6 text-[var(--edit-text-primary)] cursor-pointer transition-colors";
+  "bg-[var(--edit-container-active)] flex items-center justify-center rounded-[4px] size-[40px] font-semibold text-[14px] leading-[20px] text-[var(--edit-text-primary)] cursor-pointer transition-colors";
 
 export const OVERLAY_MERIDIEM_BTN_INACTIVE =
-  "flex items-center justify-center rounded-[2px] size-8 font-normal text-[16px] leading-6 text-[var(--edit-text-primary)] cursor-pointer hover:bg-[var(--edit-stone-50)] transition-colors";
+  "bg-[var(--edit-stone-50)] flex items-center justify-center rounded-[4px] size-[40px] font-semibold text-[14px] leading-[20px] text-[var(--edit-text-primary)] cursor-pointer transition-colors";
 
 export const OVERLAY_FOOTER = "flex gap-[6px] items-center";
 
@@ -559,7 +561,7 @@ export const OVERLAY_SELECT_WRAPPER_ERROR =
   "border border-[var(--edit-error-border)] flex h-11 items-center justify-between px-3 rounded-[6px] w-full relative overflow-hidden cursor-pointer";
 
 export const OVERLAY_DEPARTURE_WRAPPER_ERROR =
-  "border border-[var(--edit-error-border)] flex h-11 items-center justify-between px-3 rounded-[6px] w-full gap-2 transition-colors";
+  "border border-[var(--edit-error-border)] flex flex-1 min-w-0 h-[40px] items-center pl-[12px] pr-[3px] py-[8px] rounded-[6px] transition-colors";
 
 export const OVERLAY_FIELD_ERROR_CONTAINER =
   "bg-[var(--edit-error-bg)] flex gap-2 items-center p-2 rounded-[4px] w-full";
