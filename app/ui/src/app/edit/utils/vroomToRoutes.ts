@@ -83,6 +83,8 @@ export function vroomToRoutes(
         note: address?.notes ?? "",
         addresseeName: address?.recipientName || undefined,
         phoneNumber: address?.phoneNumber || undefined,
+        deliveryWindowStart: address?.deliveryTimeStart?.trim() || undefined,
+        deliveryWindowEnd: address?.deliveryTimeEnd?.trim() || undefined,
       };
     });
 
