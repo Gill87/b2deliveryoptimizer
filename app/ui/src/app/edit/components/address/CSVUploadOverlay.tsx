@@ -16,6 +16,7 @@ import {
   CSV_UPLOAD_DROP_ZONE,
   CSV_UPLOAD_DROP_ZONE_ACTIVE,
   CSV_UPLOAD_DROP_ZONE_INNER,
+  CSV_UPLOAD_DROP_ZONE_PROMPT,
   CSV_UPLOAD_DROP_ZONE_TEXT,
   CSV_UPLOAD_BROWSE_BTN,
   CSV_UPLOAD_DESCRIPTION,
@@ -176,7 +177,7 @@ export default function CSVUploadOverlay({
                         />
                       </svg>
 
-                      <div className={CSV_UPLOAD_DROP_ZONE_INNER}>
+                      <div className={CSV_UPLOAD_DROP_ZONE_PROMPT}>
                         <p className={CSV_UPLOAD_DROP_ZONE_TEXT}>
                           Drag and drop CSV files here, or
                         </p>
