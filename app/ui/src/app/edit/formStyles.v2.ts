@@ -517,9 +517,6 @@ export const OVERLAY_STATUS_BADGE_TEXT_AVAILABLE =
 export const OVERLAY_STATUS_BADGE_TEXT_IN_USE =
   "font-semibold text-[16px] leading-[22px] text-[var(--edit-text-secondary)] whitespace-nowrap";
 
-export const OVERLAY_STATUS_HINT =
-  "text-[12px] leading-normal text-[var(--edit-text-secondary)]";
-
 export const OVERLAY_STATUS_ROW = "flex gap-2 items-center";
 
 export const OVERLAY_DEPARTURE_WRAPPER =
