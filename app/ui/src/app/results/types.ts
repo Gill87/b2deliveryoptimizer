@@ -46,3 +46,10 @@ export interface PendingPinMove {
   lat: number;
   lng: number;
 }
+
+export interface HoveredStopInfo {
+  routeIndex: number;
+  stop: Stop;
+  lat: number;
+  lng: number;
+}
