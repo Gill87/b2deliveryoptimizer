@@ -811,6 +811,9 @@ export const CSV_UPLOAD_DROP_ZONE_ACTIVE =
 export const CSV_UPLOAD_DROP_ZONE_INNER =
   "flex flex-col gap-[8px] items-center justify-center";
 
+export const CSV_UPLOAD_DROP_ZONE_PROMPT =
+  "flex flex-col gap-[8px] items-center justify-center";
+
 export const CSV_UPLOAD_DROP_ZONE_TEXT =
   "font-normal leading-[1.5] text-[16px] text-[var(--edit-text-primary)] whitespace-nowrap";
 
