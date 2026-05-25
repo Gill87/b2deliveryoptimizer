@@ -53,6 +53,11 @@ export default function CSVUploadOverlay({
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
 
+  function handleClose() {
+    setIsUploading(false);
+    onClose();
+  }
+
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0] ?? null;
     if (!file) return;
@@ -102,7 +107,7 @@ export default function CSVUploadOverlay({
   }
 
   return (
-    <div className={OVERLAY_BACKDROP} onClick={onClose}>
+    <div className={OVERLAY_BACKDROP} onClick={handleClose}>
       <div
         className={CSV_UPLOAD_OVERLAY_PANEL}
         onClick={(e) => e.stopPropagation()}
@@ -120,7 +125,7 @@ export default function CSVUploadOverlay({
                 </p>
                 <button
                   type="button"
-                  onClick={onClose}
+                  onClick={handleClose}
                   aria-label="Close"
                   className={OVERLAY_CLOSE_BTN}
                 >
@@ -260,7 +265,7 @@ export default function CSVUploadOverlay({
           <div className={OVERLAY_FOOTER}>
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className={OVERLAY_CANCEL_BTN}
             >
               Cancel
