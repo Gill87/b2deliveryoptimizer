@@ -25,7 +25,10 @@ async function fillAddressOverlay(
 
 async function addDeliveryAddress(page: Page, recipientName: string) {
   await page.getByRole("button", { name: "Add address" }).click();
-  await page.locator('[aria-label="Recipient name"]').first().fill(recipientName);
+  await page
+    .locator('[aria-label="Recipient name"]')
+    .first()
+    .fill(recipientName);
   await page.locator('[aria-label="Edit recipient address"]').first().click();
   await fillAddressOverlay(page, "Enter Address", "Confirm");
   await page.locator('[aria-label="Confirm row"]').first().click();
@@ -51,7 +54,9 @@ test("optimize flow routes 2 stops to 1 vehicle", async ({ page }) => {
 
   // Add one vehicle via overlay
   await page.getByRole("button", { name: "Add vehicle" }).click();
-  const vehicleDialog = page.getByRole("dialog", { name: "Add vehicle details" });
+  const vehicleDialog = page.getByRole("dialog", {
+    name: "Add vehicle details",
+  });
   await vehicleDialog.waitFor();
   await vehicleDialog.locator("#overlay-vehicle-name").fill("E2E Van");
   await vehicleDialog.locator("#overlay-vehicle-type").selectOption("truck");
@@ -66,7 +71,10 @@ test("optimize flow routes 2 stops to 1 vehicle", async ({ page }) => {
   await addDeliveryAddress(page, "Stop Two");
 
   // Click Optimize in the navbar header (scoped to avoid colliding with depot overlay button)
-  await page.getByRole("banner").getByRole("button", { name: "Optimize" }).click();
+  await page
+    .getByRole("banner")
+    .getByRole("button", { name: "Optimize" })
+    .click();
 
   // Fill depot address overlay (appears because no start location is set)
   await fillAddressOverlay(
