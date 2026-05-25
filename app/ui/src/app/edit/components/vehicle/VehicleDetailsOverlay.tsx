@@ -409,7 +409,6 @@ export default function VehicleDetailsOverlay({
                       <span className={STATUS_TOGGLE_TEXT}>In use</span>
                     </button>
                   </div>
-                  <p className={OVERLAY_STATUS_HINT}>Tap to toggle</p>
                 </div>
               </div>
 
