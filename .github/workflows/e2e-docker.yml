@@ -13,7 +13,7 @@
 # Not wired to pull_request on purpose. PR CI (pr-light.yml) keeps excluding
 # e2e/docker via `ctest -LE 'e2e|docker'` because each E2E run can take a long
 # time on cold caches (Docker build of OSRM + http-server image, OSRM PBF
-# preprocess for Monaco, then 7 serial bring-up/tear-down cycles).
+# preprocess for Monaco, then 8 serial bring-up/tear-down cycles).
 #
 # Runner: native ARM64 to match deploy/compose/docker-compose.arm64.yml and
 # tests/integration/e2e/e2e_stack.env (DELIVERYOPTIMIZER_PLATFORM=linux/arm64).
