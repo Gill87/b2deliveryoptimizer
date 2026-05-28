@@ -16,7 +16,7 @@
  * string[][] before this modal receives them.
  */
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import type { AddressCard } from "@/app/edit/types/delivery";
 import ErrorOverlay from "@/app/edit/components/shared/ErrorOverlay";
@@ -39,6 +39,26 @@ const FIELD_LABELS: Record<Exclude<MappableField, "">, string> = {
   deliveryQuantity: "Delivery Quantity",
   timeBuffer: "Time Buffer",
   notes: "Notes",
+};
+
+const CSV_IMPORT_OPTION_STYLE: CSSProperties = {
+  color: "#000000",
+  backgroundColor: "#ffffff",
+};
+
+const CSV_IMPORT_SELECT_STYLE: CSSProperties = {
+  fontSize: "13px",
+  border: "1.5px solid #e0e0e0",
+  borderRadius: "8px",
+  padding: "7px 10px",
+  color: "#000000",
+  background: "#fff",
+  cursor: "pointer",
+  appearance: "none",
+  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")`,
+  backgroundRepeat: "no-repeat",
+  backgroundPosition: "right 10px center",
+  paddingRight: "28px",
 };
 
 /**
@@ -293,25 +313,15 @@ function StepOne({
               onChange={(e) =>
                 onMappingChange(header, e.target.value as MappableField)
               }
-              style={{
-                fontSize: "13px",
-                border: "1.5px solid #e0e0e0",
-                borderRadius: "8px",
-                padding: "7px 10px",
-                color: mapping[header] ? "#111" : "#aaa",
-                background: "#fff",
-                cursor: "pointer",
-                appearance: "none",
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "right 10px center",
-                paddingRight: "28px",
-              }}
+              className="text-[#000000]"
+              style={CSV_IMPORT_SELECT_STYLE}
             >
-              <option value="">Select</option>
+              <option value="" style={CSV_IMPORT_OPTION_STYLE}>
+                Select
+              </option>
               {(Object.keys(FIELD_LABELS) as Exclude<MappableField, "">[]).map(
                 (f) => (
-                  <option key={f} value={f}>
+                  <option key={f} value={f} style={CSV_IMPORT_OPTION_STYLE}>
                     {FIELD_LABELS[f]}
                   </option>
                 ),

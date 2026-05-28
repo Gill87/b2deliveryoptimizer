@@ -12,7 +12,7 @@ export const SIDEBAR_NAV_ITEM_ACTIVE =
   "flex flex-col gap-1 items-center w-full";
 
 export const SIDEBAR_NAV_ITEM_INACTIVE =
-  "flex flex-col gap-1 items-center w-full cursor-pointer";
+  "flex flex-col gap-1 items-center w-full cursor-pointer text-[#808080]";
 
 export const SIDEBAR_NAV_ITEM_DISABLED =
   "flex flex-col gap-1 items-center w-full opacity-[0.26] cursor-not-allowed";

@@ -13,8 +13,6 @@ import MobileResultsNavbar from "./components/MobileResultsNavbar";
 import ResultsBottomSheet from "./components/ResultsBottomSheet";
 import ResultsNavRail from "./components/ResultsNavRail";
 import Sidebar from "./components/Sidebar";
-import { mockRouteToRoute } from "./data/mockRouteLoader";
-import mockRouteData from "./data/mock_route.json";
 import {
   RESULTS_MOBILE_EDIT_BANNER_MESSAGE,
   RESULTS_MOBILE_EDIT_PILL,
@@ -22,26 +20,38 @@ import {
 import type { PendingPinMove, Route } from "./types";
 import { downloadRoutesAsJsonFiles } from "./utils/downloadRouteJson";
 
+/** Reads optimizeResults without clearing it (avoids Strict Mode double-mount races). */
 function loadOptimizeResultsFromSession(): {
   routes: Route[];
   error: string | null;
 } {
-  const forceMock = new URLSearchParams(window.location.search).get("mock");
-  if (forceMock === "1") {
-    return { routes: [mockRouteToRoute(mockRouteData)], error: null };
-  }
-
   const stored = sessionStorage.getItem("optimizeResults");
   if (!stored) {
-    return { routes: [mockRouteToRoute(mockRouteData)], error: null };
+    return {
+      routes: [],
+      error:
+        "No optimization results found. Run optimization from the edit page first.",
+    };
   }
 
   try {
-    const parsed = JSON.parse(stored) as Route[];
-    sessionStorage.removeItem("optimizeResults");
-    return { routes: parsed, error: null };
+    const parsed: unknown = JSON.parse(stored);
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      sessionStorage.removeItem("optimizeResults");
+      return {
+        routes: [],
+        error:
+          "Optimization results were empty or invalid. Please run optimization again.",
+      };
+    }
+    return { routes: parsed as Route[], error: null };
   } catch {
-    return { routes: [mockRouteToRoute(mockRouteData)], error: null };
+    sessionStorage.removeItem("optimizeResults");
+    return {
+      routes: [],
+      error:
+        "Could not load optimization results. Please run optimization again.",
+    };
   }
 }
 

@@ -29,9 +29,20 @@ const DAVIS_CENTER = { lat: 38.5449, lng: -121.7405 };
 const MARKER_ICON_WIDTH = 28;
 const MARKER_ICON_HEIGHT = 40;
 
-function getMarkerScaledSize(): google.maps.Size | undefined {
+function getMarkerScaledSize(
+  width = MARKER_ICON_WIDTH,
+  height = MARKER_ICON_HEIGHT,
+): google.maps.Size | undefined {
   if (typeof google === "undefined") return undefined;
-  return new google.maps.Size(MARKER_ICON_WIDTH, MARKER_ICON_HEIGHT);
+  return new google.maps.Size(width, height);
+}
+
+function getMarkerAnchor(
+  x: number,
+  y: number,
+): google.maps.Point | undefined {
+  if (typeof google === "undefined") return undefined;
+  return new google.maps.Point(x, y);
 }
 
 // fillColor is always a route palette hex from routeColorHex, never user input.
@@ -642,10 +653,17 @@ export default function MapComponent({
             />
           )}
           {!mapId &&
+            map &&
             routes.map((route, routeIndex) => {
               const accentColor = routeColorHex(routeIndex);
               const iconUrl = markerSvgDataUrl(accentColor);
               const scaledSize = getMarkerScaledSize();
+              const depotScaledSize = getMarkerScaledSize(28, 28);
+              const depotAnchor = getMarkerAnchor(14, 14);
+              const stopAnchor = getMarkerAnchor(
+                MARKER_ICON_WIDTH / 2,
+                MARKER_ICON_HEIGHT,
+              );
               const sorted = [...route.stops].sort(
                 (a, b) => a.sequence - b.sequence,
               );
@@ -659,11 +677,15 @@ export default function MapComponent({
                         lng: route.startLocation.lng,
                       }}
                       draggable={false}
-                      icon={{
-                        url: DEPOT_MARKER_SVG,
-                        scaledSize: new google.maps.Size(28, 28),
-                        anchor: new google.maps.Point(14, 14),
-                      }}
+                      icon={
+                        depotScaledSize && depotAnchor
+                          ? {
+                              url: DEPOT_MARKER_SVG,
+                              scaledSize: depotScaledSize,
+                              anchor: depotAnchor,
+                            }
+                          : { url: DEPOT_MARKER_SVG }
+                      }
                     />
                   )}
                   {sorted.map((stop) => {
@@ -679,14 +701,11 @@ export default function MapComponent({
                         key={stop.id}
                         position={position}
                         icon={
-                          scaledSize
+                          scaledSize && stopAnchor
                             ? {
                                 url: iconUrl,
                                 scaledSize,
-                                anchor: new google.maps.Point(
-                                  MARKER_ICON_WIDTH / 2,
-                                  MARKER_ICON_HEIGHT,
-                                ),
+                                anchor: stopAnchor,
                               }
                             : { url: iconUrl }
                         }
