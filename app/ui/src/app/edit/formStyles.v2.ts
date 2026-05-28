@@ -817,6 +817,9 @@ export const CSV_UPLOAD_BROWSE_BTN =
 export const CSV_UPLOAD_DESCRIPTION =
   "font-normal text-[14px] leading-[1.5] text-[var(--edit-text-secondary)] w-full";
 
+export const CSV_UPLOAD_SIZE_ERROR =
+  "text-sm text-[var(--edit-error-border)] mt-1";
+
 export const CSV_UPLOAD_FILE_CHIP =
   "bg-[var(--edit-container-active)] flex items-center justify-between p-[16px] rounded-[6px] w-full";
 
