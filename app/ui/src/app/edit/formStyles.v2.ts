@@ -378,8 +378,7 @@ export const ADDRESS_ROW_STEPPER_CONTAINER =
 
 export const ADDRESS_ROW_STEPPER_CONTAINER_NARROW = `${ADDRESS_ROW_STEPPER_CONTAINER} w-[72px]`;
 
-export const ADDRESS_ROW_STEPPER_CONTAINER_NARROW_ERROR = 
-  `${ADDRESS_ROW_STEPPER_CONTAINER_NARROW} border-[var(--edit-error-border)]`;
+export const ADDRESS_ROW_STEPPER_CONTAINER_NARROW_ERROR = `${ADDRESS_ROW_STEPPER_CONTAINER_NARROW} border-[var(--edit-error-border)]`;
 
 export const ADDRESS_ROW_STEPPER_INPUT =
   "flex-1 min-w-0 bg-transparent outline-none text-[16px] leading-[1.5] text-[var(--edit-text-primary)] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none";
