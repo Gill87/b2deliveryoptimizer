@@ -2,7 +2,7 @@
 
 "use client";
 
-import { default as React, useCallback, useState } from "react";
+import { default as React, useCallback, useEffect, useState } from "react";
 import { NAVBAR_V2_LOGO, NAVBAR_V2_ROOT } from "../edit/formStyles.v2";
 import styles from "../edit/edit.module.css";
 import MobileSidebar from "../components/sidebar/MobileSidebar";
@@ -22,8 +22,10 @@ import {
 import type { PendingPinMove, Route } from "./types";
 import { downloadRoutesAsJsonFiles } from "./utils/downloadRouteJson";
 
-function readInitialRoutes(): { routes: Route[]; error: string | null } {
-  if (typeof window === "undefined") return { routes: [], error: null };
+function loadOptimizeResultsFromSession(): {
+  routes: Route[];
+  error: string | null;
+} {
   const forceMock = new URLSearchParams(window.location.search).get("mock");
   if (forceMock === "1") {
     return { routes: [mockRouteToRoute(mockRouteData)], error: null };
@@ -44,10 +46,15 @@ function readInitialRoutes(): { routes: Route[]; error: string | null } {
 }
 
 export default function ResultsPage() {
-  const [{ routes: initialRoutes, error: initialError }] =
-    useState(readInitialRoutes);
-  const [routes, setRoutes] = useState<Route[]>(initialRoutes);
-  const [error] = useState<string | null>(initialError);
+  const [routes, setRoutes] = useState<Route[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const { routes: loadedRoutes, error: loadError } =
+      loadOptimizeResultsFromSession();
+    setRoutes(loadedRoutes);
+    setError(loadError);
+  }, []);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSheetExpanded, setIsSheetExpanded] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
