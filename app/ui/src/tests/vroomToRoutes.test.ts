@@ -225,33 +225,6 @@ describe("vroomToRoutes", () => {
   });
 
   it("start step + vehicle.startLocation → lat/lng/address from start step and vehicle", () => {
-  it("maps recipient name and phone from the address form", () => {
-    const [route] = vroomToRoutes(
-      SINGLE_STOP,
-      [makeVehicle(1)],
-      [
-        makeAddress(1, {
-          recipientName: "Kayla Wong",
-          phoneNumber: "(530) 555-0199",
-        }),
-      ],
-    );
-    expect(route.stops[0]).toMatchObject({
-      addresseeName: "Kayla Wong",
-      phoneNumber: "(530) 555-0199",
-    });
-  });
-
-  it("capacityUsed prefers form deliveryQuantity when greater than zero", () => {
-    const [route] = vroomToRoutes(
-      SINGLE_STOP,
-      [makeVehicle(1)],
-      [makeAddress(1, { deliveryQuantity: 4 })],
-    );
-    expect(route.stops[0].capacityUsed).toBe(4);
-  });
-
-  it("capacityUsed falls back to VROOM step load when form quantity is zero", () => {
     const response: VroomResponse = {
       routes: [
         {
@@ -316,6 +289,15 @@ describe("vroomToRoutes", () => {
       addresseeName: "Kayla Wong",
       phoneNumber: "(530) 555-0199",
     });
+  });
+
+  it("capacityUsed prefers form deliveryQuantity when greater than zero", () => {
+    const [route] = vroomToRoutes(
+      SINGLE_STOP,
+      [makeVehicle(1)],
+      [makeAddress(1, { deliveryQuantity: 4 })],
+    );
+    expect(route.stops[0].capacityUsed).toBe(4);
   });
 
   it("capacityUsed falls back to VROOM step load when form quantity is zero", () => {
