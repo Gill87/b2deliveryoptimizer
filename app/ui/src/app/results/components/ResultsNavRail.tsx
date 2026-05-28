@@ -47,16 +47,24 @@ export default function ResultsNavRail() {
       <nav className={SIDEBAR_NAV} aria-label="Results navigation">
         <Link
           href="/edit"
-          className={isManagePage ? SIDEBAR_NAV_ITEM_ACTIVE : SIDEBAR_NAV_ITEM_INACTIVE}
+          className={
+            isManagePage ? SIDEBAR_NAV_ITEM_ACTIVE : SIDEBAR_NAV_ITEM_INACTIVE
+          }
           aria-current={isManagePage ? "page" : undefined}
         >
           <span
-            className={isManagePage ? SIDEBAR_NAV_PILL_ACTIVE : SIDEBAR_NAV_PILL_INACTIVE}
+            className={
+              isManagePage ? SIDEBAR_NAV_PILL_ACTIVE : SIDEBAR_NAV_PILL_INACTIVE
+            }
           >
             {MANAGE_ICON}
           </span>
           <span
-            className={isManagePage ? SIDEBAR_NAV_LABEL_ACTIVE : SIDEBAR_NAV_LABEL_INACTIVE}
+            className={
+              isManagePage
+                ? SIDEBAR_NAV_LABEL_ACTIVE
+                : SIDEBAR_NAV_LABEL_INACTIVE
+            }
           >
             Manage
           </span>
