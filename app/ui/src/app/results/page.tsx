@@ -1,0 +1,194 @@
+// Results page: route list + map
+
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import { NAVBAR_V2_LOGO, NAVBAR_V2_ROOT } from "../edit/formStyles.v2";
+import styles from "../edit/edit.module.css";
+import EditSidebar from "../edit/components/layout/sidebar/Sidebar";
+import SidebarEditButton from "../edit/components/layout/sidebar/SidebarEditButton";
+import SidebarResultsButton from "../edit/components/layout/sidebar/SidebarResultsButton";
+import MapComponent from "./components/Map";
+import Sidebar from "./components/Sidebar";
+import type { PendingPinMove, Route } from "./types";
+
+function readInitialRoutes(): { routes: Route[]; error: string | null } {
+  if (typeof window === "undefined") return { routes: [], error: null };
+
+  const stored = sessionStorage.getItem("optimizeResults");
+  if (!stored) return { routes: [], error: null };
+
+  try {
+    const parsed = JSON.parse(stored) as Route[];
+    return { routes: parsed, error: null };
+  } catch {
+    return {
+      routes: [],
+      error: "Route data could not be loaded. Please go back and try again.",
+    };
+  }
+}
+
+export default function ResultsPage() {
+  const [{ routes: initialRoutes, error: initialError }] =
+    useState(readInitialRoutes);
+  const [routes, setRoutes] = useState<Route[]>(initialRoutes);
+  const [error] = useState<string | null>(initialError);
+
+  useEffect(() => {
+    if (initialRoutes.length > 0) {
+      sessionStorage.removeItem("optimizeResults"); // consume once after successful parse + state update
+    }
+  }, [initialRoutes.length]);
+
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [pendingPinMove, setPendingPinMove] = useState<PendingPinMove | null>(
+    null,
+  );
+
+  const updateStopNote = useCallback(
+    (routeId: string, stopId: string, note: string) => {
+      setRoutes((prev) =>
+        prev.map((route) => {
+          if (route.vehicleId !== routeId) return route;
+          return {
+            ...route,
+            stops: route.stops.map((s) =>
+              s.id === stopId ? { ...s, note } : s,
+            ),
+          };
+        }),
+      );
+    },
+    [setRoutes],
+  );
+
+  const handleRouteDistanceUpdate = useCallback(
+    (vehicleId: string, distanceMi: number) => {
+      setRoutes((prev) => {
+        const next = prev.map((route) =>
+          route.vehicleId === vehicleId && route.distanceMi !== distanceMi
+            ? { ...route, distanceMi }
+            : route,
+        );
+        return next.every((r, i) => r === prev[i]) ? prev : next;
+      });
+    },
+    [],
+  );
+
+  const handleEditModeChange = useCallback((value: boolean) => {
+    setIsEditMode(value);
+    if (!value) setPendingPinMove(null);
+  }, []);
+
+  const savePendingPinMove = useCallback(() => {
+    if (!pendingPinMove) return;
+    setRoutes((prev) =>
+      prev.map((route) =>
+        route.vehicleId !== pendingPinMove.vehicleId
+          ? route
+          : {
+              ...route,
+              stops: route.stops.map((s) =>
+                s.id !== pendingPinMove.stopId
+                  ? s
+                  : { ...s, lat: pendingPinMove.lat, lng: pendingPinMove.lng },
+              ),
+            },
+      ),
+    );
+    setPendingPinMove(null);
+  }, [pendingPinMove]);
+
+  const handlePendingPinMove = useCallback(
+    (vehicleId: string, stopId: string, lat: number, lng: number) => {
+      setPendingPinMove({ vehicleId, stopId, lat, lng });
+    },
+    [],
+  );
+
+  const cancelPendingPinMove = useCallback(() => setPendingPinMove(null), []);
+
+  return (
+    <main
+      className={`h-screen flex flex-col overflow-hidden font-sans-manrope ${styles.root}`}
+    >
+      {error && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm w-80 space-y-4">
+            <p className="text-sm text-zinc-700">{error}</p>
+            <a
+              href="/edit"
+              className="inline-flex w-full items-center justify-center rounded-md bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-amber-500"
+            >
+              Go back to edit
+            </a>
+          </div>
+        </div>
+      )}{" "}
+      {/* Map container switched to h-screen and added overflow hidden so the page is forced to be exactly one screen tall, whereas before the page was allowed to get taller than browser window leading to a long scroll */}
+      <header className={`${NAVBAR_V2_ROOT} shrink-0 border-b border-zinc-200`}>
+        <div className="flex items-center gap-3 min-w-0">
+          <p className={NAVBAR_V2_LOGO}>DELIVERY OPTIMIZER</p>
+        </div>
+
+        <div className="ml-auto flex items-center gap-2">
+          {pendingPinMove != null && (
+            <>
+              <button
+                type="button"
+                onClick={cancelPendingPinMove}
+                className="h-9 px-6 rounded-[80px] border border-[var(--edit-foreground)] font-medium text-[14px] leading-5 text-[var(--edit-foreground)] whitespace-nowrap hover:bg-black/5 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={savePendingPinMove}
+                className="h-9 px-6 rounded-[80px] border border-[var(--edit-foreground)] font-medium text-[14px] leading-5 text-[var(--edit-foreground)] whitespace-nowrap hover:bg-black/5 transition-colors"
+              >
+                Save
+              </button>
+            </>
+          )}
+          <button
+            type="button"
+            disabled
+            aria-disabled="true"
+            title="Export coming soon"
+            className="h-9 px-6 rounded-[80px] bg-[var(--edit-teal-500)] font-medium text-[14px] leading-5 text-[var(--edit-foreground)] whitespace-nowrap opacity-50 cursor-not-allowed"
+          >
+            Export
+          </button>
+        </div>
+      </header>
+      <div className="flex flex-1 min-h-0">
+        <EditSidebar>
+          <SidebarEditButton />
+          <SidebarResultsButton />
+        </EditSidebar>
+
+        <div className="shrink-0 h-full w-72 overflow-hidden">
+          <Sidebar
+            routes={routes}
+            isEditMode={isEditMode}
+            onEditModeChange={handleEditModeChange}
+            onUpdateStopNote={updateStopNote}
+          />
+        </div>
+        <div className="flex-1 min-w-0 min-h-0 flex flex-col">
+          <div className="flex-1 min-h-0 w-full overflow-hidden">
+            <MapComponent
+              routes={routes}
+              isEditMode={isEditMode}
+              pendingPinMove={pendingPinMove}
+              onPendingPinMove={handlePendingPinMove}
+              onRouteDistanceUpdate={handleRouteDistanceUpdate}
+            />
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
