@@ -362,7 +362,7 @@ export function useOptimize(
               resultBody as VroomResponse,
               lockedVehicles,
               addresses,
-              trimmedDepotAddress!,
+              trimmedDepotAddress || "",
             );
             setOptimizeResults(routes);
             router.push("/results");
