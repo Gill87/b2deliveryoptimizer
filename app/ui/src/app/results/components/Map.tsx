@@ -281,6 +281,10 @@ function stopKey(vehicleId: string, stopId: string): string {
   return `${vehicleId}:${stopId}`;
 }
 
+const DEPOT_MARKER_SVG = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><defs><filter id="sh" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="rgba(0,0,0,0.4)"/></filter></defs><circle cx="14" cy="14" r="12" fill="#374151" stroke="#fff" stroke-width="2" filter="url(#sh)"/><text x="14" y="18.5" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="sans-serif">S</text></svg>`,
+)}`;
+
 function AdvancedMarkers({
   map,
   routes,
@@ -317,10 +321,11 @@ function AdvancedMarkers({
         routes.forEach((route) => {
           // Depot marker — distinct non-draggable pin labeled "S"
           if (route.startLocation) {
-            const depotEl = document.createElement("div");
-            depotEl.style.cssText =
-              "display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#374151;color:#fff;font-size:11px;font-weight:700;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.4)";
-            depotEl.textContent = "S";
+            const depotEl = document.createElement("img");
+            depotEl.src = DEPOT_MARKER_SVG;
+            depotEl.width = 28;
+            depotEl.height = 28;
+            depotEl.alt = "";
             const depotMarker = new AdvancedMarkerElement({
               map,
               position: {
@@ -513,7 +518,11 @@ export default function MapComponent({
                       }}
                       title={route.startLocation.address || "Starting point"}
                       draggable={false}
-                      label={{ text: "S", color: "#fff", fontWeight: "bold" }}
+                      icon={{
+                        url: DEPOT_MARKER_SVG,
+                        scaledSize: new google.maps.Size(28, 28),
+                        anchor: new google.maps.Point(14, 14),
+                      }}
                     />
                   )}
                   {sorted.map((stop) => {
