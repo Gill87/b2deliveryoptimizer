@@ -26,6 +26,7 @@ import {
   CSV_UPLOAD_FILE_CHIP_RIGHT,
   CSV_UPLOAD_FILE_CHIP_SIZE,
   CSV_UPLOAD_FILE_CHIP_REMOVE,
+  CSV_UPLOAD_SIZE_ERROR,
 } from "@/app/edit/formStyles.v2";
 import SpinnerIcon from "@/app/edit/components/shared/SpinnerIcon";
 
@@ -35,6 +36,8 @@ type CSVUploadOverlayProps = {
   onInvalidFile?: () => void;
   initialFile?: File;
 };
+
+const MAX_CSV_BYTES = 10 * 1024 * 1024;
 
 function formatFileSize(bytes: number): string {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -53,6 +56,7 @@ export default function CSVUploadOverlay({
   );
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [fileSizeError, setFileSizeError] = useState<string | null>(null);
 
   function handleClose() {
     setIsUploading(false);
@@ -62,16 +66,21 @@ export default function CSVUploadOverlay({
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0] ?? null;
     if (!file) return;
-    if (file.name.toLowerCase().endsWith(".csv")) {
-      setSelectedFile(file);
-    } else {
+    if (!file.name.toLowerCase().endsWith(".csv")) {
       onInvalidFile?.();
+    } else if (file.size > MAX_CSV_BYTES) {
+      setFileSizeError("Your file exceeds 10 MB. Please use a smaller file.");
+      setSelectedFile(null);
+    } else {
+      setFileSizeError(null);
+      setSelectedFile(file);
     }
     e.target.value = "";
   }
 
   function handleRemoveFile() {
     setSelectedFile(null);
+    setFileSizeError(null);
   }
 
   function handleNext() {
@@ -100,10 +109,14 @@ export default function CSVUploadOverlay({
     setIsDragOver(false);
     const file = e.dataTransfer.files[0] ?? null;
     if (!file) return;
-    if (file.name.toLowerCase().endsWith(".csv")) {
-      setSelectedFile(file);
-    } else {
+    if (!file.name.toLowerCase().endsWith(".csv")) {
       onInvalidFile?.();
+    } else if (file.size > MAX_CSV_BYTES) {
+      setFileSizeError("Your file exceeds 10 MB. Please use a smaller file.");
+      setSelectedFile(null);
+    } else {
+      setFileSizeError(null);
+      setSelectedFile(file);
     }
   }
 
@@ -208,6 +221,15 @@ export default function CSVUploadOverlay({
                 Import delivery details from a CSV file. Maximum file size of 10
                 MB.
               </p>
+              {fileSizeError !== null && (
+                <p
+                  role="alert"
+                  aria-live="assertive"
+                  className={CSV_UPLOAD_SIZE_ERROR}
+                >
+                  {fileSizeError}
+                </p>
+              )}
             </div>
 
             {/* File chip — visible only when a file is selected and not uploading */}
