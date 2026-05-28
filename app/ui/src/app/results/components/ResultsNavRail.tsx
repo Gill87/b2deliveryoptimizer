@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   SIDEBAR_NAV,
   SIDEBAR_NAV_ITEM_ACTIVE,
@@ -35,19 +36,54 @@ const RESULTS_ICON = (
 );
 
 export default function ResultsNavRail() {
+  const pathname = usePathname();
+  const isResultsPage = pathname === "/results";
+  const isManagePage = pathname === "/edit";
+
   return (
     <aside
       className={`${SIDEBAR_ROOT} border-r border-[var(--edit-stone-200)]`}
     >
       <nav className={SIDEBAR_NAV} aria-label="Results navigation">
-        <Link href="/edit" className={SIDEBAR_NAV_ITEM_INACTIVE}>
-          <span className={SIDEBAR_NAV_PILL_INACTIVE}>{MANAGE_ICON}</span>
-          <span className={SIDEBAR_NAV_LABEL_INACTIVE}>Manage</span>
+        <Link
+          href="/edit"
+          className={
+            isManagePage ? SIDEBAR_NAV_ITEM_ACTIVE : SIDEBAR_NAV_ITEM_INACTIVE
+          }
+          aria-current={isManagePage ? "page" : undefined}
+        >
+          <span
+            className={
+              isManagePage ? SIDEBAR_NAV_PILL_ACTIVE : SIDEBAR_NAV_PILL_INACTIVE
+            }
+          >
+            {MANAGE_ICON}
+          </span>
+          <span
+            className={
+              isManagePage
+                ? SIDEBAR_NAV_LABEL_ACTIVE
+                : SIDEBAR_NAV_LABEL_INACTIVE
+            }
+          >
+            Manage
+          </span>
         </Link>
-        <div className={SIDEBAR_NAV_ITEM_ACTIVE} aria-current="page">
-          <span className={SIDEBAR_NAV_PILL_ACTIVE}>{RESULTS_ICON}</span>
-          <span className={SIDEBAR_NAV_LABEL_ACTIVE}>Results</span>
-        </div>
+        {isResultsPage ? (
+          <div className={SIDEBAR_NAV_ITEM_ACTIVE} aria-current="page">
+            <span
+              className={`${SIDEBAR_NAV_PILL_ACTIVE} text-[var(--edit-foreground)]`}
+            >
+              {RESULTS_ICON}
+            </span>
+            <span className={SIDEBAR_NAV_LABEL_ACTIVE}>Results</span>
+          </div>
+        ) : (
+          <Link href="/results" className={SIDEBAR_NAV_ITEM_INACTIVE}>
+            <span className={SIDEBAR_NAV_PILL_INACTIVE}>{RESULTS_ICON}</span>
+            <span className={SIDEBAR_NAV_LABEL_INACTIVE}>Results</span>
+          </Link>
+        )}
       </nav>
     </aside>
   );

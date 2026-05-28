@@ -67,7 +67,7 @@ function PositionedStopHoverCard({ hovered }: { hovered: HoveredStopInfo }) {
       style={{
         left: pixel.x,
         top: pixel.y,
-        transform: "translate(-50%, calc(-100% - 40px))",
+        transform: "translate(-50%, calc(-100% - 88px))",
       }}
     >
       <StopHoverCard

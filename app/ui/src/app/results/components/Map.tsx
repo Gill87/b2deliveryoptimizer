@@ -21,6 +21,10 @@ import type { HoveredStopInfo, PendingPinMove, Route, Stop } from "../types";
 import { routeColorHex } from "../utils/routeColors";
 import MapStopHoverOverlay from "./MapStopHoverOverlay";
 
+declare const process: {
+  env: Record<string, string | undefined>;
+};
+
 const DAVIS_CENTER = { lat: 38.5449, lng: -121.7405 };
 const MARKER_ICON_WIDTH = 28;
 const MARKER_ICON_HEIGHT = 40;
@@ -418,7 +422,6 @@ function AdvancedMarkers({
                 lat: route.startLocation.lat,
                 lng: route.startLocation.lng,
               },
-              title: route.startLocation.address || "Starting point",
               content: depotEl,
               gmpDraggable: false,
             });
@@ -434,7 +437,6 @@ function AdvancedMarkers({
             const m = new AdvancedMarkerElement({
               map,
               position,
-              title: stop.address,
               gmpDraggable: isEditMode,
               content: createRoutePinElement(accentColor),
             });
@@ -530,11 +532,8 @@ export default function MapComponent({
   onPendingPinMove,
   onRouteDistanceUpdate,
 }: MapComponentProps) {
-  const env = (
-    globalThis as { process?: { env?: Record<string, string | undefined> } }
-  ).process?.env;
-  const apiKey = env?.NEXT_PUBLIC_GOOGLE_MAPS_KEY ?? "";
-  const mapId = env?.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID || undefined;
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY ?? "";
+  const mapId = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID || undefined;
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [hoveredStop, setHoveredStop] = useState<HoveredStopInfo | null>(null);
 
@@ -659,7 +658,6 @@ export default function MapComponent({
                         lat: route.startLocation.lat,
                         lng: route.startLocation.lng,
                       }}
-                      title={route.startLocation.address || "Starting point"}
                       draggable={false}
                       icon={{
                         url: DEPOT_MARKER_SVG,
@@ -680,7 +678,6 @@ export default function MapComponent({
                       <Marker
                         key={stop.id}
                         position={position}
-                        title={stop.address}
                         icon={
                           scaledSize
                             ? {
@@ -694,6 +691,15 @@ export default function MapComponent({
                             : { url: iconUrl }
                         }
                         draggable={isEditMode}
+                        onMouseOver={() =>
+                          handleStopHover({
+                            routeIndex,
+                            stop,
+                            lat: position.lat,
+                            lng: position.lng,
+                          })
+                        }
+                        onMouseOut={handleStopHoverEnd}
                         onDragEnd={(e) => {
                           const latLng = e.latLng;
                           if (!latLng) return;

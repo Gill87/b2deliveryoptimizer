@@ -2,17 +2,19 @@
 
 "use client";
 
-import { useCallback, useState } from "react";
+import { default as React, useCallback, useState } from "react";
 import { NAVBAR_V2_LOGO, NAVBAR_V2_ROOT } from "../edit/formStyles.v2";
 import styles from "../edit/edit.module.css";
-import EditSidebar from "@/app/components/sidebar/Sidebar";
-import SidebarEditButton from "@/app/components/sidebar/SidebarEditButton";
-import SidebarResultsButton from "@/app/components/sidebar/SidebarResultsButton";
+import MobileSidebar from "../components/sidebar/MobileSidebar";
+import ExportEditWarningModal from "./components/ExportEditWarningModal";
+import ExportRoutesModal from "./components/ExportRoutesModal";
 import MapComponent from "./components/Map";
 import MobileResultsNavbar from "./components/MobileResultsNavbar";
 import ResultsBottomSheet from "./components/ResultsBottomSheet";
 import ResultsNavRail from "./components/ResultsNavRail";
 import Sidebar from "./components/Sidebar";
+import { mockRouteToRoute } from "./data/mockRouteLoader";
+import mockRouteData from "./data/mock_route.json";
 import {
   RESULTS_MOBILE_EDIT_BANNER_MESSAGE,
   RESULTS_MOBILE_EDIT_PILL,
@@ -22,19 +24,22 @@ import { downloadRoutesAsJsonFiles } from "./utils/downloadRouteJson";
 
 function readInitialRoutes(): { routes: Route[]; error: string | null } {
   if (typeof window === "undefined") return { routes: [], error: null };
+  const forceMock = new URLSearchParams(window.location.search).get("mock");
+  if (forceMock === "1") {
+    return { routes: [mockRouteToRoute(mockRouteData)], error: null };
+  }
 
   const stored = sessionStorage.getItem("optimizeResults");
-  if (!stored) return { routes: [], error: null };
+  if (!stored) {
+    return { routes: [mockRouteToRoute(mockRouteData)], error: null };
+  }
 
   try {
     const parsed = JSON.parse(stored) as Route[];
     sessionStorage.removeItem("optimizeResults");
     return { routes: parsed, error: null };
   } catch {
-    return {
-      routes: [],
-      error: "Route data could not be loaded. Please go back and try again.",
-    };
+    return { routes: [mockRouteToRoute(mockRouteData)], error: null };
   }
 }
 
@@ -246,11 +251,11 @@ export default function ResultsPage() {
           )}
           <button
             type="button"
-            onClick={handleExportClick}
-            disabled={routes.length === 0}
+            onClick={savePendingPinMove}
+            disabled={pendingPinMove == null}
             className="h-9 px-4 rounded-[6px] bg-[var(--edit-btn-primary)] font-semibold text-sm text-[var(--edit-text-primary)] hover:brightness-[0.97] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Export
+            Save
           </button>
         </div>
       </header>
@@ -263,6 +268,7 @@ export default function ResultsPage() {
             isEditMode={isEditMode}
             onEditModeChange={handleEditModeChange}
             onUpdateStopNote={updateStopNote}
+            onExportAllRoutes={handleExportClick}
             onExportRoute={handleExportSingleRoute}
             onDuplicateRoute={handleDuplicateRoute}
             onDeleteRoute={handleDeleteRoute}

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { Route } from "../types";
+import { MOBILE_FOOTER_LOGO } from "../../edit/formStyles.v2";
 import RouteCard from "./RouteCard";
 
 type SidebarProps = {
@@ -10,6 +11,7 @@ type SidebarProps = {
   onEditModeChange: (value: boolean) => void;
   onUpdateStopNote: (routeId: string, stopId: string, note: string) => void;
   onExportRoute: (vehicleId: string) => void;
+  onExportAllRoutes?: () => void;
   onDuplicateRoute: (vehicleId: string) => void;
   onDeleteRoute: (vehicleId: string) => void;
   /** Desktop sidebar vs mobile bottom-sheet list body */
@@ -22,6 +24,7 @@ export default function Sidebar({
   onEditModeChange,
   onUpdateStopNote,
   onExportRoute,
+  onExportAllRoutes,
   onDuplicateRoute,
   onDeleteRoute,
   variant = "sidebar",
@@ -66,17 +69,27 @@ export default function Sidebar({
               {totalStops === 1 ? "" : "s"}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => onEditModeChange(!isEditMode)}
-            className={`h-9 shrink-0 rounded-[80px] px-5 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--edit-teal-300)] ${
-              isEditMode
-                ? "border border-[#7BCFC2] bg-[#7BCFC2] text-[#1C1B1F] hover:bg-[#6dc5b7]"
-                : "border border-[var(--edit-stone-700)] bg-white text-[var(--edit-text-primary)] hover:bg-[var(--edit-stone-50)]"
-            }`}
-          >
-            {isEditMode ? "Save edits" : "Edit"}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onEditModeChange(!isEditMode)}
+              className={`h-9 shrink-0 rounded-[80px] px-5 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--edit-teal-300)] ${
+                isEditMode
+                  ? "border border-[#7BCFC2] bg-[#7BCFC2] text-[#1C1B1F] hover:bg-[#6dc5b7]"
+                  : "border border-[var(--edit-stone-700)] bg-white text-[var(--edit-text-primary)] hover:bg-[var(--edit-stone-50)]"
+              }`}
+            >
+              {isEditMode ? "Save edits" : "Edit"}
+            </button>
+            <button
+              type="button"
+              onClick={onExportAllRoutes}
+              disabled={routes.length === 0}
+              className="h-9 shrink-0 rounded-[6px] bg-[var(--edit-btn-primary)] px-4 text-sm font-semibold text-[var(--edit-text-primary)] hover:brightness-[0.97] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Export
+            </button>
+          </div>
         </div>
       )}
       <div className={isSheet ? "w-full" : "flex-1 min-h-0 overflow-y-auto"}>
@@ -118,6 +131,23 @@ export default function Sidebar({
           </ul>
         )}
       </div>
+      {!isSheet && (
+        <div className="shrink-0 pt-6 pb-2">
+          <footer className="flex flex-col gap-2 items-start">
+            <span aria-hidden="true" className={MOBILE_FOOTER_LOGO} />
+            <div className="flex flex-col text-[16px] leading-[1.5] text-[var(--edit-text-primary)]">
+              <p>
+                Built with{" "}
+                <span role="img" aria-label="love">
+                  ❤️
+                </span>{" "}
+                for Humanity.
+              </p>
+              <p>The Benevolent Bandwidth Foundation</p>
+            </div>
+          </footer>
+        </div>
+      )}
     </aside>
   );
 }
