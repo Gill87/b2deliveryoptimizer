@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useHasOptimizeResults } from "../../../utils/hasOptimizeResults";
+import { useHasOptimizeResults } from "@/app/edit/utils/hasOptimizeResults";
 import {
   SIDEBAR_NAV_ITEM_ACTIVE,
   SIDEBAR_NAV_ITEM_DISABLED,
@@ -69,6 +69,6 @@ export default function SidebarResultsButton() {
       {/* TODO: add results page link when at least one route exists */}
       <span className={SIDEBAR_NAV_PILL_INACTIVE}>{SIDEBAR_RESULTS_ICON}</span>
       <span className={SIDEBAR_NAV_LABEL_INACTIVE}>Results</span>
-    </span>
+    </Link>
   );
 }
