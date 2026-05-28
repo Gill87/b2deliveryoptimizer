@@ -175,17 +175,19 @@ export default function Sidebar({
                       <ul className="space-y-2">
                         {route.startLocation && (
                           <li>
-                            <div className="flex items-start gap-2 rounded-lg bg-white px-2 py-1.5 shadow-sm border border-zinc-200">
-                              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-zinc-700 text-[10px] font-bold text-white">
+                            <div className="rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
+                              <div className="flex items-start gap-2">
+                                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-zinc-700 text-xs font-semibold text-white">
                                 S
-                              </span>
-                              <div className="min-w-0">
-                                <p className="text-[9px] uppercase tracking-wide text-zinc-400">
-                                  Starting point
-                                </p>
-                                <p className="truncate text-xs text-zinc-700">
-                                  {route.startLocation.address || "Depot"}
-                                </p>
+                                </span>
+                                <div className="min-w-0">
+                                  <p className="text-xs font-semibold text-zinc-800">
+                                    Starting Point
+                                  </p>
+                                  <p className="mt-0.5 truncate text-xs text-zinc-600">
+                                    {route.startLocation.address || "Depot"}
+                                  </p>
+                                </div>
                               </div>
                             </div>
                           </li>
