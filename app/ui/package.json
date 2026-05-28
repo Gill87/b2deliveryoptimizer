@@ -7,11 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint --max-warnings=0",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "node ./node_modules/typescript/bin/tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format": "node ./node_modules/prettier/bin/prettier.cjs --write .",
+    "format:check": "node ./node_modules/prettier/bin/prettier.cjs --check ."
   },
   "engines": {
     "node": ">=20.9.0"
