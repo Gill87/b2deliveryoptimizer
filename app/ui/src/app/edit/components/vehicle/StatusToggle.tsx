@@ -13,14 +13,24 @@ type Props = {
   onUpdate: (id: number, field: "available", value: boolean) => void;
 };
 
-export default function StatusToggle({ vehicleId, available, onUpdate }: Props) {
+export default function StatusToggle({
+  vehicleId,
+  available,
+  onUpdate,
+}: Props) {
   return (
-    <div className={STATUS_TOGGLE_WRAPPER} role="group" aria-label="Vehicle availability">
+    <div
+      className={STATUS_TOGGLE_WRAPPER}
+      role="group"
+      aria-label="Vehicle availability"
+    >
       <button
         type="button"
         onClick={() => onUpdate(vehicleId, "available", true)}
         aria-pressed={available === true}
-        className={available ? STATUS_TOGGLE_BTN_ACTIVE : STATUS_TOGGLE_BTN_INACTIVE}
+        className={
+          available ? STATUS_TOGGLE_BTN_ACTIVE : STATUS_TOGGLE_BTN_INACTIVE
+        }
       >
         <span className={STATUS_TOGGLE_TEXT}>Available</span>
       </button>
@@ -28,7 +38,9 @@ export default function StatusToggle({ vehicleId, available, onUpdate }: Props) 
         type="button"
         onClick={() => onUpdate(vehicleId, "available", false)}
         aria-pressed={available === false}
-        className={!available ? STATUS_TOGGLE_BTN_ACTIVE : STATUS_TOGGLE_BTN_INACTIVE}
+        className={
+          !available ? STATUS_TOGGLE_BTN_ACTIVE : STATUS_TOGGLE_BTN_INACTIVE
+        }
       >
         <span className={STATUS_TOGGLE_TEXT}>In use</span>
       </button>
