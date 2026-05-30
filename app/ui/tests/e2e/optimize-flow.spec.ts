@@ -64,15 +64,15 @@ test("optimize flow routes 2 stops to 1 vehicle", async ({ page }) => {
   await vehicleDialog.locator("#overlay-vehicle-unit").selectOption("units");
   await vehicleDialog.locator('[aria-label="Departure hours"]').fill("08");
   await vehicleDialog.locator('[aria-label="Departure minutes"]').fill("00");
-  await vehicleDialog.getByRole("button", { name: "Done" }).click();
+  await vehicleDialog.getByRole("button", { name: "Confirm" }).click();
 
   // Add two delivery addresses
   await addDeliveryAddress(page, "Stop One");
   await addDeliveryAddress(page, "Stop Two");
 
-  // Click Optimize in the navbar header (scoped to avoid colliding with depot overlay button)
+  // Optimize button is in ManageSectionHeader inside <main>, not the navbar
   await page
-    .getByRole("banner")
+    .getByRole("main")
     .getByRole("button", { name: "Optimize" })
     .click();
 
