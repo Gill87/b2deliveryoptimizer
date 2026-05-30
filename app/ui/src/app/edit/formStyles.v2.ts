@@ -760,7 +760,7 @@ export const MOBILE_BOTTOM_BAR_ROOT =
 export const MOBILE_BOTTOM_BAR_INNER = "flex flex-col gap-[8px] w-full";
 
 export const MOBILE_BOTTOM_BAR_OPTIMIZE_BTN =
-  "flex items-center justify-center h-[44px] px-[16px] py-[10px] rounded-[80px] w-full overflow-clip bg-[var(--edit-btn-primary)] cursor-pointer";
+  "flex items-center justify-center h-[44px] px-[16px] py-[10px] rounded-[80px] flex-1 min-w-0 overflow-clip bg-[var(--edit-btn-primary)] cursor-pointer disabled:cursor-not-allowed";
 
 export const MOBILE_BOTTOM_BAR_OPTIMIZE_LABEL =
   "font-['Manrope',sans-serif] font-semibold text-[16px] leading-[22px] text-[var(--edit-text-primary)] whitespace-nowrap";
