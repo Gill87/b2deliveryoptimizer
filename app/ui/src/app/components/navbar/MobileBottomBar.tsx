@@ -15,7 +15,11 @@ type Props = {
   isOptimizing: boolean;
 };
 
-export default function MobileBottomBar({ onSave, onOptimize, isOptimizing }: Props) {
+export default function MobileBottomBar({
+  onSave,
+  onOptimize,
+  isOptimizing,
+}: Props) {
   return (
     <div className={MOBILE_BOTTOM_BAR_ROOT}>
       <div className={MOBILE_BOTTOM_BAR_INNER}>
