@@ -68,7 +68,7 @@ jobs:
         run: cmake --preset dev
 
       - name: Build (CMake dev preset)
-        run: cmake --build --preset dev
+        run: cmake --build --preset dev --parallel
 
       - name: List discovered E2E tests
         run: ctest --preset dev -N -L e2e
