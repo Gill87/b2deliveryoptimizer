@@ -18,7 +18,7 @@ export const SIDEBAR_NAV_ITEM_DISABLED =
   "flex flex-col gap-1 items-center w-full opacity-[0.26] cursor-not-allowed";
 
 export const SIDEBAR_NAV_PILL_ACTIVE =
-  "w-full flex items-center justify-center rounded-[80px] bg-[var(--edit-container-active)] px-[9px] py-[4px]";
+  "w-full flex items-center justify-center rounded-[80px] bg-[var(--edit-container-active)] px-[9px] py-[4px] text-[var(--edit-text-primary)]";
 
 export const SIDEBAR_NAV_PILL_INACTIVE =
   "w-full flex items-center justify-center rounded-[80px] px-[9px] py-[4px]";
