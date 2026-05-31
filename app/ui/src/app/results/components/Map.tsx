@@ -518,11 +518,15 @@ export default function MapComponent({
                       }}
                       title={route.startLocation.address || "Starting point"}
                       draggable={false}
-                      icon={{
-                        url: DEPOT_MARKER_SVG,
-                        scaledSize: new google.maps.Size(28, 28),
-                        anchor: new google.maps.Point(14, 14),
-                      }}
+                      icon={
+                        typeof google !== "undefined"
+                          ? {
+                              url: DEPOT_MARKER_SVG,
+                              scaledSize: new google.maps.Size(28, 28),
+                              anchor: new google.maps.Point(14, 14),
+                            }
+                          : undefined
+                      }
                     />
                   )}
                   {sorted.map((stop) => {
