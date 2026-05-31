@@ -37,11 +37,7 @@ export default function SidebarResultsButton() {
   if (isResultsPage) {
     return (
       <span className={SIDEBAR_NAV_ITEM_ACTIVE} aria-current="page">
-        <span
-          className={SIDEBAR_NAV_PILL_ACTIVE}
-        >
-          {SIDEBAR_RESULTS_ICON}
-        </span>
+        <span className={SIDEBAR_NAV_PILL_ACTIVE}>{SIDEBAR_RESULTS_ICON}</span>
         <span className={SIDEBAR_NAV_LABEL_ACTIVE}>Results</span>
       </span>
     );
