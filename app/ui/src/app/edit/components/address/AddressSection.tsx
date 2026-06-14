@@ -20,6 +20,9 @@ import {
   ADDRESS_LIST_CONTAINER,
   ADDRESS_LIST_CONTAINER_INNER,
   ADDRESS_LIST_DIVIDER,
+  ADDRESS_LIST_RESPONSIVE_CONTAINER,
+  ADDRESS_LIST_RESPONSIVE_INNER,
+  ADDRESS_LIST_DESKTOP_DIVIDER,
   ADDRESS_SEARCH_DESKTOP_SIZE,
   ADDRESS_SEARCH_NO_RESULTS,
   ADDRESS_TOOLBAR_DESKTOP,
@@ -29,7 +32,6 @@ import {
   MOBILE_ADDR_TOOLBAR_BTN_ROW,
   MOBILE_ADDR_TOOLBAR_BTN_ENABLED,
   MOBILE_ADDR_TOOLBAR_BTN_DISABLED,
-  ADDRESS_LIST_MOBILE_WRAP,
 } from "@/app/edit/formStyles.v2";
 
 type AddressSectionProps = {
@@ -157,56 +159,47 @@ export default function AddressSection({
         </div>
       )}
 
-      {/* Mobile: stacked cards or no-results message */}
+      {/* Shared address cards. AddressCard owns its desktop/mobile layouts. */}
       {addressesCount > 0 && (
-        <div className={ADDRESS_LIST_MOBILE_WRAP}>
-          {searchQuery.trim() !== "" && addressesOnCurrentPage.length === 0 ? (
-            <div className={ADDRESS_SEARCH_NO_RESULTS}>No Addresses Found</div>
-          ) : (
-            addressesOnCurrentPage.map((a) => (
-              <AddressCard
-                key={`address-${a.id}`}
-                address={a}
-                updateAddress={updateAddress}
-                deleteAddress={handleDeleteRequest}
-                unlockAddress={unlockAddress}
-                confirmAddress={confirmAddress}
-                addressTouched={touchedIds.has(a.id)}
-                geocodeFailed={geocodeFailedIds.includes(a.id)}
-                outOfRegionFailed={outOfRegionIds.includes(a.id)}
-              />
-            ))
-          )}
+        <div className={ADDRESS_LIST_RESPONSIVE_CONTAINER}>
+          <div className={ADDRESS_LIST_RESPONSIVE_INNER}>
+            <AddressRowHeader />
+            <div className={ADDRESS_LIST_DESKTOP_DIVIDER} />
+
+            {searchQuery.trim() !== "" &&
+            addressesOnCurrentPage.length === 0 ? (
+              <div className={ADDRESS_SEARCH_NO_RESULTS}>
+                No Addresses Found
+              </div>
+            ) : (
+              addressesOnCurrentPage.map((a) => (
+                <AddressCard
+                  key={`address-${a.id}`}
+                  address={a}
+                  updateAddress={updateAddress}
+                  deleteAddress={handleDeleteRequest}
+                  unlockAddress={unlockAddress}
+                  confirmAddress={confirmAddress}
+                  addressTouched={touchedIds.has(a.id)}
+                  geocodeFailed={geocodeFailedIds.includes(a.id)}
+                  outOfRegionFailed={outOfRegionIds.includes(a.id)}
+                />
+              ))
+            )}
+          </div>
         </div>
       )}
 
-      {/* Desktop hi-fi container: header + divider + rows */}
-      <div className={ADDRESS_LIST_CONTAINER}>
-        <div className={ADDRESS_LIST_CONTAINER_INNER}>
-          <AddressRowHeader />
-          <div className={ADDRESS_LIST_DIVIDER} />
-          {addressesCount === 0 ? (
+      {/* Desktop empty state keeps the hi-fi table chrome when no rows exist. */}
+      {addressesCount === 0 && (
+        <div className={ADDRESS_LIST_CONTAINER}>
+          <div className={ADDRESS_LIST_CONTAINER_INNER}>
+            <AddressRowHeader />
+            <div className={ADDRESS_LIST_DIVIDER} />
             <AddressEmptyState />
-          ) : searchQuery.trim() !== "" &&
-            addressesOnCurrentPage.length === 0 ? (
-            <div className={ADDRESS_SEARCH_NO_RESULTS}>No Addresses Found</div>
-          ) : (
-            addressesOnCurrentPage.map((a) => (
-              <AddressCard
-                key={`address-${a.id}`}
-                address={a}
-                updateAddress={updateAddress}
-                deleteAddress={handleDeleteRequest}
-                unlockAddress={unlockAddress}
-                confirmAddress={confirmAddress}
-                addressTouched={touchedIds.has(a.id)}
-                geocodeFailed={geocodeFailedIds.includes(a.id)}
-                outOfRegionFailed={outOfRegionIds.includes(a.id)}
-              />
-            ))
-          )}
+          </div>
         </div>
-      </div>
+      )}
 
       {addressToDeleteId !== null && (
         <ConfirmDeletionOverlay

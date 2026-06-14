@@ -29,6 +29,7 @@ async function addDeliveryAddress(page: Page, recipientName: string) {
     .locator('[aria-label="Recipient name"]')
     .first()
     .fill(recipientName);
+  await page.locator('[aria-label="Delivery quantity"]').first().fill("1");
   await page.locator('[aria-label="Edit recipient address"]').first().click();
   await fillAddressOverlay(page, "Enter Address", "Confirm");
   await page.locator('[aria-label="Confirm row"]').first().click();

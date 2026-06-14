@@ -332,6 +332,15 @@ export const ADDRESS_LIST_CONTAINER_INNER = "flex flex-col gap-4 min-w-max";
 export const ADDRESS_LIST_DIVIDER =
   "border-t border-[var(--edit-stone-200)] w-full";
 
+export const ADDRESS_LIST_RESPONSIVE_CONTAINER =
+  "flex flex-col gap-4 lg:block lg:border lg:border-[var(--edit-stone-200)] lg:rounded-[8px] lg:overflow-x-auto lg:p-4";
+
+export const ADDRESS_LIST_RESPONSIVE_INNER =
+  "flex flex-col gap-4 lg:min-w-max";
+
+export const ADDRESS_LIST_DESKTOP_DIVIDER =
+  "hidden lg:block border-t border-[var(--edit-stone-200)] w-full";
+
 export const ADDRESS_EMPTY_STATE_WRAPPER = EMPTY_STATE_WRAPPER;
 export const ADDRESS_EMPTY_STATE_ICON = EMPTY_STATE_ICON;
 export const ADDRESS_EMPTY_STATE_TEXT_GROUP = EMPTY_STATE_TEXT_GROUP;
