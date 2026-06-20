@@ -300,7 +300,11 @@ function RoutePolylinesOverlay({
 
     void (async () => {
       // Request one route at a time to avoid Directions API rate-limit failures.
-      for (let routeIndex = 0; routeIndex < routesSnapshot.length; routeIndex += 1) {
+      for (
+        let routeIndex = 0;
+        routeIndex < routesSnapshot.length;
+        routeIndex += 1
+      ) {
         if (cancelled) return;
         await drawRoutePolyline(routesSnapshot[routeIndex]!, routeIndex);
       }
