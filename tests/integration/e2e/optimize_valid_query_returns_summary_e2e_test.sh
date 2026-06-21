@@ -12,10 +12,14 @@ fi
 e2e_init "$1" "$2" "$3" "$4"
 python3_bin="$5"
 health_file="${work_dir}/health.json"
+osrm_ready_file="${work_dir}/osrm-nearest-ready.json"
 payload_file="${work_dir}/optimize-payload.json"
 submit_file="${work_dir}/submit-response.json"
+status_file="${work_dir}/status-response.json"
+result_file="${work_dir}/result-response.json"
 
 e2e_stack_up
+e2e_wait_for_osrm_nearest_ok "${osrm_ready_file}"
 e2e_wait_for_api_health "${health_file}"
 
 cat >"${payload_file}" <<'JSON'
@@ -49,3 +53,44 @@ if [[ -z "${job_id}" ]]; then
   cat "${submit_file}" >&2 || true
   exit 1
 fi
+
+status_url="http://127.0.0.1:${api_port}/api/v1/optimization-jobs/${job_id}"
+result_url="http://127.0.0.1:${api_port}/api/v1/optimization-jobs/${job_id}/result"
+
+job_succeeded=false
+for _ in $(seq 1 60); do
+  status_http_code="$("${curl_bin}" -sS -o "${status_file}" -w "%{http_code}" "${status_url}")"
+  if [[ "${status_http_code}" != "200" ]]; then
+    echo "expected optimization job status endpoint to return HTTP 200, got ${status_http_code}" >&2
+    cat "${status_file}" >&2 || true
+    exit 1
+  fi
+
+  status_value="$("${python3_bin}" -c 'import json,sys; print(json.load(open(sys.argv[1]))["status"])' "${status_file}")"
+  if [[ "${status_value}" == "succeeded" ]]; then
+    job_succeeded=true
+    break
+  fi
+  sleep 2
+done
+
+if [[ "${job_succeeded}" != "true" ]]; then
+  echo "expected optimization job to reach succeeded state" >&2
+  cat "${status_file}" >&2 || true
+  exit 1
+fi
+
+result_http_code="$("${curl_bin}" -sS -o "${result_file}" -w "%{http_code}" "${result_url}")"
+if [[ "${result_http_code}" != "200" ]]; then
+  echo "expected optimization job result endpoint to return HTTP 200, got ${result_http_code}" >&2
+  cat "${result_file}" >&2 || true
+  exit 1
+fi
+
+for key in status summary routes unassigned; do
+  if ! grep -Eq '"'"${key}"'"[[:space:]]*:' "${result_file}"; then
+    echo "optimization job result missing key ${key}" >&2
+    cat "${result_file}" >&2 || true
+    exit 1
+  fi
+done
