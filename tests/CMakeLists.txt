@@ -738,7 +738,7 @@ if(DOCKER_PROGRAM)
     health_endpoint_returns_ok_e2e_test.sh
     1800
   )
-  deliveryoptimizer_add_docker_api_e2e_test(
+  deliveryoptimizer_add_docker_api_e2e_python_test(
     DeliveryOptimizerE2ETest.OptimizeValidQueryReturnsSummary
     optimize_valid_query_returns_summary_e2e_test.sh
     1800

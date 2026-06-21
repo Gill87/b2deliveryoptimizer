@@ -28,7 +28,7 @@ http_code="$("${curl_bin}" -sS -o "${response_file}" -w "%{http_code}" \
   -X POST \
   -H "Content-Type: application/json" \
   --data-binary "@${payload_file}" \
-  "http://127.0.0.1:${api_port}/api/v1/deliveries/optimize")"
+  "http://127.0.0.1:${api_port}/api/v1/optimization-jobs")"
 
 if [[ "${http_code}" != "400" ]]; then
   echo "expected HTTP 400 for negative job demand, got ${http_code}" >&2
