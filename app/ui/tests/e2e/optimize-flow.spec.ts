@@ -89,5 +89,7 @@ test("optimize flow routes 2 stops to 1 vehicle", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Optimized Routes" }),
   ).toBeVisible();
-  await expect(page.getByText("1 route with 2 total stops")).toBeVisible();
+  await expect(
+    page.locator("aside").getByText("1 route with 2 total stops"),
+  ).toBeVisible();
 });
