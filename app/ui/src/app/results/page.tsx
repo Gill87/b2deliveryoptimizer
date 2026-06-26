@@ -225,12 +225,6 @@ export default function ResultsPage() {
     [setRoutes],
   );
 
-  const handleEditModeChange = useCallback((value: boolean) => {
-    setIsEditMode(value);
-    if (!value) setPendingPinMove(null);
-    if (value) setIsSheetExpanded(true);
-  }, []);
-
   const savePendingPinMove = useCallback(() => {
     if (!pendingPinMove) return;
     setRoutes((prev) =>
@@ -249,6 +243,18 @@ export default function ResultsPage() {
     );
     setPendingPinMove(null);
   }, [pendingPinMove, setRoutes]);
+
+  const handleEditModeChange = useCallback(
+    (value: boolean) => {
+      if (!value) {
+        savePendingPinMove();
+        setPendingPinMove(null);
+      }
+      setIsEditMode(value);
+      if (value) setIsSheetExpanded(true);
+    },
+    [savePendingPinMove],
+  );
 
   const handlePendingPinMove = useCallback(
     (vehicleId: string, stopId: string, lat: number, lng: number) => {
