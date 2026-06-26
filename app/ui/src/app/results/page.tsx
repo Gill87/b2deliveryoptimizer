@@ -77,11 +77,7 @@ function readInitialRoutes(): RouteLoadResult {
 
   if (!stored) {
     cachedRouteLoadKey = cacheKey;
-    cachedRouteLoadResult = {
-      routes: [],
-      error:
-        "No optimized routes found. Please run optimize from the edit page.",
-    };
+    cachedRouteLoadResult = EMPTY_ROUTE_LOAD_RESULT;
     return cachedRouteLoadResult;
   }
 
@@ -92,11 +88,7 @@ function readInitialRoutes(): RouteLoadResult {
     return cachedRouteLoadResult;
   } catch {
     cachedRouteLoadKey = cacheKey;
-    cachedRouteLoadResult = {
-      routes: [],
-      error:
-        "Could not read saved route data. Please run optimize again from the edit page.",
-    };
+    cachedRouteLoadResult = EMPTY_ROUTE_LOAD_RESULT;
     return cachedRouteLoadResult;
   }
 }
