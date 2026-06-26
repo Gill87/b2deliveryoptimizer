@@ -102,18 +102,67 @@ function subscribeToRouteStorage(onChange: () => void): () => void {
   };
 }
 
+let clientValidationPending = true;
+
+function readClientValidationError(): string | null {
+  if (typeof window === "undefined" || clientValidationPending) {
+    return null;
+  }
+
+  const forceMock = MOCK_DATA_ENABLED
+    ? new URLSearchParams(window.location.search).get("mock")
+    : null;
+  if (forceMock === "1") return null;
+
+  const stored = sessionStorage.getItem("optimizeResults");
+  if (!stored) {
+    return "No optimized routes found. Please run optimize from the edit page.";
+  }
+
+  try {
+    JSON.parse(stored);
+    return null;
+  } catch {
+    return "Could not read saved route data. Please run optimize again from the edit page.";
+  }
+}
+
+function subscribeToClientValidation(onChange: () => void): () => void {
+  if (typeof window === "undefined") return () => {};
+
+  clientValidationPending = true;
+  const hydrationId = requestAnimationFrame(() => {
+    clientValidationPending = false;
+    onChange();
+  });
+
+  window.addEventListener("storage", onChange);
+  window.addEventListener("optimize-results-updated", onChange);
+
+  return () => {
+    cancelAnimationFrame(hydrationId);
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener("optimize-results-updated", onChange);
+  };
+}
+
 export default function ResultsPage() {
   const routeLoadResult = useSyncExternalStore(
     subscribeToRouteStorage,
     readInitialRoutes,
     () => EMPTY_ROUTE_LOAD_RESULT,
   );
+  const clientValidationError = useSyncExternalStore(
+    subscribeToClientValidation,
+    readClientValidationError,
+    () => null,
+  );
   const [draftRoutes, setDraftRoutes] = useState<DraftRoutesState | null>(null);
   const routes =
     draftRoutes?.source === routeLoadResult
       ? draftRoutes.routes
       : routeLoadResult.routes;
-  const error = routeLoadResult.error;
+  const error = clientValidationError;
   const routesRef = useRef(routes);
   useEffect(() => {
     routesRef.current = routes;
