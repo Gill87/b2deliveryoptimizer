@@ -38,6 +38,9 @@ type RouteLoadResult = { routes: Route[]; error: string | null };
 
 const EMPTY_ROUTE_LOAD_RESULT: RouteLoadResult = { routes: [], error: null };
 
+// useSyncExternalStore snapshots must keep the same object reference while the
+// underlying sessionStorage payload is unchanged, so this cache intentionally
+// lives outside the component.
 let cachedRouteLoadKey = "";
 let cachedRouteLoadResult: RouteLoadResult = EMPTY_ROUTE_LOAD_RESULT;
 

@@ -9,6 +9,8 @@ if [[ $# -lt 5 ]]; then
   exit 2
 fi
 
+# e2e_init owns the shared Docker stack args; this test keeps python separate
+# because it only needs it for parsing optimization job JSON responses.
 e2e_init "$1" "$2" "$3" "$4"
 python3_bin="$5"
 health_file="${work_dir}/health.json"

@@ -17,10 +17,8 @@ import {
   ADDRESS_SECTION_SUBHEADING,
   ADDRESS_BTN_V2_DESKTOP_ENABLED,
   ADDRESS_BTN_V2_DESKTOP_DISABLED,
-  ADDRESS_LIST_CONTAINER,
-  ADDRESS_LIST_CONTAINER_INNER,
-  ADDRESS_LIST_DIVIDER,
   ADDRESS_LIST_RESPONSIVE_CONTAINER,
+  ADDRESS_LIST_RESPONSIVE_CONTAINER_DESKTOP_ONLY,
   ADDRESS_LIST_RESPONSIVE_INNER,
   ADDRESS_LIST_DESKTOP_DIVIDER,
   ADDRESS_SEARCH_DESKTOP_SIZE,
@@ -192,10 +190,10 @@ export default function AddressSection({
 
       {/* Desktop empty state keeps the hi-fi table chrome when no rows exist. */}
       {addressesCount === 0 && (
-        <div className={ADDRESS_LIST_CONTAINER}>
-          <div className={ADDRESS_LIST_CONTAINER_INNER}>
+        <div className={ADDRESS_LIST_RESPONSIVE_CONTAINER_DESKTOP_ONLY}>
+          <div className={ADDRESS_LIST_RESPONSIVE_INNER}>
             <AddressRowHeader />
-            <div className={ADDRESS_LIST_DIVIDER} />
+            <div className={ADDRESS_LIST_DESKTOP_DIVIDER} />
             <AddressEmptyState />
           </div>
         </div>
