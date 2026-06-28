@@ -335,8 +335,7 @@ export const ADDRESS_LIST_DIVIDER =
 const ADDRESS_LIST_DESKTOP_CHROME =
   "lg:block lg:border lg:border-[var(--edit-stone-200)] lg:rounded-[8px] lg:overflow-x-auto lg:p-4";
 
-export const ADDRESS_LIST_RESPONSIVE_CONTAINER =
-  `flex flex-col gap-4 ${ADDRESS_LIST_DESKTOP_CHROME}`;
+export const ADDRESS_LIST_RESPONSIVE_CONTAINER = `flex flex-col gap-4 ${ADDRESS_LIST_DESKTOP_CHROME}`;
 
 export const ADDRESS_LIST_RESPONSIVE_CONTAINER_DESKTOP_ONLY = `hidden ${ADDRESS_LIST_DESKTOP_CHROME}`;
 
@@ -389,13 +388,11 @@ export const ADDRESS_ROW_ADDR_TRIGGER_PLACEHOLDER =
 const ADDRESS_ROW_STEPPER_CONTAINER_BASE =
   "border flex h-11 items-center justify-between px-2 py-[10px] rounded-[6px] shrink-0";
 
-export const ADDRESS_ROW_STEPPER_CONTAINER =
-  `${ADDRESS_ROW_STEPPER_CONTAINER_BASE} border-[var(--edit-stone-200)]`;
+export const ADDRESS_ROW_STEPPER_CONTAINER = `${ADDRESS_ROW_STEPPER_CONTAINER_BASE} border-[var(--edit-stone-200)]`;
 
 export const ADDRESS_ROW_STEPPER_CONTAINER_NARROW = `${ADDRESS_ROW_STEPPER_CONTAINER} w-[72px]`;
 
-export const ADDRESS_ROW_STEPPER_CONTAINER_NARROW_ERROR =
-  `${ADDRESS_ROW_STEPPER_CONTAINER_BASE} border-[var(--edit-error-border)] w-[72px]`;
+export const ADDRESS_ROW_STEPPER_CONTAINER_NARROW_ERROR = `${ADDRESS_ROW_STEPPER_CONTAINER_BASE} border-[var(--edit-error-border)] w-[72px]`;
 
 export const ADDRESS_ROW_STEPPER_INPUT =
   "flex-1 min-w-0 bg-transparent outline-none text-[16px] leading-[1.5] text-[var(--edit-text-primary)] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none";
