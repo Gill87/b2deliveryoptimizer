@@ -29,7 +29,7 @@ export default function MobileBottomBar({
             className={MOBILE_BOTTOM_BAR_SECONDARY_BTN}
             onClick={onSave}
           >
-            <span className={MOBILE_BOTTOM_BAR_SECONDARY_LABEL}>Save</span>
+            <span className={MOBILE_BOTTOM_BAR_SECONDARY_LABEL}>Save changes</span>
           </button>
           <button
             type="button"
