@@ -152,6 +152,7 @@ export default function VehicleDetailsOverlay({
   const hoursRef = useRef<HTMLInputElement>(null);
   const minutesRef = useRef<HTMLInputElement>(null);
   const minutesAutoFilledRef = useRef(false);
+  const focusMinutesAfterRenderRef = useRef(false);
 
   const nameError = submitted && !name.trim();
   const typeError = submitted && !type;
@@ -166,6 +167,14 @@ export default function VehicleDetailsOverlay({
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
+
+  useEffect(() => {
+    if (!focusMinutesAfterRenderRef.current) return;
+
+    focusMinutesAfterRenderRef.current = false;
+    minutesRef.current?.focus();
+    if (minutesAutoFilledRef.current) minutesRef.current?.select();
+  }, [hours, minutes]);
 
   function handleSave() {
     setSubmitted(true);
@@ -468,7 +477,9 @@ export default function VehicleDetailsOverlay({
                                 minutesAutoFilledRef.current);
                             return nextMinutes;
                           });
-                          if (val.length === 2) minutesRef.current?.focus();
+                          if (val.length === 2) {
+                            focusMinutesAfterRenderRef.current = true;
+                          }
                         }}
                         placeholder="HH"
                         maxLength={2}

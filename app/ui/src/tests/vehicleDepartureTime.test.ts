@@ -20,6 +20,10 @@ describe("getMinutesAfterHourChange", () => {
     expect(getMinutesAfterHourChange("13", "")).toBe("");
   });
 
+  it("defaults minutes after a leading-zero hour becomes valid", () => {
+    expect(getMinutesAfterHourChange("09", "")).toBe("00");
+  });
+
   it("clears auto-filled minutes when the hour becomes invalid", () => {
     expect(getMinutesAfterHourChange("13", "00", true)).toBe("");
   });
