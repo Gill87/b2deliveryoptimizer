@@ -3,8 +3,8 @@
 #include "env_utils.hpp"
 
 #include <drogon/drogon.h>
-#include <json/json.h>
 #include <functional>
+#include <json/json.h>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -63,8 +63,8 @@ constexpr char kMessageField[] = "message";
   return payload;
 }
 
-[[nodiscard]] drogon::HttpResponsePtr BuildUpstreamFailureResponse(
-    const drogon::HttpResponsePtr& upstream_response) {
+[[nodiscard]] drogon::HttpResponsePtr
+BuildUpstreamFailureResponse(const drogon::HttpResponsePtr& upstream_response) {
   Json::Value body{Json::objectValue};
   body["error"] = "WhatsApp upstream request failed.";
   if (upstream_response != nullptr) {
@@ -84,10 +84,9 @@ void RegisterWhatsAppEndpoint(drogon::HttpAppFramework& app) {
 
   app.registerHandler(
       kSendRoutePath,
-      [whatsapp_client =
-           std::move(whatsapp_client)](const drogon::HttpRequestPtr& request,
-                                       std::function<void(const drogon::HttpResponsePtr&)>&&
-                                           callback) mutable {
+      [whatsapp_client = std::move(whatsapp_client)](
+          const drogon::HttpRequestPtr& request,
+          std::function<void(const drogon::HttpResponsePtr&)>&& callback) mutable {
         const auto request_body = request->getJsonObject();
         if (request_body == nullptr) {
           std::move(callback)(
