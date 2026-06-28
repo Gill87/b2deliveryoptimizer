@@ -15,6 +15,19 @@ export function deliveryTimeFilled(
   );
 }
 
+/** Formats the locked-card delivery time label for one- or two-sided windows. */
+export function formatLockedDeliveryTimeWindow(
+  a: Pick<AddressCard, "deliveryTimeStart" | "deliveryTimeEnd">,
+): string {
+  const start = a.deliveryTimeStart?.trim() ?? "";
+  const end = a.deliveryTimeEnd?.trim() ?? "";
+
+  if (start && end) return `${start} – ${end}`;
+  if (start) return `From ${start}`;
+  if (end) return `By ${end}`;
+  return "—";
+}
+
 /** Capitalise the first letter of a string. Safe on empty strings. */
 export function capitalize(s: string): string {
   return s ? s.charAt(0).toUpperCase() + s.slice(1) : "";
