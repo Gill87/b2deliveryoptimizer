@@ -2,6 +2,8 @@
 
 #include "env_utils.hpp"
 
+#include <algorithm>
+#include <cctype>
 #include <drogon/drogon.h>
 #include <functional>
 #include <json/json.h>
@@ -41,7 +43,9 @@ constexpr char kMessageField[] = "message";
   }
 
   auto value = body[field_name].asString();
-  if (value.empty()) {
+  if (value.empty() ||
+      std::all_of(value.begin(), value.end(),
+                  [](const unsigned char ch) { return std::isspace(ch) != 0; })) {
     return std::nullopt;
   }
 

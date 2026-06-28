@@ -49,3 +49,41 @@ if ! grep -Eq '"error"[[:space:]]*:[[:space:]]*"Request body must include messag
   cat "${response_file}" >&2 || true
   exit 1
 fi
+
+printf '{"to":"   ","message":"Your route for today: Stop 1"}' >"${payload_file}"
+http_code="$("${curl_bin}" -sS -o "${response_file}" -w "%{http_code}" \
+  -X POST \
+  -H "Content-Type: application/json" \
+  --data-binary "@${payload_file}" \
+  "$(http_server_url /api/whatsapp/send-route)")"
+
+if [[ "${http_code}" != "400" ]]; then
+  echo "expected HTTP 400 when to is whitespace-only, got ${http_code}" >&2
+  cat "${response_file}" >&2 || true
+  exit 1
+fi
+
+if ! grep -Eq '"error"[[:space:]]*:[[:space:]]*"Request body must include to."' "${response_file}"; then
+  echo "expected whitespace-only to error response" >&2
+  cat "${response_file}" >&2 || true
+  exit 1
+fi
+
+printf '{"to":"14155551234","message":"\t \n"}' >"${payload_file}"
+http_code="$("${curl_bin}" -sS -o "${response_file}" -w "%{http_code}" \
+  -X POST \
+  -H "Content-Type: application/json" \
+  --data-binary "@${payload_file}" \
+  "$(http_server_url /api/whatsapp/send-route)")"
+
+if [[ "${http_code}" != "400" ]]; then
+  echo "expected HTTP 400 when message is whitespace-only, got ${http_code}" >&2
+  cat "${response_file}" >&2 || true
+  exit 1
+fi
+
+if ! grep -Eq '"error"[[:space:]]*:[[:space:]]*"Request body must include message."' "${response_file}"; then
+  echo "expected whitespace-only message error response" >&2
+  cat "${response_file}" >&2 || true
+  exit 1
+fi
