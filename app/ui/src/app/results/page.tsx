@@ -2,16 +2,26 @@
 
 "use client";
 
-import { default as React, useCallback, useEffect, useState } from "react";
+import {
+  default as React,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { NAVBAR_V2_LOGO, NAVBAR_V2_ROOT } from "../edit/formStyles.v2";
 import styles from "../edit/edit.module.css";
 import MobileSidebar from "../components/sidebar/MobileSidebar";
 import ExportEditWarningModal from "./components/ExportEditWarningModal";
 import ExportRoutesModal from "./components/ExportRoutesModal";
+import SendRoutesModal from "./components/SendRoutesModal";
 import MapComponent from "./components/Map";
 import MobileResultsNavbar from "./components/MobileResultsNavbar";
 import ResultsBottomSheet from "./components/ResultsBottomSheet";
-import ResultsNavRail from "./components/ResultsNavRail";
+import NavSidebar from "@/app/components/sidebar/Sidebar";
+import SidebarEditButton from "@/app/components/sidebar/SidebarEditButton";
+import SidebarResultsButton from "@/app/components/sidebar/SidebarResultsButton";
 import Sidebar from "./components/Sidebar";
 import { mockRouteToRoute } from "./data/mockRouteLoader";
 import mockRouteData from "./data/mock_route.json";
@@ -21,61 +31,94 @@ import {
 } from "./formStyles.mobile";
 import type { PendingPinMove, Route } from "./types";
 import { downloadRoutesAsJsonFiles } from "./utils/downloadRouteJson";
+import { duplicateRoute } from "./utils/duplicateRoute";
 
-function readInitialRoutes(): {
-  routes: Route[];
-  error: string | null;
-  loadedFromSessionStorage: boolean;
-} {
+// Dev-only QA tooling (see the ?mock=1 branch below) must never run in production.
+const MOCK_DATA_ENABLED = process.env.NODE_ENV !== "production";
+
+type RouteLoadResult = { routes: Route[]; error: string | null };
+
+const EMPTY_ROUTE_LOAD_RESULT: RouteLoadResult = { routes: [], error: null };
+
+let cachedRouteLoadKey = "";
+let cachedRouteLoadResult: RouteLoadResult = EMPTY_ROUTE_LOAD_RESULT;
+
+function readInitialRoutes(): RouteLoadResult {
   if (typeof window === "undefined") {
-    return { routes: [], error: null, loadedFromSessionStorage: false };
+    return EMPTY_ROUTE_LOAD_RESULT;
   }
-  const forceMock = new URLSearchParams(window.location.search).get("mock");
-  // Intentional demo: ?mock=1 loads fixture routes for visual QA without running optimize.
-  if (forceMock === "1") {
-    return {
-      routes: [mockRouteToRoute(mockRouteData)],
-      error: null,
-      loadedFromSessionStorage: false,
-    };
+  const forceMock = MOCK_DATA_ENABLED
+    ? new URLSearchParams(window.location.search).get("mock")
+    : null;
+  // Intentionally not removed after reading (unlike the old page): this is re-read on
+  // every "storage"/"optimize-results-updated" event via useSyncExternalStore, so
+  // deleting it here would break that subscription.
+  const stored = sessionStorage.getItem("optimizeResults");
+  const cacheKey = forceMock === "1" ? "mock" : `stored:${stored ?? ""}`;
+
+  if (cacheKey === cachedRouteLoadKey) {
+    return cachedRouteLoadResult;
   }
 
-  const stored = sessionStorage.getItem("optimizeResults");
-  if (!stored) {
-    // Intentional demo fallback: direct /results visits (no prior optimize) render mock
-    // routes so the hi-fi UI can be reviewed without a full optimize flow.
-    return {
+  // Dev-only demo: ?mock=1 loads fixture routes for visual QA without running optimize.
+  if (forceMock === "1") {
+    cachedRouteLoadKey = cacheKey;
+    cachedRouteLoadResult = {
       routes: [mockRouteToRoute(mockRouteData)],
       error: null,
-      loadedFromSessionStorage: false,
     };
+    return cachedRouteLoadResult;
+  }
+
+  if (!stored) {
+    cachedRouteLoadKey = cacheKey;
+    cachedRouteLoadResult = {
+      routes: [],
+      error:
+        "No optimized routes found. Please run optimize from the edit page.",
+    };
+    return cachedRouteLoadResult;
   }
 
   try {
     const parsed = JSON.parse(stored) as Route[];
-    return { routes: parsed, error: null, loadedFromSessionStorage: true };
+    cachedRouteLoadKey = cacheKey;
+    cachedRouteLoadResult = { routes: parsed, error: null };
+    return cachedRouteLoadResult;
   } catch {
-    return {
+    cachedRouteLoadKey = cacheKey;
+    cachedRouteLoadResult = {
       routes: [],
       error:
         "Could not read saved route data. Please run optimize again from the edit page.",
-      loadedFromSessionStorage: false,
     };
+    return cachedRouteLoadResult;
   }
 }
 
-export default function ResultsPage() {
-  const [
-    { routes: initialRoutes, error: initialError, loadedFromSessionStorage },
-  ] = useState(readInitialRoutes);
+function subscribeToRouteStorage(onChange: () => void): () => void {
+  window.addEventListener("storage", onChange);
+  window.addEventListener("optimize-results-updated", onChange);
+  return () => {
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener("optimize-results-updated", onChange);
+  };
+}
 
+export default function ResultsPage() {
+  const routeLoadResult = useSyncExternalStore(
+    subscribeToRouteStorage,
+    readInitialRoutes,
+    () => EMPTY_ROUTE_LOAD_RESULT,
+  );
+  const [draftRoutes, setDraftRoutes] = useState<Route[] | null>(null);
+  const routes = draftRoutes ?? routeLoadResult.routes;
+  const error = routeLoadResult.error;
+  const routesRef = useRef(routes);
   useEffect(() => {
-    if (loadedFromSessionStorage) {
-      sessionStorage.removeItem("optimizeResults");
-    }
-  }, [loadedFromSessionStorage]);
-  const [routes, setRoutes] = useState<Route[]>(initialRoutes);
-  const [error] = useState<string | null>(initialError);
+    routesRef.current = routes;
+  }, [routes]);
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSheetExpanded, setIsSheetExpanded] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -83,7 +126,17 @@ export default function ResultsPage() {
     null,
   );
   const [exportOpen, setExportOpen] = useState(false);
-  const [exportWarningOpen, setExportWarningOpen] = useState(false);
+  const [sendRoutesOpen, setSendRoutesOpen] = useState(false);
+  const [pendingWarningAction, setPendingWarningAction] = useState<
+    "export" | "send" | null
+  >(null);
+
+  const setRoutes = useCallback((update: React.SetStateAction<Route[]>) => {
+    setDraftRoutes((prev) => {
+      const baseRoutes = prev ?? routesRef.current;
+      return typeof update === "function" ? update(baseRoutes) : update;
+    });
+  }, []);
 
   const updateStopNote = useCallback(
     (routeId: string, stopId: string, note: string) => {
@@ -113,7 +166,7 @@ export default function ResultsPage() {
         return next.every((r, i) => r === prev[i]) ? prev : next;
       });
     },
-    [],
+    [setRoutes],
   );
 
   const handleEditModeChange = useCallback((value: boolean) => {
@@ -139,7 +192,7 @@ export default function ResultsPage() {
       ),
     );
     setPendingPinMove(null);
-  }, [pendingPinMove]);
+  }, [pendingPinMove, setRoutes]);
 
   const handlePendingPinMove = useCallback(
     (vehicleId: string, stopId: string, lat: number, lng: number) => {
@@ -164,22 +217,31 @@ export default function ResultsPage() {
 
   const handleExportClick = useCallback(() => {
     if (isEditMode || pendingPinMove != null) {
-      setExportWarningOpen(true);
+      setPendingWarningAction("export");
       return;
     }
     setExportOpen(true);
   }, [isEditMode, pendingPinMove]);
 
-  const handleDoneEditingForExport = useCallback(() => {
+  const handleSendRoutesClick = useCallback(() => {
+    if (isEditMode || pendingPinMove != null) {
+      setPendingWarningAction("send");
+      return;
+    }
+    setSendRoutesOpen(true);
+  }, [isEditMode, pendingPinMove]);
+
+  const handleDoneEditingForWarning = useCallback(() => {
     handleEditModeChange(false);
-    setExportWarningOpen(false);
-    setExportOpen(true);
-  }, [handleEditModeChange]);
+    if (pendingWarningAction === "export") setExportOpen(true);
+    if (pendingWarningAction === "send") setSendRoutesOpen(true);
+    setPendingWarningAction(null);
+  }, [handleEditModeChange, pendingWarningAction]);
 
   const handleExportSingleRoute = useCallback(
     (vehicleId: string) => {
       if (isEditMode || pendingPinMove != null) {
-        setExportWarningOpen(true);
+        setPendingWarningAction("export");
         return;
       }
       const routeIndex = routes.findIndex((r) => r.vehicleId === vehicleId);
@@ -189,28 +251,50 @@ export default function ResultsPage() {
     [routes, isEditMode, pendingPinMove],
   );
 
-  const handleDuplicateRoute = useCallback((vehicleId: string) => {
-    setRoutes((prev) => {
-      const routeIndex = prev.findIndex((r) => r.vehicleId === vehicleId);
-      if (routeIndex === -1) return prev;
-      const source = prev[routeIndex]!;
-      const suffix = Date.now().toString(36);
-      const copy: Route = {
-        ...source,
-        vehicleId: `${source.vehicleId}-copy-${suffix}`,
-        driverName: `${source.driverName} (copy)`,
-        stops: source.stops.map((stop, stopIndex) => ({
-          ...stop,
-          id: `${stop.id}-copy-${suffix}-${stopIndex}`,
-        })),
-      };
-      return [
-        ...prev.slice(0, routeIndex + 1),
-        copy,
-        ...prev.slice(routeIndex + 1),
-      ];
-    });
-  }, []);
+  const updateDriverPhone = useCallback(
+    (vehicleId: string, phone: string) => {
+      setRoutes((prev) =>
+        prev.map((route) =>
+          route.vehicleId === vehicleId
+            ? { ...route, driverPhoneNumber: phone }
+            : route,
+        ),
+      );
+    },
+    [setRoutes],
+  );
+
+  const markRoutesSent = useCallback(
+    (vehicleIds: string[], sentAtIso: string) => {
+      const sentIds = new Set(vehicleIds);
+      setRoutes((prev) =>
+        prev.map((route) =>
+          sentIds.has(route.vehicleId)
+            ? { ...route, lastSentAt: sentAtIso }
+            : route,
+        ),
+      );
+    },
+    [setRoutes],
+  );
+
+  const handleDuplicateRoute = useCallback(
+    (vehicleId: string) => {
+      setRoutes((prev) => {
+        const routeIndex = prev.findIndex((r) => r.vehicleId === vehicleId);
+        if (routeIndex === -1) return prev;
+        const source = prev[routeIndex]!;
+        const suffix = Date.now().toString(36);
+        const copy = duplicateRoute(source, suffix);
+        return [
+          ...prev.slice(0, routeIndex + 1),
+          copy,
+          ...prev.slice(routeIndex + 1),
+        ];
+      });
+    },
+    [setRoutes],
+  );
 
   const handleDeleteRoute = useCallback(
     (vehicleId: string) => {
@@ -219,7 +303,7 @@ export default function ResultsPage() {
         setPendingPinMove(null);
       }
     },
-    [pendingPinMove],
+    [pendingPinMove, setRoutes],
   );
 
   return (
@@ -231,10 +315,27 @@ export default function ResultsPage() {
         onClose={() => setExportOpen(false)}
         routes={routes}
       />
+      <SendRoutesModal
+        isOpen={sendRoutesOpen}
+        onClose={() => setSendRoutesOpen(false)}
+        routes={routes}
+        onUpdateDriverPhone={updateDriverPhone}
+        onSendComplete={markRoutesSent}
+      />
       <ExportEditWarningModal
-        isOpen={exportWarningOpen}
-        onClose={() => setExportWarningOpen(false)}
-        onDoneEditing={handleDoneEditingForExport}
+        isOpen={pendingWarningAction !== null}
+        onClose={() => setPendingWarningAction(null)}
+        onDoneEditing={handleDoneEditingForWarning}
+        warningMessage={
+          pendingWarningAction === "send"
+            ? "Unable to send routes while currently editing"
+            : "Unable to export while currently editing"
+        }
+        bodyMessage={
+          pendingWarningAction === "send"
+            ? "Please save your changes before sending routes. This ensures the routes you send match your current view."
+            : "Please save your changes before exporting routes. This ensures the exported data matches your current view."
+        }
       />
       {error && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -280,7 +381,10 @@ export default function ResultsPage() {
         </div>
       </header>
       <div className="hidden lg:flex flex-1 min-h-0">
-        <ResultsNavRail />
+        <NavSidebar>
+          <SidebarEditButton />
+          <SidebarResultsButton />
+        </NavSidebar>
         {/* Hi-fi routes panel width (28rem); always visible on desktop */}
         <div className="shrink-0 h-full w-[28rem] overflow-hidden">
           <Sidebar
@@ -289,6 +393,7 @@ export default function ResultsPage() {
             onEditModeChange={handleEditModeChange}
             onUpdateStopNote={updateStopNote}
             onExportAllRoutes={handleExportClick}
+            onSendRoutes={handleSendRoutesClick}
             onExportRoute={handleExportSingleRoute}
             onDuplicateRoute={handleDuplicateRoute}
             onDeleteRoute={handleDeleteRoute}
@@ -342,6 +447,7 @@ export default function ResultsPage() {
           isEditMode={isEditMode}
           onEditModeChange={handleEditModeChange}
           onExportClick={handleExportClick}
+          onSendRoutesClick={handleSendRoutesClick}
           onUpdateStopNote={updateStopNote}
           onExportRoute={handleExportSingleRoute}
           onDuplicateRoute={handleDuplicateRoute}
