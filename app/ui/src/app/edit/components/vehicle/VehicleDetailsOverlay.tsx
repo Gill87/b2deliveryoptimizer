@@ -93,6 +93,21 @@ function isValidTime(h: string, m: string): boolean {
   );
 }
 
+export function getMinutesAfterHourChange(
+  hours: string,
+  currentMinutes: string,
+  minutesWereAutoFilled = false,
+): string {
+  const hourNumber = parseInt(hours, 10);
+  if (Number.isNaN(hourNumber) || hourNumber < 1 || hourNumber > 12) {
+    return minutesWereAutoFilled ? "" : currentMinutes;
+  }
+
+  if (currentMinutes === "" || minutesWereAutoFilled) return "00";
+
+  return currentMinutes;
+}
+
 function parseDepartureTime(time: string): {
   hours: string;
   minutes: string;
@@ -136,6 +151,7 @@ export default function VehicleDetailsOverlay({
 
   const hoursRef = useRef<HTMLInputElement>(null);
   const minutesRef = useRef<HTMLInputElement>(null);
+  const minutesAutoFilledRef = useRef(false);
 
   const nameError = submitted && !name.trim();
   const typeError = submitted && !type;
@@ -440,6 +456,18 @@ export default function VehicleDetailsOverlay({
                             .replace(/\D/g, "")
                             .slice(0, 2);
                           setHours(val);
+                          setMinutes((currentMinutes) => {
+                            const nextMinutes = getMinutesAfterHourChange(
+                              val,
+                              currentMinutes,
+                              minutesAutoFilledRef.current,
+                            );
+                            minutesAutoFilledRef.current =
+                              nextMinutes === "00" &&
+                              (currentMinutes === "" ||
+                                minutesAutoFilledRef.current);
+                            return nextMinutes;
+                          });
                           if (val.length === 2) minutesRef.current?.focus();
                         }}
                         placeholder="HH"
@@ -458,11 +486,15 @@ export default function VehicleDetailsOverlay({
                           const val = e.target.value
                             .replace(/\D/g, "")
                             .slice(0, 2);
+                          minutesAutoFilledRef.current = false;
                           setMinutes(val);
                         }}
                         onKeyDown={(e) => {
                           if (e.key === "Backspace" && minutes === "")
                             hoursRef.current?.focus();
+                        }}
+                        onFocus={(e) => {
+                          if (minutesAutoFilledRef.current) e.target.select();
                         }}
                         placeholder="MM"
                         maxLength={2}
