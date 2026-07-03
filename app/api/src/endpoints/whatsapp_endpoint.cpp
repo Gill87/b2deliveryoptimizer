@@ -26,14 +26,12 @@ constexpr char kMessageField[] = "message";
 
 [[nodiscard]] std::string TrimWhitespace(const std::string_view value) {
   std::size_t first = 0;
-  while (first < value.size() &&
-         std::isspace(static_cast<unsigned char>(value[first])) != 0) {
+  while (first < value.size() && std::isspace(static_cast<unsigned char>(value[first])) != 0) {
     ++first;
   }
 
   std::size_t last = value.size();
-  while (last > first &&
-         std::isspace(static_cast<unsigned char>(value[last - 1])) != 0) {
+  while (last > first && std::isspace(static_cast<unsigned char>(value[last - 1])) != 0) {
     --last;
   }
 
@@ -45,8 +43,8 @@ constexpr char kMessageField[] = "message";
   return TrimWhitespace(ResolveEnvOrDefault(key, default_value));
 }
 
-[[nodiscard]] std::string ResolveTrimmedEnvOrDefaultWhenBlank(
-    const char* key, const std::string_view default_value) {
+[[nodiscard]] std::string
+ResolveTrimmedEnvOrDefaultWhenBlank(const char* key, const std::string_view default_value) {
   auto value = ResolveTrimmedEnvOrDefault(key, default_value);
   if (value.empty()) {
     return std::string{default_value};
@@ -153,8 +151,7 @@ void RegisterWhatsAppEndpoint(drogon::HttpAppFramework& app) {
         }
 
         const auto api_version =
-            ResolveTrimmedEnvOrDefaultWhenBlank(kWhatsAppApiVersionEnv,
-                                                kDefaultWhatsAppApiVersion);
+            ResolveTrimmedEnvOrDefaultWhenBlank(kWhatsAppApiVersionEnv, kDefaultWhatsAppApiVersion);
 
         auto upstream_request = drogon::HttpRequest::newHttpRequest();
         upstream_request->setMethod(drogon::Post);
