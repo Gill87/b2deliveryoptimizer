@@ -6,6 +6,10 @@ import type {
   VehicleType,
   CapacityUnit,
 } from "@/app/edit/types/delivery";
+import {
+  getMinutesAfterHourChange,
+  isValidDepartureHour,
+} from "@/app/edit/utils/deliveryHelpers";
 import { useFocusTrap } from "@/app/edit/hooks/useFocusTrap";
 import FieldError from "@/app/edit/components/shared/FieldError";
 import {
@@ -81,31 +85,14 @@ const CHEVRON_DOWN_ICON = (
 );
 
 function isValidTime(h: string, m: string): boolean {
-  const hNum = parseInt(h, 10);
   const mNum = parseInt(m, 10);
   return (
     h.trim() !== "" &&
     m.trim() !== "" &&
-    hNum >= 1 &&
-    hNum <= 12 &&
+    isValidDepartureHour(h) &&
     mNum >= 0 &&
     mNum <= 59
   );
-}
-
-export function getMinutesAfterHourChange(
-  hours: string,
-  currentMinutes: string,
-  minutesWereAutoFilled = false,
-): string {
-  const hourNumber = parseInt(hours, 10);
-  if (Number.isNaN(hourNumber) || hourNumber < 1 || hourNumber > 12) {
-    return minutesWereAutoFilled ? "" : currentMinutes;
-  }
-
-  if (currentMinutes === "" || minutesWereAutoFilled) return "00";
-
-  return currentMinutes;
 }
 
 function parseDepartureTime(time: string): {
@@ -464,19 +451,16 @@ export default function VehicleDetailsOverlay({
                           const val = e.target.value
                             .replace(/\D/g, "")
                             .slice(0, 2);
+                          const nextMinutes = getMinutesAfterHourChange(
+                            val,
+                            minutes,
+                            minutesAutoFilledRef.current,
+                          );
                           setHours(val);
-                          setMinutes((currentMinutes) => {
-                            const nextMinutes = getMinutesAfterHourChange(
-                              val,
-                              currentMinutes,
-                              minutesAutoFilledRef.current,
-                            );
-                            minutesAutoFilledRef.current =
-                              nextMinutes === "00" &&
-                              (currentMinutes === "" ||
-                                minutesAutoFilledRef.current);
-                            return nextMinutes;
-                          });
+                          minutesAutoFilledRef.current =
+                            nextMinutes === "00" &&
+                            (minutes === "" || minutesAutoFilledRef.current);
+                          setMinutes(nextMinutes);
                           if (val.length === 2) {
                             focusMinutesAfterRenderRef.current = true;
                           }

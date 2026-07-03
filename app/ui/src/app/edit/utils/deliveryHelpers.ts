@@ -28,6 +28,26 @@ export function formatLockedDeliveryTimeWindow(
   return "—";
 }
 
+export function isValidDepartureHour(hour: string | number): boolean {
+  const hourNumber =
+    typeof hour === "number" ? hour : parseInt(hour.trim(), 10);
+  return hourNumber >= 1 && hourNumber <= 12;
+}
+
+export function getMinutesAfterHourChange(
+  hours: string,
+  currentMinutes: string,
+  minutesWereAutoFilled = false,
+): string {
+  if (!isValidDepartureHour(hours)) {
+    return minutesWereAutoFilled ? "" : currentMinutes;
+  }
+
+  if (currentMinutes === "" || minutesWereAutoFilled) return "00";
+
+  return currentMinutes;
+}
+
 /** Capitalise the first letter of a string. Safe on empty strings. */
 export function capitalize(s: string): string {
   return s ? s.charAt(0).toUpperCase() + s.slice(1) : "";
