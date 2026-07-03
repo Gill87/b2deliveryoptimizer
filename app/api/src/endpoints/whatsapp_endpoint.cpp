@@ -40,7 +40,7 @@ constexpr char kMessageField[] = "message";
 
 [[nodiscard]] std::string ResolveTrimmedEnvOrDefault(const char* key,
                                                      const std::string_view default_value) {
-  return TrimWhitespace(ResolveEnvOrDefault(key, default_value));
+  return TrimWhitespace(deliveryoptimizer::api::ResolveEnvOrDefault(key, default_value));
 }
 
 [[nodiscard]] std::string
