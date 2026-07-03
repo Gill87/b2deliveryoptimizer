@@ -31,7 +31,6 @@ import EditPageFooter from "@/app/edit/components/footer/EditPageFooter";
 import MobileEditPageFooter from "@/app/edit/components/footer/MobileEditPageFooter";
 import MobileBottomBar from "@/app/components/navbar/MobileBottomBar";
 import CSVUploadOverlay from "@/app/edit/components/address/CSVUploadOverlay";
-import { CSVImportModal } from "@/app/edit/components/address/CSVImportModal";
 import { useCSVImport } from "@/app/edit/hooks/useCSVImport";
 import DragDropOverlay from "@/app/edit/components/shared/DragDropOverlay";
 import { useVehicles } from "@/app/edit/hooks/useVehicles";
@@ -67,13 +66,7 @@ export default function Page() {
   const [pendingCSVFile, setPendingCSVFile] = useState<File | null>(null);
   const { importVehicles } = vehicleState;
   const { importAddresses } = addressState;
-  const {
-    csvData,
-    isImportModalOpen,
-    parseError,
-    openImportModal,
-    closeImportModal,
-  } = useCSVImport();
+  const { parseError, closeImportModal } = useCSVImport();
 
   const {
     optimize,
