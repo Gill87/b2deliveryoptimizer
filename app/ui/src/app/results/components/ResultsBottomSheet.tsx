@@ -28,7 +28,6 @@ type ResultsBottomSheetProps = {
   isEditMode: boolean;
   onEditModeChange: (value: boolean) => void;
   onExportClick: () => void;
-  onSendRoutesClick: () => void;
   onUpdateStopNote: (routeId: string, stopId: string, note: string) => void;
   onExportRoute: (vehicleId: string) => void;
   onDuplicateRoute: (vehicleId: string) => void;
@@ -42,7 +41,6 @@ export default function ResultsBottomSheet({
   isEditMode,
   onEditModeChange,
   onExportClick,
-  onSendRoutesClick,
   onUpdateStopNote,
   onExportRoute,
   onDuplicateRoute,
@@ -100,14 +98,6 @@ export default function ResultsBottomSheet({
                   onClick={handleEditToggle}
                 >
                   Edit
-                </button>
-                <button
-                  type="button"
-                  className={RESULTS_BOTTOM_SHEET_BTN_RECT_FILLED}
-                  onClick={onSendRoutesClick}
-                  disabled={routes.length === 0}
-                >
-                  Send
                 </button>
                 <button
                   type="button"
