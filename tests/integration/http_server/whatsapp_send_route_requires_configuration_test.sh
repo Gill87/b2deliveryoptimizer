@@ -9,7 +9,7 @@ http_server_init 38500 "$@"
 response_file="${work_dir}/response.json"
 payload_file="${work_dir}/payload.json"
 
-http_server_start WHATSAPP_ACCESS_TOKEN="" WHATSAPP_PHONE_NUMBER_ID=""
+http_server_start WHATSAPP_ACCESS_TOKEN=$' \t\n' WHATSAPP_PHONE_NUMBER_ID=$'\n  '
 http_server_wait_until_responding "/health" "${response_file}"
 
 printf '{"to":"14155551234","message":"Your route for today: Stop 1"}' >"${payload_file}"
@@ -20,7 +20,7 @@ http_code="$("${curl_bin}" -sS -o "${response_file}" -w "%{http_code}" \
   "$(http_server_url /api/whatsapp/send-route)")"
 
 if [[ "${http_code}" != "503" ]]; then
-  echo "expected HTTP 503 when WhatsApp credentials are missing, got ${http_code}" >&2
+  echo "expected HTTP 503 when WhatsApp credentials are blank, got ${http_code}" >&2
   cat "${response_file}" >&2 || true
   exit 1
 fi

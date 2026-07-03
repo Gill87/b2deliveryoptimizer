@@ -102,53 +102,78 @@ if [[ "${stub_ready}" != "true" ]]; then
   exit 1
 fi
 
+stop_http_server_for_restart() {
+  if [[ -n "${server_pid:-}" ]]; then
+    kill "${server_pid}" >/dev/null 2>&1 || true
+    wait "${server_pid}" >/dev/null 2>&1 || true
+    server_pid=""
+  fi
+}
+
+send_route_and_assert_upstream_request() {
+  local expected_path="$1"
+  local expected_auth="$2"
+
+  rm -f "${request_path_file}" "${request_auth_file}" "${request_content_type_file}" \
+    "${request_body_file}" "${response_file}"
+
+  http_server_wait_until_responding "/health" "${response_file}"
+
+  printf '{"to":"14155551234","message":"Your route for today: Stop 1"}' >"${payload_file}"
+  http_code="$("${curl_bin}" -sS -o "${response_file}" -w "%{http_code}" \
+    -X POST \
+    -H "Content-Type: application/json" \
+    --data-binary "@${payload_file}" \
+    "$(http_server_url /api/whatsapp/send-route)")"
+
+  if [[ "${http_code}" != "200" ]]; then
+    echo "expected HTTP 200 from WhatsApp send route, got ${http_code}" >&2
+    cat "${response_file}" >&2 || true
+    cat "${stub_log_file}" >&2 || true
+    exit 1
+  fi
+
+  if ! grep -Eq '"id"[[:space:]]*:[[:space:]]*"wamid.test-message"' "${response_file}"; then
+    echo "expected WhatsApp message id in response" >&2
+    cat "${response_file}" >&2 || true
+    exit 1
+  fi
+
+  recorded_path="$(cat "${request_path_file}")"
+  if [[ "${recorded_path}" != "${expected_path}" ]]; then
+    echo "expected upstream path ${expected_path}, got ${recorded_path}" >&2
+    exit 1
+  fi
+
+  recorded_auth="$(cat "${request_auth_file}")"
+  if [[ "${recorded_auth}" != "${expected_auth}" ]]; then
+    echo "expected bearer auth header ${expected_auth}, got ${recorded_auth}" >&2
+    exit 1
+  fi
+
+  recorded_content_type="$(cat "${request_content_type_file}")"
+  if [[ "${recorded_content_type}" != application/json* ]]; then
+    echo "expected JSON content type, got ${recorded_content_type}" >&2
+    exit 1
+  fi
+
+  if ! grep -Eq '"messaging_product"[[:space:]]*:[[:space:]]*"whatsapp"' "${request_body_file}" ||
+     ! grep -Eq '"to"[[:space:]]*:[[:space:]]*"14155551234"' "${request_body_file}" ||
+     ! grep -Eq '"type"[[:space:]]*:[[:space:]]*"text"' "${request_body_file}" ||
+     ! grep -Eq '"body"[[:space:]]*:[[:space:]]*"Your route for today: Stop 1"' "${request_body_file}"; then
+    echo "expected forwarded WhatsApp JSON payload" >&2
+    cat "${request_body_file}" >&2 || true
+    exit 1
+  fi
+}
+
 http_server_start WHATSAPP_API_BASE_URL="http://127.0.0.1:${stub_port}" \
-  WHATSAPP_ACCESS_TOKEN="test-token" WHATSAPP_PHONE_NUMBER_ID="phone-123"
-http_server_wait_until_responding "/health" "${response_file}"
+  WHATSAPP_ACCESS_TOKEN=$' test-token\n' WHATSAPP_PHONE_NUMBER_ID=$'\tphone-123 ' \
+  WHATSAPP_API_VERSION=$' \t\n'
+send_route_and_assert_upstream_request "/v23.0/phone-123/messages" "Bearer test-token"
 
-printf '{"to":"14155551234","message":"Your route for today: Stop 1"}' >"${payload_file}"
-http_code="$("${curl_bin}" -sS -o "${response_file}" -w "%{http_code}" \
-  -X POST \
-  -H "Content-Type: application/json" \
-  --data-binary "@${payload_file}" \
-  "$(http_server_url /api/whatsapp/send-route)")"
-
-if [[ "${http_code}" != "200" ]]; then
-  echo "expected HTTP 200 from WhatsApp send route, got ${http_code}" >&2
-  cat "${response_file}" >&2 || true
-  cat "${stub_log_file}" >&2 || true
-  exit 1
-fi
-
-if ! grep -Eq '"id"[[:space:]]*:[[:space:]]*"wamid.test-message"' "${response_file}"; then
-  echo "expected WhatsApp message id in response" >&2
-  cat "${response_file}" >&2 || true
-  exit 1
-fi
-
-recorded_path="$(cat "${request_path_file}")"
-if [[ "${recorded_path}" != "/v18.0/phone-123/messages" ]]; then
-  echo "expected upstream path /v18.0/phone-123/messages, got ${recorded_path}" >&2
-  exit 1
-fi
-
-recorded_auth="$(cat "${request_auth_file}")"
-if [[ "${recorded_auth}" != "Bearer test-token" ]]; then
-  echo "expected bearer auth header to be forwarded" >&2
-  exit 1
-fi
-
-recorded_content_type="$(cat "${request_content_type_file}")"
-if [[ "${recorded_content_type}" != application/json* ]]; then
-  echo "expected JSON content type, got ${recorded_content_type}" >&2
-  exit 1
-fi
-
-if ! grep -Eq '"messaging_product"[[:space:]]*:[[:space:]]*"whatsapp"' "${request_body_file}" ||
-   ! grep -Eq '"to"[[:space:]]*:[[:space:]]*"14155551234"' "${request_body_file}" ||
-   ! grep -Eq '"type"[[:space:]]*:[[:space:]]*"text"' "${request_body_file}" ||
-   ! grep -Eq '"body"[[:space:]]*:[[:space:]]*"Your route for today: Stop 1"' "${request_body_file}"; then
-  echo "expected forwarded WhatsApp JSON payload" >&2
-  cat "${request_body_file}" >&2 || true
-  exit 1
-fi
+stop_http_server_for_restart
+http_server_start WHATSAPP_API_BASE_URL="http://127.0.0.1:${stub_port}" \
+  WHATSAPP_ACCESS_TOKEN="test-token" WHATSAPP_PHONE_NUMBER_ID="phone-123" \
+  WHATSAPP_API_VERSION=$' v22.0\t'
+send_route_and_assert_upstream_request "/v22.0/phone-123/messages" "Bearer test-token"

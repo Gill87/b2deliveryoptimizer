@@ -16,11 +16,44 @@ namespace {
 
 constexpr std::string_view kDefaultWhatsAppBaseUrl = "https://graph.facebook.com";
 constexpr char kWhatsAppBaseUrlEnv[] = "WHATSAPP_API_BASE_URL";
+constexpr std::string_view kDefaultWhatsAppApiVersion = "v23.0";
+constexpr char kWhatsAppApiVersionEnv[] = "WHATSAPP_API_VERSION";
 constexpr char kWhatsAppAccessTokenEnv[] = "WHATSAPP_ACCESS_TOKEN";
 constexpr char kWhatsAppPhoneNumberIdEnv[] = "WHATSAPP_PHONE_NUMBER_ID";
 constexpr char kSendRoutePath[] = "/api/whatsapp/send-route";
 constexpr char kToField[] = "to";
 constexpr char kMessageField[] = "message";
+
+[[nodiscard]] std::string TrimWhitespace(const std::string_view value) {
+  std::size_t first = 0;
+  while (first < value.size() &&
+         std::isspace(static_cast<unsigned char>(value[first])) != 0) {
+    ++first;
+  }
+
+  std::size_t last = value.size();
+  while (last > first &&
+         std::isspace(static_cast<unsigned char>(value[last - 1])) != 0) {
+    --last;
+  }
+
+  return std::string{value.substr(first, last - first)};
+}
+
+[[nodiscard]] std::string ResolveTrimmedEnvOrDefault(const char* key,
+                                                     const std::string_view default_value) {
+  return TrimWhitespace(ResolveEnvOrDefault(key, default_value));
+}
+
+[[nodiscard]] std::string ResolveTrimmedEnvOrDefaultWhenBlank(
+    const char* key, const std::string_view default_value) {
+  auto value = ResolveTrimmedEnvOrDefault(key, default_value);
+  if (value.empty()) {
+    return std::string{default_value};
+  }
+
+  return value;
+}
 
 [[nodiscard]] drogon::HttpResponsePtr BuildJsonResponse(const Json::Value& body,
                                                         const drogon::HttpStatusCode code) {
@@ -111,17 +144,21 @@ void RegisterWhatsAppEndpoint(drogon::HttpAppFramework& app) {
           return;
         }
 
-        const auto access_token = ResolveEnvOrDefault(kWhatsAppAccessTokenEnv, "");
-        const auto phone_number_id = ResolveEnvOrDefault(kWhatsAppPhoneNumberIdEnv, "");
+        const auto access_token = ResolveTrimmedEnvOrDefault(kWhatsAppAccessTokenEnv, "");
+        const auto phone_number_id = ResolveTrimmedEnvOrDefault(kWhatsAppPhoneNumberIdEnv, "");
         if (access_token.empty() || phone_number_id.empty()) {
           std::move(callback)(
               BuildErrorResponse(drogon::k503ServiceUnavailable, "WhatsApp is not configured."));
           return;
         }
 
+        const auto api_version =
+            ResolveTrimmedEnvOrDefaultWhenBlank(kWhatsAppApiVersionEnv,
+                                                kDefaultWhatsAppApiVersion);
+
         auto upstream_request = drogon::HttpRequest::newHttpRequest();
         upstream_request->setMethod(drogon::Post);
-        upstream_request->setPath("/v18.0/" + phone_number_id + "/messages");
+        upstream_request->setPath("/" + api_version + "/" + phone_number_id + "/messages");
         upstream_request->addHeader("Authorization", "Bearer " + access_token);
         upstream_request->setContentTypeCode(drogon::CT_APPLICATION_JSON);
 
