@@ -477,10 +477,10 @@ export default function ResultsPage() {
       <div className="lg:hidden relative flex flex-1 min-h-0 flex-col">
         <MobileResultsNavbar
           onMenuClick={() => setIsMobileMenuOpen(true)}
+          isEditMode={isEditMode}
           showCancel={pendingPinMove != null}
-          onSave={savePendingPinMove}
+          onSaveEdits={() => handleEditModeChange(false)}
           onCancel={handleMobileCancel}
-          saveDisabled={isEditMode && pendingPinMove == null}
         />
         <div className="relative flex flex-1 min-h-0 flex-col">
           {isEditMode && (

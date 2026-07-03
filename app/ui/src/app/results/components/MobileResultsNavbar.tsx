@@ -13,18 +13,18 @@ import {
 
 type MobileResultsNavbarProps = {
   onMenuClick: () => void;
-  onSave?: () => void;
+  isEditMode?: boolean;
+  onSaveEdits?: () => void;
   onCancel?: () => void;
   showCancel?: boolean;
-  saveDisabled?: boolean;
 };
 
 export default function MobileResultsNavbar({
   onMenuClick,
-  onSave,
+  isEditMode = false,
+  onSaveEdits,
   onCancel,
   showCancel = false,
-  saveDisabled = false,
 }: MobileResultsNavbarProps) {
   return (
     <header className={MOBILE_NAVBAR_ROOT}>
@@ -52,24 +52,27 @@ export default function MobileResultsNavbar({
         <span className={RESULTS_MOBILE_NAV_TITLE}>Delivery Optimizer</span>
       </div>
       <div className="flex shrink-0 items-center gap-2">
-        {showCancel && onCancel && (
-          <button
-            type="button"
-            className={RESULTS_MOBILE_NAV_CANCEL_BTN}
-            onClick={onCancel}
-          >
-            Cancel
-          </button>
-        )}
-        {onSave && (
-          <button
-            type="button"
-            className={RESULTS_MOBILE_NAV_SAVE_BTN}
-            onClick={onSave}
-            disabled={saveDisabled}
-          >
-            Save
-          </button>
+        {isEditMode && (
+          <>
+            {showCancel && onCancel && (
+              <button
+                type="button"
+                className={RESULTS_MOBILE_NAV_CANCEL_BTN}
+                onClick={onCancel}
+              >
+                Cancel
+              </button>
+            )}
+            {onSaveEdits && (
+              <button
+                type="button"
+                className={RESULTS_MOBILE_NAV_SAVE_BTN}
+                onClick={onSaveEdits}
+              >
+                Save edits
+              </button>
+            )}
+          </>
         )}
       </div>
     </header>
