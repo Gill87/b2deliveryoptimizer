@@ -18,6 +18,10 @@ async function throttle(): Promise<void> {
 
 const NOMINATIM_CONTACT_EMAIL = "contact@yourcompany.com"; // TODO: Replace
 
+// California bounding box (left,top,right,bottom = min_lon,max_lat,max_lon,min_lat),
+// used with bounded=1 so autocomplete only returns addresses within the state.
+const CALIFORNIA_VIEWBOX = "-124.848974,42.009518,-114.131211,32.528832";
+
 export interface NominatimResult {
   lat: string;
   lon: string;
@@ -75,6 +79,8 @@ export async function autocompleteAddress(
     addressdetails: "1",
     countrycodes: "us",
     email: NOMINATIM_CONTACT_EMAIL,
+    viewbox: CALIFORNIA_VIEWBOX,
+    bounded: "1",
   });
 
   const autocompleteUrl = `https://nominatim.openstreetmap.org/search?${params}`;

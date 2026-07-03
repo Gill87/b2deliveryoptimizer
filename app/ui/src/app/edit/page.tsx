@@ -273,7 +273,9 @@ export default function Page() {
             setPendingCSVFile(null);
           }}
           importAddresses={(cards: AddressCard[]) =>
-            addressState.importAddresses(reindexAddresses(cards))
+            addressState.importAddresses(
+              reindexAddresses([...addressState.addresses, ...cards]),
+            )
           }
           onInvalidFile={() => {
             setIsUploadOverlayOpen(false);
