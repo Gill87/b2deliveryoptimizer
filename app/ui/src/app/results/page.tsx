@@ -35,6 +35,7 @@ import { downloadRoutesAsJsonFiles } from "./utils/downloadRouteJson";
 const MOCK_DATA_ENABLED = process.env.NODE_ENV !== "production";
 
 type RouteLoadResult = { routes: Route[]; error: string | null };
+type DraftRoutesState = { source: RouteLoadResult; routes: Route[] };
 
 const EMPTY_ROUTE_LOAD_RESULT: RouteLoadResult = { routes: [], error: null };
 
@@ -110,8 +111,11 @@ export default function ResultsPage() {
     readInitialRoutes,
     () => EMPTY_ROUTE_LOAD_RESULT,
   );
-  const [draftRoutes, setDraftRoutes] = useState<Route[] | null>(null);
-  const routes = draftRoutes ?? routeLoadResult.routes;
+  const [draftRoutes, setDraftRoutes] = useState<DraftRoutesState | null>(null);
+  const routes =
+    draftRoutes?.source === routeLoadResult
+      ? draftRoutes.routes
+      : routeLoadResult.routes;
   const error = routeLoadResult.error;
   const routesRef = useRef(routes);
   useEffect(() => {
@@ -127,12 +131,18 @@ export default function ResultsPage() {
   const [exportOpen, setExportOpen] = useState(false);
   const [exportWarningOpen, setExportWarningOpen] = useState(false);
 
-  const setRoutes = useCallback((update: React.SetStateAction<Route[]>) => {
-    setDraftRoutes((prev) => {
-      const baseRoutes = prev ?? routesRef.current;
-      return typeof update === "function" ? update(baseRoutes) : update;
-    });
-  }, []);
+  const setRoutes = useCallback(
+    (update: React.SetStateAction<Route[]>) => {
+      setDraftRoutes((prev) => {
+        const baseRoutes =
+          prev?.source === routeLoadResult ? prev.routes : routesRef.current;
+        const nextRoutes =
+          typeof update === "function" ? update(baseRoutes) : update;
+        return { source: routeLoadResult, routes: nextRoutes };
+      });
+    },
+    [routeLoadResult],
+  );
 
   const updateStopNote = useCallback(
     (routeId: string, stopId: string, note: string) => {

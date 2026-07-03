@@ -324,14 +324,6 @@ export const ADDRESS_ROW_HEADER_CELL_NOTES = "w-[246px] shrink-0";
 
 // ── Address List Container (Figma 7758:2602) ──────────────────────────────────
 
-export const ADDRESS_LIST_CONTAINER =
-  "hidden lg:block border border-[var(--edit-stone-200)] rounded-[8px] overflow-x-auto p-4";
-
-export const ADDRESS_LIST_CONTAINER_INNER = "flex flex-col gap-4 min-w-max";
-
-export const ADDRESS_LIST_DIVIDER =
-  "border-t border-[var(--edit-stone-200)] w-full";
-
 const ADDRESS_LIST_DESKTOP_CHROME =
   "lg:block lg:border lg:border-[var(--edit-stone-200)] lg:rounded-[8px] lg:overflow-x-auto lg:p-4";
 
@@ -392,7 +384,7 @@ export const ADDRESS_ROW_STEPPER_CONTAINER = `${ADDRESS_ROW_STEPPER_CONTAINER_BA
 
 export const ADDRESS_ROW_STEPPER_CONTAINER_NARROW = `${ADDRESS_ROW_STEPPER_CONTAINER} w-[72px]`;
 
-export const ADDRESS_ROW_STEPPER_CONTAINER_NARROW_ERROR = `${ADDRESS_ROW_STEPPER_CONTAINER_BASE} border-[var(--edit-error-border)] w-[72px]`;
+export const ADDRESS_ROW_STEPPER_CONTAINER_NARROW_ERROR = `${ADDRESS_ROW_STEPPER_CONTAINER_NARROW} border-[var(--edit-error-border)]`;
 
 export const ADDRESS_ROW_STEPPER_INPUT =
   "flex-1 min-w-0 bg-transparent outline-none text-[16px] leading-[1.5] text-[var(--edit-text-primary)] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none";

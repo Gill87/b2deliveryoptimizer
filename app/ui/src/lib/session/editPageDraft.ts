@@ -19,19 +19,7 @@ export function saveEditPageDraft(
   try {
     const draft: EditPageDraft = {
       version: 1,
-      vehicles: vehicles.map((v) => ({
-        id: v.id,
-        locked: v.locked,
-        editingExisting: v.editingExisting,
-        name: v.name,
-        type: v.type,
-        capacityUnit: v.capacityUnit,
-        capacity: v.capacity,
-        available: v.available,
-        departureTime: v.departureTime,
-        startLocation: v.startLocation,
-        cachedLocation: v.cachedLocation,
-      })),
+      vehicles: vehicles.map((v) => ({ ...v }) as DraftVehicle),
       addresses,
     };
     sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
