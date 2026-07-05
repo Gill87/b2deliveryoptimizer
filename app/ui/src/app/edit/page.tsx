@@ -31,14 +31,11 @@ import EditPageFooter from "@/app/edit/components/footer/EditPageFooter";
 import MobileEditPageFooter from "@/app/edit/components/footer/MobileEditPageFooter";
 import MobileBottomBar from "@/app/components/navbar/MobileBottomBar";
 import CSVUploadOverlay from "@/app/edit/components/address/CSVUploadOverlay";
-import { CSVImportModal } from "@/app/edit/components/address/CSVImportModal";
 import DragDropOverlay from "@/app/edit/components/shared/DragDropOverlay";
 import { useVehicles } from "@/app/edit/hooks/useVehicles";
 import { useAddresses } from "@/app/edit/hooks/useAddresses";
 import { useOptimize } from "@/app/edit/hooks/useOptimize";
-import { useCSVImport } from "@/app/edit/hooks/useCSVImport";
 import { useCallback, useEffect, useState } from "react";
-import type { AddressCard } from "@/app/edit/types/delivery";
 import { loadSessionFromFile } from "@/lib/session/importSession";
 import { downloadSessionSave } from "@/lib/session/exportSession";
 import {
@@ -67,13 +64,6 @@ export default function Page() {
   const [pendingCSVFile, setPendingCSVFile] = useState<File | null>(null);
   const { importVehicles } = vehicleState;
   const { importAddresses } = addressState;
-  const {
-    csvData,
-    isImportModalOpen,
-    parseError: csvParseError,
-    openImportModal,
-    closeImportModal,
-  } = useCSVImport();
 
   const {
     optimize,
@@ -140,28 +130,11 @@ export default function Page() {
         }
 
         // TODO: remove after one release cycle — importedCards was written by
-        // CSVImportModal.handleConfirm which has since been deleted.
-        // Kept as a migration safety net for any in-flight sessions.
-        const storedImportedCards = sessionStorage.getItem("importedCards");
-        if (storedImportedCards) {
+        // CSVImportModal.handleConfirm which has since been deleted. There is
+        // no reader for its format anymore, so just clear the stale key for
+        // any in-flight sessions.
+        if (sessionStorage.getItem("importedCards")) {
           sessionStorage.removeItem("importedCards");
-          try {
-            const { name, content } = JSON.parse(storedPendingCSV) as {
-              name: string;
-              content: string;
-            };
-            const type = name.endsWith(".json")
-              ? "application/json"
-              : "text/csv";
-            const file = new File([content], name, { type });
-            if (!cancelled) {
-              setPendingCSVFile(file);
-              setIsUploadOverlayOpen(true);
-            }
-          } catch {
-            // silently ignore malformed stored file
-          }
-          return;
         }
 
         // CSV/JSON file forwarded from upload-save-point — open CSVUploadOverlay
@@ -283,18 +256,14 @@ export default function Page() {
 
   return (
     <div className={`${PAGE_V2_ROOT} ${styles.root}`}>
-      {/* CSVUploadOverlay handles file pick; CSVImportModal then handles column mapping and row selection */}
+      {/* CSVUploadOverlay handles file pick, column mapping, and row selection */}
       {isUploadOverlayOpen && (
         <CSVUploadOverlay
           onClose={() => {
             setIsUploadOverlayOpen(false);
             setPendingCSVFile(null);
           }}
-          onFileSelect={(file) => {
-            setIsUploadOverlayOpen(false);
-            setPendingCSVFile(null);
-            openImportModal(file);
-          }}
+          importAddresses={importAddresses}
           onInvalidFile={() => {
             setIsUploadOverlayOpen(false);
             setPendingCSVFile(null);
@@ -306,23 +275,12 @@ export default function Page() {
         />
       )}
 
-      {isImportModalOpen && (
-        <CSVImportModal
-          csvData={csvData}
-          onClose={closeImportModal}
-          importAddresses={(cards: AddressCard[]) =>
-            addressState.importAddresses(reindexAddresses(cards))
-          }
-        />
-      )}
-
       <ErrorOverlay message={optimizeError} onClose={clearOptimizeError} />
       <ErrorOverlay message={sessionError} onClose={clearSessionError} />
       <ErrorOverlay
         message={uploadError}
         onClose={() => setUploadError(null)}
       />
-      <ErrorOverlay message={csvParseError} onClose={closeImportModal} />
       <OptimizingModal isOpen={isOptimizing} />
       {needsDepotAddress && (
         <AddressOverlay
@@ -405,11 +363,4 @@ function parseStoredUploadFile(
     throw new Error(`Invalid ${label} upload payload.`);
   }
   return parsed as StoredUploadFile;
-}
-
-function reindexAddresses(addresses: AddressCard[]): AddressCard[] {
-  return addresses.map((address, index) => ({
-    ...address,
-    id: index + 1,
-  }));
 }
