@@ -22,8 +22,9 @@ export default function UploadRoutePage() {
 
   const handleFile = (f: File) => {
     setError(null);
-    if (!f.name.endsWith(".json") && !f.name.endsWith(".csv")) {
-      setError("Only .json or .csv route files are accepted.");
+    // Only .json route files are accepted — CSV is rejected here.
+    if (!f.name.endsWith(".json")) {
+      setError("Only .json route files are accepted.");
       return;
     }
     if (f.size > MAX_FILE_BYTES) {
@@ -312,7 +313,7 @@ export default function UploadRoutePage() {
             <input
               ref={inputRef}
               type="file"
-              accept=".json,.csv"
+              accept=".json"
               style={{ display: "none" }}
               onChange={(e) => {
                 const f = e.target.files?.[0];
@@ -348,7 +349,6 @@ export default function UploadRoutePage() {
                   setFile(null);
                   setError(null);
                 }}
-                aria-label="Remove file"
               >
                 ×
               </button>

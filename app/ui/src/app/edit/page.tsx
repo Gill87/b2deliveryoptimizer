@@ -138,6 +138,32 @@ export default function Page() {
           }
           return;
         }
+
+        // TODO: remove after one release cycle — importedCards was written by
+        // CSVImportModal.handleConfirm which has since been deleted.
+        // Kept as a migration safety net for any in-flight sessions.
+        const storedImportedCards = sessionStorage.getItem("importedCards");
+        if (storedImportedCards) {
+          sessionStorage.removeItem("importedCards");
+          try {
+            const { name, content } = JSON.parse(storedPendingCSV) as {
+              name: string;
+              content: string;
+            };
+            const type = name.endsWith(".json")
+              ? "application/json"
+              : "text/csv";
+            const file = new File([content], name, { type });
+            if (!cancelled) {
+              setPendingCSVFile(file);
+              setIsUploadOverlayOpen(true);
+            }
+          } catch {
+            // silently ignore malformed stored file
+          }
+          return;
+        }
+
         // CSV/JSON file forwarded from upload-save-point — open CSVUploadOverlay
         // automatically so the user lands directly in the column mapper.
         const storedPendingCSV = sessionStorage.getItem("pendingCSVFile");
