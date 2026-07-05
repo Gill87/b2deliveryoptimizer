@@ -1,5 +1,6 @@
 // app/page.tsx
 "use client";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import ShellNavbar from "./components/ShellNavbar";
 import { PageFooter } from "./utils/routeUtils";
@@ -20,18 +21,16 @@ export default function LandingPage() {
           position: relative;
         }
 
-        /* Subtle gradient: warm off-white bottom-left → soft sage green top-right */
         .landing-bg {
           position: fixed;
           inset: 0;
           background:
-            radial-gradient(ellipse at 100% 0%,   #8dbfb0 0%, rgba(141,191,176,0) 55%),
-            radial-gradient(ellipse at 0%   100%, #8dbfb0 0%, rgba(141,191,176,0) 55%),
-            #f2f0ea;
+            radial-gradient(ellipse at 100% 0%,   #cfe6da 0%, rgba(207,230,218,0) 55%),
+            radial-gradient(ellipse at 0%   100%, #cfe6da 0%, rgba(207,230,218,0) 55%),
+            #fbfaf7;
           z-index: 0;
         }
 
-        /* Navbar override — pure white */
         .landing-navbar-wrap {
           position: relative;
           z-index: 10;
@@ -52,8 +51,8 @@ export default function LandingPage() {
 
         .landing-title {
           font-family: 'DM Sans', sans-serif;
-          font-size: 2rem;
-          font-weight: 500;
+          font-size: 1.75rem;
+          font-weight: 600;
           color: #111;
           margin-bottom: 12px;
           text-align: center;
@@ -62,57 +61,58 @@ export default function LandingPage() {
 
         .landing-subtitle {
           font-size: 14px;
-          color: #4a6358;
-          margin-bottom: 48px;
+          font-weight: 700;
+          color: #555;
+          margin-bottom: 40px;
           text-align: center;
-          max-width: 520px;
+          max-width: 500px;
           line-height: 1.65;
         }
 
         .landing-cards {
           display: flex;
-          flex-wrap: wrap;
-          gap: 24px;
-          justify-content: center;
           width: 100%;
-          max-width: 860px;
+          max-width: 640px;
+          background: #ffffff;
+          border-radius: 16px;
+          border: 1px solid rgba(0,0,0,0.09);
+          box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+          overflow: hidden;
         }
 
         .landing-card {
-          background: #ffffff;
-          border-radius: 16px;
-          border: 1px solid rgba(0,0,0,0.07);
+          flex: 1;
           padding: 32px 28px 28px;
           display: flex;
           flex-direction: column;
           align-items: flex-start;
-          gap: 12px;
-          width: 340px;
-          box-sizing: border-box;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-          transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+          gap: 10px;
           cursor: pointer;
+          transition: background 0.15s;
+          position: relative;
         }
 
-        .landing-card:hover,
-        .landing-card:focus-visible {
-          box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-          border-color: rgba(0,0,0,0.12);
-          transform: translateY(-2px);
-        }
+        .landing-card:hover { background: #f9f9f8; }
 
-        .landing-card:focus-visible {
-          outline: 2px solid #4a8c7a;
-          outline-offset: 2px;
+        .landing-card + .landing-card::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 24px;
+          bottom: 24px;
+          width: 1px;
+          background: rgba(0,0,0,0.08);
         }
 
         .landing-card-icon {
-          color: #4a8c7a;
+          width: 64px;
+          height: 64px;
+          object-fit: contain;
           margin-bottom: 4px;
         }
 
         .landing-card-title {
-          font-size: 18px;
+          font-size: 17px;
           font-weight: 600;
           color: #111;
           margin: 0;
@@ -126,25 +126,22 @@ export default function LandingPage() {
           flex: 1;
         }
 
-        /* Presentational pill — aria-hidden, pointer-events:none */
         .landing-card-cta {
-          margin-top: 16px;
+          margin-top: 20px;
           align-self: flex-end;
           background: #4a8c7a;
-          color: #111;
-          border-radius: 999px;
-          padding: 10px 24px;
-          font-size: 14px;
+          color: #ffffff;
+          border: none;
+          border-radius: 6px;
+          padding: 8px 20px;
+          font-size: 13px;
           font-weight: 500;
           font-family: 'DM Sans', sans-serif;
-          pointer-events: none;
+          cursor: pointer;
           transition: background 0.15s;
         }
 
-        .landing-card:hover .landing-card-cta,
-        .landing-card:focus-visible .landing-card-cta {
-          background: #3d7a6a;
-        }
+        .landing-card:hover .landing-card-cta { background: #3d7a6a; }
 
         .landing-root footer,
         .landing-root [class*="footer"],
@@ -153,41 +150,23 @@ export default function LandingPage() {
           position: relative;
           z-index: 1;
         }
-
-        .landing-root footer svg,
-        .landing-root [class*="footer"] svg,
-        .landing-root [class*="Footer"] svg {
-          color: #1a4d40 !important;
-          fill: #1a4d40 !important;
-        }
       `}</style>
 
       <div className="landing-root">
-        {/* Full-page gradient background */}
         <div className="landing-bg" />
 
-        {/* Navbar wrapped in a white div so it overrides any inherited background */}
-        <div
-          className="landing-navbar-wrap"
-          style={{
-            background: "#ffffff",
-            borderBottom: "1px solid rgba(0,0,0,0.08)",
-            position: "relative",
-            zIndex: 10,
-          }}
-        >
+        <div className="landing-navbar-wrap">
           <ShellNavbar />
         </div>
 
         <div className="landing-content">
-          <h1 className="landing-title">Delivery Optimizer</h1>
+          <h1 className="landing-title">Welcome to Delivery Optimizer</h1>
           <p className="landing-subtitle">
             Transform your address lists into efficient, ordered routes to lower
             operational costs and reduce your fleet&apos;s carbon emissions.
           </p>
 
           <div className="landing-cards">
-            {/* Route Manager — full card is the interactive target */}
             <div
               className="landing-card"
               role="button"
@@ -201,36 +180,22 @@ export default function LandingPage() {
                 }
               }}
             >
-              <div className="landing-card-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M12 2C8.686 2 6 4.686 6 8c0 4.418 6 12 6 12s6-7.582 6-12c0-3.314-2.686-6-6-6z"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                    fill="none"
-                    strokeLinejoin="round"
-                  />
-                  <circle
-                    cx="12"
-                    cy="8"
-                    r="2"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                    fill="none"
-                  />
-                </svg>
-              </div>
+              <Image
+                src="/icons/icon-route-manager.png"
+                alt=""
+                width={64}
+                height={64}
+                className="landing-card-icon"
+                aria-hidden="true"
+              />
               <p className="landing-card-title">Route manager</p>
               <p className="landing-card-desc">
-                Import routes, edit addresses, assign deliveries, monitor fleet
+                Upload and edit addresses, assign deliveries, monitor fleet
                 routes, and export delivery operations.
               </p>
-              <span className="landing-card-cta" aria-hidden="true">
-                Continue
-              </span>
+              <button className="landing-card-cta">Continue</button>
             </div>
 
-            {/* Driver — full card is the interactive target */}
             <div
               className="landing-card"
               role="button"
@@ -244,52 +209,20 @@ export default function LandingPage() {
                 }
               }}
             >
-              <div className="landing-card-icon">
-                <svg width="26" height="22" viewBox="0 0 28 24" fill="none">
-                  <rect
-                    x="2"
-                    y="8"
-                    width="16"
-                    height="10"
-                    rx="2"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                    fill="none"
-                  />
-                  <path
-                    d="M18 11h3l3 3v4h-6"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    fill="none"
-                  />
-                  <circle
-                    cx="6"
-                    cy="19"
-                    r="2"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                    fill="none"
-                  />
-                  <circle
-                    cx="21"
-                    cy="19"
-                    r="2"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                    fill="none"
-                  />
-                </svg>
-              </div>
+              <Image
+                src="/icons/icon-driver.png"
+                alt=""
+                width={64}
+                height={64}
+                className="landing-card-icon"
+                aria-hidden="true"
+              />
               <p className="landing-card-title">Driver</p>
               <p className="landing-card-desc">
-                View your assigned route, navigate through addresses, update
-                delivery status, and import file from route manager.
+                View your assigned route, navigate through addresses, and update
+                delivery status.
               </p>
-              <span className="landing-card-cta" aria-hidden="true">
-                Continue
-              </span>
+              <button className="landing-card-cta">Continue</button>
             </div>
           </div>
         </div>
