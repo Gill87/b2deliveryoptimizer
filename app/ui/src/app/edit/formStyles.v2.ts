@@ -324,13 +324,17 @@ export const ADDRESS_ROW_HEADER_CELL_NOTES = "w-[246px] shrink-0";
 
 // ── Address List Container (Figma 7758:2602) ──────────────────────────────────
 
-export const ADDRESS_LIST_CONTAINER =
-  "hidden lg:block border border-[var(--edit-stone-200)] rounded-[8px] overflow-x-auto p-4";
+const ADDRESS_LIST_DESKTOP_CHROME =
+  "lg:block lg:border lg:border-[var(--edit-stone-200)] lg:rounded-[8px] lg:overflow-x-auto lg:p-4";
 
-export const ADDRESS_LIST_CONTAINER_INNER = "flex flex-col gap-4 min-w-max";
+export const ADDRESS_LIST_RESPONSIVE_CONTAINER = `flex flex-col gap-4 ${ADDRESS_LIST_DESKTOP_CHROME}`;
 
-export const ADDRESS_LIST_DIVIDER =
-  "border-t border-[var(--edit-stone-200)] w-full";
+export const ADDRESS_LIST_RESPONSIVE_CONTAINER_DESKTOP_ONLY = `hidden ${ADDRESS_LIST_DESKTOP_CHROME}`;
+
+export const ADDRESS_LIST_RESPONSIVE_INNER = "flex flex-col gap-4 lg:min-w-max";
+
+export const ADDRESS_LIST_DESKTOP_DIVIDER =
+  "hidden lg:block border-t border-[var(--edit-stone-200)] w-full";
 
 export const ADDRESS_EMPTY_STATE_WRAPPER = EMPTY_STATE_WRAPPER;
 export const ADDRESS_EMPTY_STATE_ICON = EMPTY_STATE_ICON;
@@ -373,13 +377,14 @@ export const ADDRESS_ROW_ADDR_TRIGGER_TEXT =
 export const ADDRESS_ROW_ADDR_TRIGGER_PLACEHOLDER =
   "text-[var(--edit-stone-500)]";
 
-export const ADDRESS_ROW_STEPPER_CONTAINER =
-  "border border-[var(--edit-stone-200)] flex h-11 items-center justify-between px-2 py-[10px] rounded-[6px] shrink-0";
+const ADDRESS_ROW_STEPPER_CONTAINER_BASE =
+  "border flex h-11 items-center justify-between px-2 py-[10px] rounded-[6px] shrink-0";
+
+export const ADDRESS_ROW_STEPPER_CONTAINER = `${ADDRESS_ROW_STEPPER_CONTAINER_BASE} border-[var(--edit-stone-200)]`;
 
 export const ADDRESS_ROW_STEPPER_CONTAINER_NARROW = `${ADDRESS_ROW_STEPPER_CONTAINER} w-[72px]`;
 
-export const ADDRESS_ROW_STEPPER_CONTAINER_NARROW_ERROR =
-  "border border-[var(--edit-error-border)] flex h-11 items-center justify-between px-2 py-[10px] rounded-[6px] shrink-0 w-[72px]";
+export const ADDRESS_ROW_STEPPER_CONTAINER_NARROW_ERROR = `${ADDRESS_ROW_STEPPER_CONTAINER_NARROW} border-[var(--edit-error-border)]`;
 
 export const ADDRESS_ROW_STEPPER_INPUT =
   "flex-1 min-w-0 bg-transparent outline-none text-[16px] leading-[1.5] text-[var(--edit-text-primary)] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none";
