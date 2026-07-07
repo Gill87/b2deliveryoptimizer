@@ -31,6 +31,7 @@ import EditPageFooter from "@/app/edit/components/footer/EditPageFooter";
 import MobileEditPageFooter from "@/app/edit/components/footer/MobileEditPageFooter";
 import MobileBottomBar from "@/app/components/navbar/MobileBottomBar";
 import CSVUploadOverlay from "@/app/edit/components/address/CSVUploadOverlay";
+import { useCSVImport } from "@/app/edit/hooks/useCSVImport";
 import DragDropOverlay from "@/app/edit/components/shared/DragDropOverlay";
 import { useVehicles } from "@/app/edit/hooks/useVehicles";
 import { useAddresses } from "@/app/edit/hooks/useAddresses";
@@ -44,7 +45,7 @@ import {
   loadEditPageDraft,
 } from "@/lib/session/editPageDraft";
 import {
-  mapEditStateToSessionSave,
+  mapEditStateToOptimizeRequest,
   mapOptimizeRequestToEditState,
 } from "@/app/edit/utils/sessionMapper";
 import AddressOverlay, {
@@ -65,6 +66,7 @@ export default function Page() {
   const [pendingCSVFile, setPendingCSVFile] = useState<File | null>(null);
   const { importVehicles } = vehicleState;
   const { importAddresses } = addressState;
+  const { parseError, closeImportModal } = useCSVImport();
 
   const {
     optimize,
@@ -206,7 +208,7 @@ export default function Page() {
   const handleExportSession = useCallback(async () => {
     setSessionError(null);
     try {
-      const request = await mapEditStateToSessionSave(
+      const request = await mapEditStateToOptimizeRequest(
         vehicleState.vehicles,
         addressState.addresses,
       );
@@ -273,7 +275,9 @@ export default function Page() {
             setPendingCSVFile(null);
           }}
           importAddresses={(cards: AddressCard[]) =>
-            addressState.importAddresses(reindexAddresses(cards))
+            addressState.importAddresses(
+              reindexAddresses([...addressState.addresses, ...cards]),
+            )
           }
           onInvalidFile={() => {
             setIsUploadOverlayOpen(false);
@@ -292,6 +296,7 @@ export default function Page() {
         message={uploadError}
         onClose={() => setUploadError(null)}
       />
+      <ErrorOverlay message={parseError} onClose={closeImportModal} />
       <OptimizingModal isOpen={isOptimizing} />
       {needsDepotAddress && (
         <AddressOverlay
