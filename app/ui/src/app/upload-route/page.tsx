@@ -65,13 +65,14 @@ export default function UploadRoutePage() {
         "routeFile",
         JSON.stringify({ name: file.name, content: text }),
       );
-      router.push("/driver_assist");
+      router.push("/driver-view");
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
           : "Something went wrong. Please try again.",
       );
+    } finally {
       setIsProcessing(false);
     }
   }, [file, isProcessing, router]);
@@ -81,7 +82,7 @@ export default function UploadRoutePage() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap');
 
-        .ur-root {
+        .upload-root {
           min-height: 100vh;
           background: #f7f7f5;
           display: flex;
@@ -89,17 +90,16 @@ export default function UploadRoutePage() {
           font-family: 'DM Sans', sans-serif;
         }
 
-        .ur-content {
+        .upload-content {
           flex: 1;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          width: 100%;
-          padding: clamp(28px, 8vw, 48px) clamp(16px, 5vw, 24px);
+          padding: 48px 24px;
         }
 
-        .ur-title {
+        .upload-title {
           font-family: 'DM Serif Display', serif;
           font-size: 2rem;
           font-weight: 400;
@@ -109,20 +109,19 @@ export default function UploadRoutePage() {
           letter-spacing: -0.01em;
         }
 
-        .ur-subtitle {
+        .upload-subtitle {
           font-size: 14px;
           color: #888;
           margin-bottom: 32px;
           text-align: center;
         }
 
-        .ur-dropzone {
+        .upload-dropzone {
           width: 100%;
           max-width: 580px;
           border: 1.5px dashed #ccc;
           border-radius: 12px;
-          min-height: 184px;
-          padding: clamp(32px, 10vw, 52px) clamp(18px, 6vw, 24px);
+          padding: 52px 24px;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -135,27 +134,27 @@ export default function UploadRoutePage() {
           min-height: 160px;
         }
 
-        .ur-dropzone.dragging {
+        .upload-dropzone.dragging {
           border-color: #4a8c7a;
           background: #f0f7f5;
         }
 
-        .ur-dropzone-icon { color: #555; margin-bottom: 4px; }
+        .upload-dropzone-icon { color: #555; margin-bottom: 4px; }
 
-        .ur-dropzone-text {
+        .upload-dropzone-text {
           font-size: 14px;
           color: #333;
           text-align: center;
         }
 
-        .ur-dropzone-browse {
+        .upload-dropzone-browse {
           font-size: 14px;
           color: #4a8c7a;
           font-weight: 500;
           text-align: center;
         }
 
-        .ur-file-row {
+        .upload-file-row {
           width: 100%;
           max-width: 580px;
           background: #eef5f3;
@@ -169,7 +168,7 @@ export default function UploadRoutePage() {
           min-width: 0;
         }
 
-        .ur-file-name {
+        .upload-file-name {
           font-size: 13px;
           font-weight: 500;
           color: #111;
@@ -180,9 +179,9 @@ export default function UploadRoutePage() {
           white-space: nowrap;
         }
 
-        .ur-file-size { font-size: 12px; color: #666; }
+        .upload-file-size { font-size: 12px; color: #666; }
 
-        .ur-file-remove {
+        .upload-file-remove {
           background: none;
           border: none;
           cursor: pointer;
@@ -193,9 +192,9 @@ export default function UploadRoutePage() {
           line-height: 1;
         }
 
-        .ur-file-remove:hover { color: #111; }
+        .upload-file-remove:hover { color: #111; }
 
-        .ur-actions {
+        .upload-actions {
           width: 100%;
           max-width: 580px;
           display: flex;
@@ -204,7 +203,7 @@ export default function UploadRoutePage() {
           margin-top: 8px;
         }
 
-        .ur-back-btn {
+        .upload-back-btn {
           background: none;
           border: none;
           cursor: pointer;
@@ -216,9 +215,9 @@ export default function UploadRoutePage() {
           font-family: inherit;
         }
 
-        .ur-back-btn:hover { color: #111; }
+        .upload-back-btn:hover { color: #111; }
 
-        .ur-continue-btn {
+        .upload-continue-btn {
           background: #4a8c7a;
           color: #fff;
           border: none;
@@ -231,14 +230,14 @@ export default function UploadRoutePage() {
           transition: background 0.15s;
         }
 
-        .ur-continue-btn:hover:not(:disabled) { background: #3d7a6a; }
+        .upload-continue-btn:hover:not(:disabled) { background: #3d7a6a; }
 
-        .ur-continue-btn:disabled {
+        .upload-continue-btn:disabled {
           opacity: 0.4;
           cursor: not-allowed;
         }
 
-        .ur-error {
+        .upload-parse-error {
           width: 100%;
           max-width: 580px;
           font-size: 13px;
@@ -247,66 +246,66 @@ export default function UploadRoutePage() {
           text-align: center;
         }
 
-        @keyframes ur-spin {
+        @keyframes upload-spin {
           to { transform: rotate(360deg); }
         }
 
-        .ur-spinner {
+        .upload-spinner {
           width: 32px;
           height: 32px;
           border: 3px solid #e0e0e0;
           border-top-color: #4a8c7a;
           border-radius: 50%;
-          animation: ur-spin 0.8s linear infinite;
+          animation: upload-spin 0.8s linear infinite;
         }
 
         @media (max-width: 520px) {
-          .ur-content {
+          .upload-content {
             justify-content: flex-start;
             padding-top: 36px;
             padding-bottom: calc(24px + env(safe-area-inset-bottom));
           }
 
-          .ur-title {
+          .upload-title {
             font-size: 1.75rem;
           }
 
-          .ur-subtitle {
+          .upload-subtitle {
             margin-bottom: 24px;
             max-width: 280px;
             line-height: 1.5;
           }
 
-          .ur-actions {
+          .upload-actions {
             align-items: stretch;
             flex-direction: column-reverse;
             gap: 16px;
           }
 
-          .ur-back-btn {
+          .upload-back-btn {
             justify-content: center;
             min-height: 44px;
           }
 
-          .ur-continue-btn {
+          .upload-continue-btn {
             min-height: 48px;
             width: 100%;
           }
         }
       `}</style>
 
-      <div className="ur-root">
+      <div className="upload-root">
         <ShellNavbar />
 
-        <div className="ur-content">
-          <h2 className="ur-title">Upload your route</h2>
-          <p className="ur-subtitle">
-            Upload the route file shared by your Route Manager.
+        <div className="upload-content">
+          <h2 className="upload-title">Upload your route</h2>
+          <p className="upload-subtitle">
+            Upload your route to begin your deliveries!
           </p>
 
           {/* Drop zone — shows spinner while file is being read */}
           <div
-            className={`ur-dropzone${isDragging ? " dragging" : ""}`}
+            className={`upload-dropzone${isDragging ? " dragging" : ""}`}
             onClick={() => !isProcessing && inputRef.current?.click()}
             onDragEnter={handleDragEnter}
             onDragOver={(e) => e.preventDefault()}
@@ -314,10 +313,10 @@ export default function UploadRoutePage() {
             onDrop={handleDrop}
           >
             {isProcessing ? (
-              <div className="ur-spinner" />
+              <div className="upload-spinner" />
             ) : (
               <>
-                <div className="ur-dropzone-icon">
+                <div className="upload-dropzone-icon">
                   <svg width="32" height="40" viewBox="0 0 32 40" fill="none">
                     <rect
                       x="1"
@@ -344,10 +343,10 @@ export default function UploadRoutePage() {
                     />
                   </svg>
                 </div>
-                <p className="ur-dropzone-text">
+                <p className="upload-dropzone-text">
                   Drag and drop .json files here, or
                 </p>
-                <p className="ur-dropzone-browse">Browse files</p>
+                <p className="upload-dropzone-browse">Browse files</p>
               </>
             )}
             <input
@@ -364,27 +363,42 @@ export default function UploadRoutePage() {
           </div>
 
           {file && !isProcessing && (
-            <div className="ur-file-row">
-              <span className="ur-file-name">{file.name}</span>
-              <span className="ur-file-size">{formatSize(file.size)}</span>
+            <div className="upload-file-row">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                style={{ color: "#4a8c7a", flexShrink: 0 }}
+              >
+                <path
+                  d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span className="upload-file-name">{file.name}</span>
+              <span className="upload-file-size">{formatSize(file.size)}</span>
               <button
-                className="ur-file-remove"
-                aria-label="Remove file"
+                className="upload-file-remove"
                 onClick={(e) => {
                   e.stopPropagation();
                   setFile(null);
                   setError(null);
                 }}
+                aria-label="Remove file"
               >
                 ×
               </button>
             </div>
           )}
 
-          {error && <p className="ur-error">{error}</p>}
+          {error && <p className="upload-parse-error">{error}</p>}
 
-          <div className="ur-actions">
-            <button className="ur-back-btn" onClick={() => router.back()}>
+          <div className="upload-actions">
+            <button className="upload-back-btn" onClick={() => router.back()}>
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                 <path
                   d="M10 3L5 8l5 5"
@@ -397,7 +411,7 @@ export default function UploadRoutePage() {
               Back
             </button>
             <button
-              className="ur-continue-btn"
+              className="upload-continue-btn"
               onClick={() => void handleContinue()}
               disabled={!file || isProcessing}
             >
