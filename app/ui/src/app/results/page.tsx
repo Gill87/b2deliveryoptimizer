@@ -14,6 +14,7 @@ import { NAVBAR_V2_LOGO, NAVBAR_V2_ROOT } from "../edit/formStyles.v2";
 import styles from "../edit/edit.module.css";
 import MobileSidebar from "../components/sidebar/MobileSidebar";
 import ExportEditWarningModal from "./components/ExportEditWarningModal";
+import ExportMethodModal from "./components/ExportMethodModal";
 import ExportRoutesModal from "./components/ExportRoutesModal";
 import SendRoutesModal from "./components/SendRoutesModal";
 import MapComponent from "./components/Map";
@@ -133,9 +134,10 @@ export default function ResultsPage() {
     null,
   );
   const [exportOpen, setExportOpen] = useState(false);
+  const [exportMethodOpen, setExportMethodOpen] = useState(false);
   const [sendRoutesOpen, setSendRoutesOpen] = useState(false);
   const [pendingWarningAction, setPendingWarningAction] = useState<
-    "export" | "send" | null
+    "export" | null
   >(null);
 
   const setRoutes = useCallback(
@@ -233,21 +235,20 @@ export default function ResultsPage() {
       setPendingWarningAction("export");
       return;
     }
-    setExportOpen(true);
+    setExportMethodOpen(true);
   }, [isEditMode, pendingPinMove]);
 
-  const handleSendRoutesClick = useCallback(() => {
-    if (isEditMode || pendingPinMove != null) {
-      setPendingWarningAction("send");
-      return;
-    }
+  const handleExportMethodSend = useCallback(() => {
     setSendRoutesOpen(true);
-  }, [isEditMode, pendingPinMove]);
+  }, []);
+
+  const handleExportMethodJson = useCallback(() => {
+    setExportOpen(true);
+  }, []);
 
   const handleDoneEditingForWarning = useCallback(() => {
     handleEditModeChange(false);
-    if (pendingWarningAction === "export") setExportOpen(true);
-    if (pendingWarningAction === "send") setSendRoutesOpen(true);
+    if (pendingWarningAction === "export") setExportMethodOpen(true);
     setPendingWarningAction(null);
   }, [handleEditModeChange, pendingWarningAction]);
 
@@ -323,6 +324,12 @@ export default function ResultsPage() {
     <main
       className={`h-screen flex flex-col overflow-hidden font-sans-manrope ${styles.root}`}
     >
+      <ExportMethodModal
+        isOpen={exportMethodOpen}
+        onClose={() => setExportMethodOpen(false)}
+        onSendWithWhatsApp={handleExportMethodSend}
+        onExportJson={handleExportMethodJson}
+      />
       <ExportRoutesModal
         isOpen={exportOpen}
         onClose={() => setExportOpen(false)}
@@ -339,16 +346,8 @@ export default function ResultsPage() {
         isOpen={pendingWarningAction !== null}
         onClose={() => setPendingWarningAction(null)}
         onDoneEditing={handleDoneEditingForWarning}
-        warningMessage={
-          pendingWarningAction === "send"
-            ? "Unable to send routes while currently editing"
-            : "Unable to export while currently editing"
-        }
-        bodyMessage={
-          pendingWarningAction === "send"
-            ? "Please save your changes before sending routes. This ensures the routes you send match your current view."
-            : "Please save your changes before exporting routes. This ensures the exported data matches your current view."
-        }
+        warningMessage="Unable to export while currently editing"
+        bodyMessage="Please save your changes before exporting routes. This ensures the exported data matches your current view."
       />
       {error && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -406,7 +405,6 @@ export default function ResultsPage() {
             onEditModeChange={handleEditModeChange}
             onUpdateStopNote={updateStopNote}
             onExportAllRoutes={handleExportClick}
-            onSendRoutes={handleSendRoutesClick}
             onExportRoute={handleExportSingleRoute}
             onDuplicateRoute={handleDuplicateRoute}
             onDeleteRoute={handleDeleteRoute}
@@ -460,7 +458,6 @@ export default function ResultsPage() {
           isEditMode={isEditMode}
           onEditModeChange={handleEditModeChange}
           onExportClick={handleExportClick}
-          onSendRoutesClick={handleSendRoutesClick}
           onUpdateStopNote={updateStopNote}
           onExportRoute={handleExportSingleRoute}
           onDuplicateRoute={handleDuplicateRoute}

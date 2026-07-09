@@ -12,7 +12,6 @@ type SidebarProps = {
   onUpdateStopNote: (routeId: string, stopId: string, note: string) => void;
   onExportRoute: (vehicleId: string) => void;
   onExportAllRoutes?: () => void;
-  onSendRoutes?: () => void;
   onDuplicateRoute: (vehicleId: string) => void;
   onDeleteRoute: (vehicleId: string) => void;
   /** Desktop sidebar vs mobile bottom-sheet list body */
@@ -26,7 +25,6 @@ export default function Sidebar({
   onUpdateStopNote,
   onExportRoute,
   onExportAllRoutes,
-  onSendRoutes,
   onDuplicateRoute,
   onDeleteRoute,
   variant = "sidebar",
@@ -82,14 +80,6 @@ export default function Sidebar({
               }`}
             >
               {isEditMode ? "Save edits" : "Edit"}
-            </button>
-            <button
-              type="button"
-              onClick={onSendRoutes}
-              disabled={routes.length === 0}
-              className="h-9 shrink-0 rounded-[6px] bg-[var(--edit-btn-primary)] px-4 text-sm font-semibold text-[var(--edit-text-primary)] hover:brightness-[0.97] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Send
             </button>
             <button
               type="button"
