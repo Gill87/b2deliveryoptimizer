@@ -165,6 +165,7 @@ export default function UploadRoutePage() {
           align-items: center;
           gap: 10px;
           margin-bottom: 24px;
+          min-width: 0;
         }
 
         .upload-file-name {
@@ -172,6 +173,10 @@ export default function UploadRoutePage() {
           font-weight: 500;
           color: #111;
           flex: 1;
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
         .upload-file-size { font-size: 12px; color: #666; }
@@ -252,6 +257,40 @@ export default function UploadRoutePage() {
           border-top-color: #4a8c7a;
           border-radius: 50%;
           animation: upload-spin 0.8s linear infinite;
+        }
+
+        @media (max-width: 520px) {
+          .upload-content {
+            justify-content: flex-start;
+            padding-top: 36px;
+            padding-bottom: calc(24px + env(safe-area-inset-bottom));
+          }
+
+          .upload-title {
+            font-size: 1.75rem;
+          }
+
+          .upload-subtitle {
+            margin-bottom: 24px;
+            max-width: 280px;
+            line-height: 1.5;
+          }
+
+          .upload-actions {
+            align-items: stretch;
+            flex-direction: column-reverse;
+            gap: 16px;
+          }
+
+          .upload-back-btn {
+            justify-content: center;
+            min-height: 44px;
+          }
+
+          .upload-continue-btn {
+            min-height: 48px;
+            width: 100%;
+          }
         }
       `}</style>
 
@@ -349,6 +388,7 @@ export default function UploadRoutePage() {
                   setFile(null);
                   setError(null);
                 }}
+                aria-label="Remove file"
               >
                 ×
               </button>

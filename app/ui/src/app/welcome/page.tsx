@@ -94,7 +94,6 @@ export default function WelcomePage() {
           flex-direction: column;
           align-items: flex-start;
           gap: 10px;
-          cursor: pointer;
           transition: background 0.15s;
           position: relative;
         }
@@ -150,6 +149,11 @@ export default function WelcomePage() {
 
         .welcome-card:hover .welcome-card-cta { background: #3d7a6a; }
 
+        .welcome-card-cta:focus-visible {
+          outline: 2px solid #4a8c7a;
+          outline-offset: 2px;
+        }
+
         .welcome-back {
           position: absolute;
           bottom: 32px;
@@ -189,19 +193,7 @@ export default function WelcomePage() {
           <p className="welcome-subtitle">Select one</p>
 
           <div className="welcome-cards">
-            <div
-              className="welcome-card"
-              role="button"
-              tabIndex={0}
-              aria-label="Resume session — continue"
-              onClick={() => router.push("/upload-save-point")}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  router.push("/upload-save-point");
-                }
-              }}
-            >
+            <div className="welcome-card">
               <Image
                 src="/icons/icon-resume-session.png"
                 alt=""
@@ -215,22 +207,16 @@ export default function WelcomePage() {
                 Import a saved CSV file from a previous session to continue
                 managing and optimizing routes.
               </p>
-              <button className="welcome-card-cta">Continue</button>
+              <button
+                className="welcome-card-cta"
+                aria-label="Resume session — continue"
+                onClick={() => router.push("/upload-save-point")}
+              >
+                Continue
+              </button>
             </div>
 
-            <div
-              className="welcome-card"
-              role="button"
-              tabIndex={0}
-              aria-label="Start new session — continue"
-              onClick={handleNewSession}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  handleNewSession();
-                }
-              }}
-            >
+            <div className="welcome-card">
               <Image
                 src="/icons/icon-new-session.png"
                 alt=""
@@ -244,7 +230,13 @@ export default function WelcomePage() {
                 Set up vehicles, drivers, and delivery stops to create your
                 optimized route.
               </p>
-              <button className="welcome-card-cta">Continue</button>
+              <button
+                className="welcome-card-cta"
+                aria-label="Start new session — continue"
+                onClick={handleNewSession}
+              >
+                Continue
+              </button>
             </div>
           </div>
 

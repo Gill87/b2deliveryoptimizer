@@ -43,7 +43,7 @@ import {
   loadEditPageDraft,
 } from "@/lib/session/editPageDraft";
 import {
-  mapEditStateToOptimizeRequest,
+  mapEditStateToSessionSave,
   mapOptimizeRequestToEditState,
 } from "@/app/edit/utils/sessionMapper";
 import AddressOverlay, {
@@ -197,11 +197,11 @@ export default function Page() {
   const handleExportSession = useCallback(async () => {
     setSessionError(null);
     try {
-      const request = await mapEditStateToOptimizeRequest(
+      const session = await mapEditStateToSessionSave(
         vehicleState.vehicles,
         addressState.addresses,
       );
-      const result = downloadSessionSave(request);
+      const result = downloadSessionSave(session);
       if (!result.ok) throw result.error;
     } catch (error) {
       setSessionError(

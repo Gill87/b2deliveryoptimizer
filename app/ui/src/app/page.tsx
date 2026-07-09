@@ -87,7 +87,6 @@ export default function LandingPage() {
           flex-direction: column;
           align-items: flex-start;
           gap: 10px;
-          cursor: pointer;
           transition: background 0.15s;
           position: relative;
         }
@@ -143,6 +142,11 @@ export default function LandingPage() {
 
         .landing-card:hover .landing-card-cta { background: #3d7a6a; }
 
+        .landing-card-cta:focus-visible {
+          outline: 2px solid #4a8c7a;
+          outline-offset: 2px;
+        }
+
         .landing-root footer,
         .landing-root [class*="footer"],
         .landing-root [class*="Footer"] {
@@ -167,19 +171,7 @@ export default function LandingPage() {
           </p>
 
           <div className="landing-cards">
-            <div
-              className="landing-card"
-              role="button"
-              tabIndex={0}
-              aria-label="Route manager — continue"
-              onClick={() => router.push("/welcome")}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  router.push("/welcome");
-                }
-              }}
-            >
+            <div className="landing-card">
               <Image
                 src="/icons/icon-route-manager.png"
                 alt=""
@@ -193,22 +185,16 @@ export default function LandingPage() {
                 Upload and edit addresses, assign deliveries, monitor fleet
                 routes, and export delivery operations.
               </p>
-              <button className="landing-card-cta">Continue</button>
+              <button
+                className="landing-card-cta"
+                aria-label="Route manager — continue"
+                onClick={() => router.push("/welcome")}
+              >
+                Continue
+              </button>
             </div>
 
-            <div
-              className="landing-card"
-              role="button"
-              tabIndex={0}
-              aria-label="Driver — continue"
-              onClick={() => router.push("/upload-route")}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  router.push("/upload-route");
-                }
-              }}
-            >
+            <div className="landing-card">
               <Image
                 src="/icons/icon-driver.png"
                 alt=""
@@ -222,7 +208,13 @@ export default function LandingPage() {
                 View your assigned route, navigate through addresses, and update
                 delivery status.
               </p>
-              <button className="landing-card-cta">Continue</button>
+              <button
+                className="landing-card-cta"
+                aria-label="Driver — continue"
+                onClick={() => router.push("/upload-route")}
+              >
+                Continue
+              </button>
             </div>
           </div>
         </div>
