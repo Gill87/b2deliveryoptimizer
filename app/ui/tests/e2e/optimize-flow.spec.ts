@@ -29,6 +29,7 @@ async function addDeliveryAddress(page: Page, recipientName: string) {
     .locator('[aria-label="Recipient name"]')
     .first()
     .fill(recipientName);
+  await page.locator('[aria-label="Delivery quantity"]').first().fill("1");
   await page.locator('[aria-label="Edit recipient address"]').first().click();
   await fillAddressOverlay(page, "Enter Address", "Confirm");
   await page.locator('[aria-label="Confirm row"]').first().click();
@@ -88,5 +89,7 @@ test("optimize flow routes 2 stops to 1 vehicle", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Optimized Routes" }),
   ).toBeVisible();
-  await expect(page.getByText("1 route with 2 total stops")).toBeVisible();
+  await expect(
+    page.locator("aside").getByText("1 route with 2 total stops"),
+  ).toBeVisible();
 });
