@@ -50,8 +50,16 @@ import {
 import AddressOverlay, {
   type LocationAddress,
 } from "@/app/edit/components/address/AddressOverlay";
+import type { AddressCard } from "@/app/edit/types/delivery";
 
 type StoredUploadFile = { name: string; content: string };
+
+function reindexAddresses(addresses: AddressCard[]): AddressCard[] {
+  return addresses.map((address, index) => ({
+    ...address,
+    id: index + 1,
+  }));
+}
 
 export default function Page() {
   const vehicleState = useVehicles();
