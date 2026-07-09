@@ -46,8 +46,8 @@ jobs:
       - name: Install build + test prerequisites
         uses: awalsh128/cache-apt-pkgs-action@v1
         with:
-          packages: ninja-build libjsoncpp-dev libdrogon-dev uuid-dev libmariadb-dev libbrotli-dev libhiredis-dev libyaml-cpp-dev libgtest-dev python3
-          version: 1.0
+          packages: ninja-build libjsoncpp-dev libdrogon-dev libpq-dev uuid-dev libmariadb-dev libbrotli-dev libhiredis-dev libyaml-cpp-dev libgtest-dev python3
+          version: 1.1
 
       - name: Verify toolchain
         run: |
