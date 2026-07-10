@@ -1,12 +1,30 @@
 // app/components/ShellNavbar.tsx
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
 /**
  * Minimal top bar for onboarding flow pages.
  * Uses overflow: hidden + text-overflow: ellipsis so the brand name
  * clips gracefully on narrow screens instead of overflowing.
  */
 export default function ShellNavbar() {
+  const pathname = usePathname();
+  const isLandingPage = pathname === "/";
+  const brandStyles = {
+    fontSize: "12px",
+    fontWeight: 700,
+    letterSpacing: "0.08em",
+    color: "#111",
+    textTransform: "uppercase" as const,
+    fontFamily: "inherit",
+    whiteSpace: "nowrap" as const,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    minWidth: 0,
+  };
+
   return (
     <header
       style={{
@@ -24,22 +42,17 @@ export default function ShellNavbar() {
         overflow: "hidden",
       }}
     >
-      <span
-        style={{
-          fontSize: "12px",
-          fontWeight: 700,
-          letterSpacing: "0.08em",
-          color: "#111",
-          textTransform: "uppercase",
-          fontFamily: "inherit",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          minWidth: 0,
-        }}
-      >
-        Delivery Optimizer
-      </span>
+      {isLandingPage ? (
+        <span style={brandStyles}>Delivery Optimizer</span>
+      ) : (
+        <Link
+          href="/"
+          aria-label="Return to the Delivery Optimizer landing page"
+          style={{ ...brandStyles, textDecoration: "none" }}
+        >
+          Delivery Optimizer
+        </Link>
+      )}
     </header>
   );
 }
