@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   deliveryTimeFilled,
   formatLockedDeliveryTimeWindow,
+  isValidDepartureHour,
 } from "@/app/edit/utils/deliveryHelpers";
 
 describe("deliveryTimeFilled", () => {
@@ -83,5 +84,31 @@ describe("formatLockedDeliveryTimeWindow", () => {
         deliveryTimeEnd: " 11:00 AM ",
       }),
     ).toBe("9:00 AM – 11:00 AM");
+  });
+});
+
+describe("isValidDepartureHour", () => {
+  it("accepts plain 1-2 digit hours in range", () => {
+    expect(isValidDepartureHour("1")).toBe(true);
+    expect(isValidDepartureHour("9")).toBe(true);
+    expect(isValidDepartureHour("12")).toBe(true);
+    expect(isValidDepartureHour(9)).toBe(true);
+  });
+
+  it("rejects out-of-range hours", () => {
+    expect(isValidDepartureHour("0")).toBe(false);
+    expect(isValidDepartureHour("13")).toBe(false);
+    expect(isValidDepartureHour(0)).toBe(false);
+  });
+
+  it("rejects partially-numeric strings instead of silently truncating them", () => {
+    expect(isValidDepartureHour("9am")).toBe(false);
+    expect(isValidDepartureHour("1x")).toBe(false);
+    expect(isValidDepartureHour("9.5")).toBe(false);
+  });
+
+  it("rejects empty or whitespace-only strings", () => {
+    expect(isValidDepartureHour("")).toBe(false);
+    expect(isValidDepartureHour("  ")).toBe(false);
   });
 });

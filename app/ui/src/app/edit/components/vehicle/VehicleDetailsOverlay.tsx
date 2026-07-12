@@ -160,7 +160,6 @@ export default function VehicleDetailsOverlay({
 
     focusMinutesAfterRenderRef.current = false;
     minutesRef.current?.focus();
-    if (minutesAutoFilledRef.current) minutesRef.current?.select();
   }, [hours, minutes]);
 
   function handleSave() {
@@ -451,17 +450,21 @@ export default function VehicleDetailsOverlay({
                           const val = e.target.value
                             .replace(/\D/g, "")
                             .slice(0, 2);
-                          const nextMinutes = getMinutesAfterHourChange(
-                            val,
-                            minutes,
-                            minutesAutoFilledRef.current,
-                          );
+                          const { minutes: nextMinutes, autoFilled } =
+                            getMinutesAfterHourChange(
+                              val,
+                              minutes,
+                              minutesAutoFilledRef.current,
+                            );
+                          const hoursChanged = val !== hours;
+                          const minutesChanged = nextMinutes !== minutes;
                           setHours(val);
-                          minutesAutoFilledRef.current =
-                            nextMinutes === "00" &&
-                            (minutes === "" || minutesAutoFilledRef.current);
+                          minutesAutoFilledRef.current = autoFilled;
                           setMinutes(nextMinutes);
-                          if (val.length === 2) {
+                          if (
+                            val.length === 2 &&
+                            (hoursChanged || minutesChanged)
+                          ) {
                             focusMinutesAfterRenderRef.current = true;
                           }
                         }}
