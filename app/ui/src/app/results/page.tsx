@@ -248,7 +248,6 @@ export default function ResultsPage() {
     (value: boolean) => {
       if (!value) {
         savePendingPinMove();
-        setPendingPinMove(null);
       }
       setIsEditMode(value);
       if (value) setIsSheetExpanded(true);
