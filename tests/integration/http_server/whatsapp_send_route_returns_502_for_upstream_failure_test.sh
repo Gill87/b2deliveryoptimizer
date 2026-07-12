@@ -78,14 +78,17 @@ if [[ "${stub_ready}" != "true" ]]; then
   exit 1
 fi
 
+send_route_secret="test-secret"
 http_server_start WHATSAPP_API_BASE_URL="http://127.0.0.1:${stub_port}" \
-  WHATSAPP_ACCESS_TOKEN="test-token" WHATSAPP_PHONE_NUMBER_ID="phone-123"
+  WHATSAPP_ACCESS_TOKEN="test-token" WHATSAPP_PHONE_NUMBER_ID="phone-123" \
+  WHATSAPP_SEND_ROUTE_SECRET="${send_route_secret}"
 http_server_wait_until_responding "/health" "${response_file}"
 
 printf '{"to":"14155551234","message":"Your route for today: Stop 1"}' >"${payload_file}"
 http_code="$("${curl_bin}" -sS -o "${response_file}" -w "%{http_code}" \
   -X POST \
   -H "Content-Type: application/json" \
+  -H "X-WhatsApp-Send-Secret: ${send_route_secret}" \
   --data-binary "@${payload_file}" \
   "$(http_server_url /api/whatsapp/send-route)")"
 

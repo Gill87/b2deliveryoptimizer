@@ -290,6 +290,17 @@ deliveryoptimizer_set_local_http_test_port(
   38500
 )
 
+deliveryoptimizer_add_local_http_test(
+  DeliveryOptimizerApiValidationTest.WhatsappSendRouteRejectsUnauthorizedRequest
+  whatsapp_send_route_rejects_unauthorized_request_test.sh
+  30
+  "${DELIVERYOPTIMIZER_LOCAL_API_LABELS}"
+)
+deliveryoptimizer_set_local_http_test_port(
+  DeliveryOptimizerApiValidationTest.WhatsappSendRouteRejectsUnauthorizedRequest
+  38800
+)
+
 add_test(
   NAME DeliveryOptimizerApiContractTest.WhatsappSendRouteForwardsToUpstream
   COMMAND "${BASH_PROGRAM}"

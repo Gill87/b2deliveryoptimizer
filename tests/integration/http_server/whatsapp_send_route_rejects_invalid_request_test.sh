@@ -9,13 +9,16 @@ http_server_init 38400 "$@"
 response_file="${work_dir}/response.json"
 payload_file="${work_dir}/payload.json"
 
-http_server_start WHATSAPP_ACCESS_TOKEN="" WHATSAPP_PHONE_NUMBER_ID=""
+send_route_secret="test-secret"
+http_server_start WHATSAPP_ACCESS_TOKEN="" WHATSAPP_PHONE_NUMBER_ID="" \
+  WHATSAPP_SEND_ROUTE_SECRET="${send_route_secret}"
 http_server_wait_until_responding "/health" "${response_file}"
 
 printf '{"message":"Your route for today: Stop 1"}' >"${payload_file}"
 http_code="$("${curl_bin}" -sS -o "${response_file}" -w "%{http_code}" \
   -X POST \
   -H "Content-Type: application/json" \
+  -H "X-WhatsApp-Send-Secret: ${send_route_secret}" \
   --data-binary "@${payload_file}" \
   "$(http_server_url /api/whatsapp/send-route)")"
 
@@ -35,6 +38,7 @@ printf '{"to":"14155551234"}' >"${payload_file}"
 http_code="$("${curl_bin}" -sS -o "${response_file}" -w "%{http_code}" \
   -X POST \
   -H "Content-Type: application/json" \
+  -H "X-WhatsApp-Send-Secret: ${send_route_secret}" \
   --data-binary "@${payload_file}" \
   "$(http_server_url /api/whatsapp/send-route)")"
 
@@ -54,6 +58,7 @@ printf '{"to":"   ","message":"Your route for today: Stop 1"}' >"${payload_file}
 http_code="$("${curl_bin}" -sS -o "${response_file}" -w "%{http_code}" \
   -X POST \
   -H "Content-Type: application/json" \
+  -H "X-WhatsApp-Send-Secret: ${send_route_secret}" \
   --data-binary "@${payload_file}" \
   "$(http_server_url /api/whatsapp/send-route)")"
 
@@ -73,6 +78,7 @@ printf '{"to":"14155551234","message":"\t \n"}' >"${payload_file}"
 http_code="$("${curl_bin}" -sS -o "${response_file}" -w "%{http_code}" \
   -X POST \
   -H "Content-Type: application/json" \
+  -H "X-WhatsApp-Send-Secret: ${send_route_secret}" \
   --data-binary "@${payload_file}" \
   "$(http_server_url /api/whatsapp/send-route)")"
 

@@ -20,6 +20,8 @@ constexpr std::string_view kDefaultWhatsAppApiVersion = "v23.0";
 constexpr char kWhatsAppApiVersionEnv[] = "WHATSAPP_API_VERSION";
 constexpr char kWhatsAppAccessTokenEnv[] = "WHATSAPP_ACCESS_TOKEN";
 constexpr char kWhatsAppPhoneNumberIdEnv[] = "WHATSAPP_PHONE_NUMBER_ID";
+constexpr char kWhatsAppSendSecretEnv[] = "WHATSAPP_SEND_ROUTE_SECRET";
+constexpr char kSendSecretHeader[] = "X-WhatsApp-Send-Secret";
 constexpr char kSendRoutePath[] = "/api/whatsapp/send-route";
 constexpr char kToField[] = "to";
 constexpr char kMessageField[] = "message";
@@ -125,6 +127,19 @@ void RegisterWhatsAppEndpoint(drogon::HttpAppFramework& app) {
         if (request_body == nullptr) {
           std::move(callback)(
               BuildErrorResponse(drogon::k400BadRequest, "Request body must be valid JSON."));
+          return;
+        }
+
+        const auto configured_secret = ResolveTrimmedEnvOrDefault(kWhatsAppSendSecretEnv, "");
+        if (configured_secret.empty()) {
+          std::move(callback)(
+              BuildErrorResponse(drogon::k503ServiceUnavailable, "WhatsApp is not configured."));
+          return;
+        }
+
+        const auto provided_secret = request->getHeader(kSendSecretHeader);
+        if (provided_secret != configured_secret) {
+          std::move(callback)(BuildErrorResponse(drogon::k401Unauthorized, "Unauthorized."));
           return;
         }
 

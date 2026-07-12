@@ -110,6 +110,8 @@ stop_http_server_for_restart() {
   fi
 }
 
+send_route_secret="test-secret"
+
 send_route_and_assert_upstream_request() {
   local expected_path="$1"
   local expected_auth="$2"
@@ -123,6 +125,7 @@ send_route_and_assert_upstream_request() {
   http_code="$("${curl_bin}" -sS -o "${response_file}" -w "%{http_code}" \
     -X POST \
     -H "Content-Type: application/json" \
+    -H "X-WhatsApp-Send-Secret: ${send_route_secret}" \
     --data-binary "@${payload_file}" \
     "$(http_server_url /api/whatsapp/send-route)")"
 
@@ -169,11 +172,11 @@ send_route_and_assert_upstream_request() {
 
 http_server_start WHATSAPP_API_BASE_URL="http://127.0.0.1:${stub_port}" \
   WHATSAPP_ACCESS_TOKEN=$' test-token\n' WHATSAPP_PHONE_NUMBER_ID=$'\tphone-123 ' \
-  WHATSAPP_API_VERSION=$' \t\n'
+  WHATSAPP_API_VERSION=$' \t\n' WHATSAPP_SEND_ROUTE_SECRET="${send_route_secret}"
 send_route_and_assert_upstream_request "/v23.0/phone-123/messages" "Bearer test-token"
 
 stop_http_server_for_restart
 http_server_start WHATSAPP_API_BASE_URL="http://127.0.0.1:${stub_port}" \
   WHATSAPP_ACCESS_TOKEN="test-token" WHATSAPP_PHONE_NUMBER_ID="phone-123" \
-  WHATSAPP_API_VERSION=$' v22.0\t'
+  WHATSAPP_API_VERSION=$' v22.0\t' WHATSAPP_SEND_ROUTE_SECRET="${send_route_secret}"
 send_route_and_assert_upstream_request "/v22.0/phone-123/messages" "Bearer test-token"
