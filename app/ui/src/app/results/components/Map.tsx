@@ -80,6 +80,16 @@ function routePolylineOptions(
 type CachedDirections = { path: google.maps.LatLng[]; meters: number };
 
 const MAX_DIRECTIONS_CACHE_SIZE = 100;
+const DIRECTIONS_REQUEST_TIMEOUT_MS = 10_000;
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error("Directions request timed out")), ms),
+    ),
+  ]);
+}
 
 function rememberDirections(
   cache: Map<string, CachedDirections>,
@@ -105,21 +115,6 @@ function routePathsKey(routes: Route[]): string {
       return `${route.vehicleId}:${routeCacheKey(path)}`;
     })
     .join("|");
-}
-
-function requestDrivingDirections(
-  service: google.maps.DirectionsService,
-  request: google.maps.DirectionsRequest,
-): Promise<google.maps.DirectionsResult> {
-  return new Promise((resolve, reject) => {
-    service.route(request, (result, status) => {
-      if (status === google.maps.DirectionsStatus.OK && result) {
-        resolve(result);
-        return;
-      }
-      reject(new Error(`Directions request failed: ${status}`));
-    });
-  });
 }
 
 /** Prefer overview_path; fall back to leg step paths when overview is missing. */
@@ -249,13 +244,16 @@ function RoutePolylinesOverlay({
       }
 
       try {
-        const result = await requestDrivingDirections(directionsService, {
-          origin,
-          destination,
-          waypoints,
-          optimizeWaypoints: false,
-          travelMode: google.maps.TravelMode.DRIVING,
-        });
+        const result = await withTimeout(
+          directionsService.route({
+            origin,
+            destination,
+            waypoints,
+            optimizeWaypoints: false,
+            travelMode: google.maps.TravelMode.DRIVING,
+          }),
+          DIRECTIONS_REQUEST_TIMEOUT_MS,
+        );
         if (cancelled) return;
 
         const roadPath = extractRoadPath(result);
