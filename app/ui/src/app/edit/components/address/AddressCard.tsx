@@ -10,6 +10,7 @@ import {
   hasRecipientContact,
   recipientSummary,
 } from "@/app/edit/utils/recipientSummary";
+import { formatLockedDeliveryTimeWindow } from "@/app/edit/utils/deliveryHelpers";
 import {
   ADDRESS_ROW_EDIT_ROOT,
   ADDRESS_ROW_DESKTOP_WRAPPER,
@@ -325,9 +326,7 @@ export default function AddressCard({
                     onClick={() => unlockAddress(a.id)}
                     className={ADDRESS_ROW_LOCKED_CELL_DELIVERY_TIME}
                   >
-                    {a.deliveryTimeStart && a.deliveryTimeEnd
-                      ? `${a.deliveryTimeStart} – ${a.deliveryTimeEnd}`
-                      : a.deliveryTimeStart || a.deliveryTimeEnd || "—"}
+                    {formatLockedDeliveryTimeWindow(a)}
                   </button>
 
                   {/* Notes — locked */}
@@ -692,9 +691,7 @@ export default function AddressCard({
                     className={MOBILE_ADDR_LOCKED_FIELD_BTN}
                   >
                     <span className={MOBILE_ADDR_LOCKED_VALUE}>
-                      {a.deliveryTimeStart && a.deliveryTimeEnd
-                        ? `${a.deliveryTimeStart} – ${a.deliveryTimeEnd}`
-                        : a.deliveryTimeStart || a.deliveryTimeEnd || "—"}
+                      {formatLockedDeliveryTimeWindow(a)}
                     </span>
                   </button>
                 </div>
