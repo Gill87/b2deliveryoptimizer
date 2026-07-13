@@ -77,11 +77,7 @@ function readInitialRoutes(): RouteLoadResult {
 
   if (!stored) {
     cachedRouteLoadKey = cacheKey;
-    cachedRouteLoadResult = {
-      routes: [],
-      error:
-        "No optimized routes found. Please run optimize from the edit page.",
-    };
+    cachedRouteLoadResult = EMPTY_ROUTE_LOAD_RESULT;
     return cachedRouteLoadResult;
   }
 
@@ -92,11 +88,7 @@ function readInitialRoutes(): RouteLoadResult {
     return cachedRouteLoadResult;
   } catch {
     cachedRouteLoadKey = cacheKey;
-    cachedRouteLoadResult = {
-      routes: [],
-      error:
-        "Could not read saved route data. Please run optimize again from the edit page.",
-    };
+    cachedRouteLoadResult = EMPTY_ROUTE_LOAD_RESULT;
     return cachedRouteLoadResult;
   }
 }
@@ -110,18 +102,67 @@ function subscribeToRouteStorage(onChange: () => void): () => void {
   };
 }
 
+let clientValidationPending = true;
+
+function readClientValidationError(): string | null {
+  if (typeof window === "undefined" || clientValidationPending) {
+    return null;
+  }
+
+  const forceMock = MOCK_DATA_ENABLED
+    ? new URLSearchParams(window.location.search).get("mock")
+    : null;
+  if (forceMock === "1") return null;
+
+  const stored = sessionStorage.getItem("optimizeResults");
+  if (!stored) {
+    return "No optimized routes found. Please run optimize from the edit page.";
+  }
+
+  try {
+    JSON.parse(stored);
+    return null;
+  } catch {
+    return "Could not read saved route data. Please run optimize again from the edit page.";
+  }
+}
+
+function subscribeToClientValidation(onChange: () => void): () => void {
+  if (typeof window === "undefined") return () => {};
+
+  clientValidationPending = true;
+  const hydrationId = requestAnimationFrame(() => {
+    clientValidationPending = false;
+    onChange();
+  });
+
+  window.addEventListener("storage", onChange);
+  window.addEventListener("optimize-results-updated", onChange);
+
+  return () => {
+    cancelAnimationFrame(hydrationId);
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener("optimize-results-updated", onChange);
+  };
+}
+
 export default function ResultsPage() {
   const routeLoadResult = useSyncExternalStore(
     subscribeToRouteStorage,
     readInitialRoutes,
     () => EMPTY_ROUTE_LOAD_RESULT,
   );
+  const clientValidationError = useSyncExternalStore(
+    subscribeToClientValidation,
+    readClientValidationError,
+    () => null,
+  );
   const [draftRoutes, setDraftRoutes] = useState<DraftRoutesState | null>(null);
   const routes =
     draftRoutes?.source === routeLoadResult
       ? draftRoutes.routes
       : routeLoadResult.routes;
-  const error = routeLoadResult.error;
+  const error = clientValidationError;
   const routesRef = useRef(routes);
   useEffect(() => {
     routesRef.current = routes;
@@ -184,12 +225,6 @@ export default function ResultsPage() {
     [setRoutes],
   );
 
-  const handleEditModeChange = useCallback((value: boolean) => {
-    setIsEditMode(value);
-    if (!value) setPendingPinMove(null);
-    if (value) setIsSheetExpanded(true);
-  }, []);
-
   const savePendingPinMove = useCallback(() => {
     if (!pendingPinMove) return;
     setRoutes((prev) =>
@@ -208,6 +243,17 @@ export default function ResultsPage() {
     );
     setPendingPinMove(null);
   }, [pendingPinMove, setRoutes]);
+
+  const handleEditModeChange = useCallback(
+    (value: boolean) => {
+      if (!value) {
+        savePendingPinMove();
+      }
+      setIsEditMode(value);
+      if (value) setIsSheetExpanded(true);
+    },
+    [savePendingPinMove],
+  );
 
   const handlePendingPinMove = useCallback(
     (vehicleId: string, stopId: string, lat: number, lng: number) => {
@@ -430,10 +476,10 @@ export default function ResultsPage() {
       <div className="lg:hidden relative flex flex-1 min-h-0 flex-col">
         <MobileResultsNavbar
           onMenuClick={() => setIsMobileMenuOpen(true)}
+          isEditMode={isEditMode}
           showCancel={pendingPinMove != null}
-          onSave={savePendingPinMove}
+          onSaveEdits={() => handleEditModeChange(false)}
           onCancel={handleMobileCancel}
-          saveDisabled={isEditMode && pendingPinMove == null}
         />
         <div className="relative flex flex-1 min-h-0 flex-col">
           {isEditMode && (
