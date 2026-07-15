@@ -27,15 +27,18 @@ env:
     secret: FEEDBACK_GITHUB_PRIVATE_KEY
   - variable: FEEDBACK_SCREENSHOT_BUCKET
     secret: FEEDBACK_SCREENSHOT_BUCKET
-  - variable: NEXT_PUBLIC_FEEDBACK_RECAPTCHA_SITE_KEY
-    secret: FEEDBACK_RECAPTCHA_SITE_KEY
-    availability:
-      - BUILD
-      - RUNTIME
-  - variable: FEEDBACK_RECAPTCHA_SECRET
-    secret: FEEDBACK_RECAPTCHA_SECRET
-  - variable: FEEDBACK_RECAPTCHA_MIN_SCORE
-    value: "0.5"
+  # reCAPTCHA is optional and OFF by default. The server disables verification
+  # when FEEDBACK_RECAPTCHA_SECRET is unset (see lib/feedback/security.ts).
+  # To enable: create reCAPTCHA v3 keys, put them in the FEEDBACK_RECAPTCHA_SITE_KEY
+  # and FEEDBACK_RECAPTCHA_SECRET secrets, then re-add:
+  #   - variable: NEXT_PUBLIC_FEEDBACK_RECAPTCHA_SITE_KEY
+  #     secret: FEEDBACK_RECAPTCHA_SITE_KEY
+  #     availability: [BUILD, RUNTIME]
+  #   - variable: FEEDBACK_RECAPTCHA_SECRET
+  #     secret: FEEDBACK_RECAPTCHA_SECRET
+  #   - variable: FEEDBACK_RECAPTCHA_MIN_SCORE
+  #     value: "0.5"
+  # Do NOT map these to placeholder secrets — every submission would fail with 403.
   - variable: FEEDBACK_RATE_LIMIT_WINDOW_MS
     value: "600000"
   - variable: FEEDBACK_RATE_LIMIT_MAX
