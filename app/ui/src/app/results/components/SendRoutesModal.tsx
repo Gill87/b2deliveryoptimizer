@@ -218,7 +218,7 @@ function SendRoutesOutcomeDialog({
           type="button"
           onClick={onClose}
           className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800"
-          aria-label="Close"
+          aria-label="Close outcome dialog"
         >
           <svg
             width="14"
