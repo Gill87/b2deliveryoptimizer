@@ -6,6 +6,10 @@ import type {
   VehicleType,
   CapacityUnit,
 } from "@/app/edit/types/delivery";
+import {
+  getMinutesAfterHourChange,
+  isValidDepartureHour,
+} from "@/app/edit/utils/deliveryHelpers";
 import { useFocusTrap } from "@/app/edit/hooks/useFocusTrap";
 import FieldError from "@/app/edit/components/shared/FieldError";
 import {
@@ -81,13 +85,11 @@ const CHEVRON_DOWN_ICON = (
 );
 
 function isValidTime(h: string, m: string): boolean {
-  const hNum = parseInt(h, 10);
   const mNum = parseInt(m, 10);
   return (
     h.trim() !== "" &&
     m.trim() !== "" &&
-    hNum >= 1 &&
-    hNum <= 12 &&
+    isValidDepartureHour(h) &&
     mNum >= 0 &&
     mNum <= 59
   );
@@ -136,6 +138,8 @@ export default function VehicleDetailsOverlay({
 
   const hoursRef = useRef<HTMLInputElement>(null);
   const minutesRef = useRef<HTMLInputElement>(null);
+  const minutesAutoFilledRef = useRef(false);
+  const focusMinutesAfterRenderRef = useRef(false);
 
   const nameError = submitted && !name.trim();
   const typeError = submitted && !type;
@@ -150,6 +154,13 @@ export default function VehicleDetailsOverlay({
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
+
+  useEffect(() => {
+    if (!focusMinutesAfterRenderRef.current) return;
+
+    focusMinutesAfterRenderRef.current = false;
+    minutesRef.current?.focus();
+  }, [hours, minutes]);
 
   function handleSave() {
     setSubmitted(true);
@@ -439,8 +450,23 @@ export default function VehicleDetailsOverlay({
                           const val = e.target.value
                             .replace(/\D/g, "")
                             .slice(0, 2);
+                          const { minutes: nextMinutes, autoFilled } =
+                            getMinutesAfterHourChange(
+                              val,
+                              minutes,
+                              minutesAutoFilledRef.current,
+                            );
+                          const hoursChanged = val !== hours;
+                          const minutesChanged = nextMinutes !== minutes;
                           setHours(val);
-                          if (val.length === 2) minutesRef.current?.focus();
+                          minutesAutoFilledRef.current = autoFilled;
+                          setMinutes(nextMinutes);
+                          if (
+                            val.length === 2 &&
+                            (hoursChanged || minutesChanged)
+                          ) {
+                            focusMinutesAfterRenderRef.current = true;
+                          }
                         }}
                         placeholder="HH"
                         maxLength={2}
@@ -458,11 +484,15 @@ export default function VehicleDetailsOverlay({
                           const val = e.target.value
                             .replace(/\D/g, "")
                             .slice(0, 2);
+                          minutesAutoFilledRef.current = false;
                           setMinutes(val);
                         }}
                         onKeyDown={(e) => {
                           if (e.key === "Backspace" && minutes === "")
                             hoursRef.current?.focus();
+                        }}
+                        onFocus={(e) => {
+                          if (minutesAutoFilledRef.current) e.target.select();
                         }}
                         placeholder="MM"
                         maxLength={2}

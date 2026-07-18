@@ -31,12 +31,12 @@ import EditPageFooter from "@/app/edit/components/footer/EditPageFooter";
 import MobileEditPageFooter from "@/app/edit/components/footer/MobileEditPageFooter";
 import MobileBottomBar from "@/app/components/navbar/MobileBottomBar";
 import CSVUploadOverlay from "@/app/edit/components/address/CSVUploadOverlay";
+import { useCSVImport } from "@/app/edit/hooks/useCSVImport";
 import DragDropOverlay from "@/app/edit/components/shared/DragDropOverlay";
 import { useVehicles } from "@/app/edit/hooks/useVehicles";
 import { useAddresses } from "@/app/edit/hooks/useAddresses";
 import { useOptimize } from "@/app/edit/hooks/useOptimize";
 import { useCallback, useEffect, useState } from "react";
-import type { AddressCard } from "@/app/edit/types/delivery";
 import { loadSessionFromFile } from "@/lib/session/importSession";
 import { downloadSessionSave } from "@/lib/session/exportSession";
 import {
@@ -50,8 +50,16 @@ import {
 import AddressOverlay, {
   type LocationAddress,
 } from "@/app/edit/components/address/AddressOverlay";
+import type { AddressCard } from "@/app/edit/types/delivery";
 
 type StoredUploadFile = { name: string; content: string };
+
+function reindexAddresses(addresses: AddressCard[]): AddressCard[] {
+  return addresses.map((address, index) => ({
+    ...address,
+    id: index + 1,
+  }));
+}
 
 export default function Page() {
   const vehicleState = useVehicles();
@@ -65,6 +73,7 @@ export default function Page() {
   const [pendingCSVFile, setPendingCSVFile] = useState<File | null>(null);
   const { importVehicles } = vehicleState;
   const { importAddresses } = addressState;
+  const { parseError, closeImportModal } = useCSVImport();
 
   const {
     optimize,
@@ -131,19 +140,11 @@ export default function Page() {
         }
 
         // TODO: remove after one release cycle — importedCards was written by
-        // CSVImportModal.handleConfirm which has since been deleted.
-        // Kept as a migration safety net for any in-flight sessions.
-        const storedImportedCards = sessionStorage.getItem("importedCards");
-        if (storedImportedCards) {
+        // CSVImportModal.handleConfirm which has since been deleted. There is
+        // no reader for its format anymore, so just clear the stale key for
+        // any in-flight sessions.
+        if (sessionStorage.getItem("importedCards")) {
           sessionStorage.removeItem("importedCards");
-          try {
-            const cards = JSON.parse(storedImportedCards) as AddressCard[];
-            if (!cancelled) importAddresses(reindexAddresses(cards));
-          } catch {
-            if (!cancelled)
-              setSessionError("Failed to import the selected entries.");
-          }
-          return;
         }
 
         // CSV/JSON file forwarded from upload-save-point — open CSVUploadOverlay
@@ -206,11 +207,11 @@ export default function Page() {
   const handleExportSession = useCallback(async () => {
     setSessionError(null);
     try {
-      const request = await mapEditStateToSessionSave(
+      const session = await mapEditStateToSessionSave(
         vehicleState.vehicles,
         addressState.addresses,
       );
-      const result = downloadSessionSave(request);
+      const result = downloadSessionSave(session);
       if (!result.ok) throw result.error;
     } catch (error) {
       setSessionError(
@@ -265,7 +266,7 @@ export default function Page() {
 
   return (
     <div className={`${PAGE_V2_ROOT} ${styles.root}`}>
-      {/* CSVUploadOverlay handles all three steps: file pick → column mapper → row selector */}
+      {/* CSVUploadOverlay handles file pick, column mapping, and row selection */}
       {isUploadOverlayOpen && (
         <CSVUploadOverlay
           onClose={() => {
@@ -273,7 +274,9 @@ export default function Page() {
             setPendingCSVFile(null);
           }}
           importAddresses={(cards: AddressCard[]) =>
-            addressState.importAddresses(reindexAddresses(cards))
+            addressState.importAddresses(
+              reindexAddresses([...addressState.addresses, ...cards]),
+            )
           }
           onInvalidFile={() => {
             setIsUploadOverlayOpen(false);
@@ -292,6 +295,7 @@ export default function Page() {
         message={uploadError}
         onClose={() => setUploadError(null)}
       />
+      <ErrorOverlay message={parseError} onClose={closeImportModal} />
       <OptimizingModal isOpen={isOptimizing} />
       {needsDepotAddress && (
         <AddressOverlay
@@ -374,11 +378,4 @@ function parseStoredUploadFile(
     throw new Error(`Invalid ${label} upload payload.`);
   }
   return parsed as StoredUploadFile;
-}
-
-function reindexAddresses(addresses: AddressCard[]): AddressCard[] {
-  return addresses.map((address, index) => ({
-    ...address,
-    id: index + 1,
-  }));
 }

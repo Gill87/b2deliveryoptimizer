@@ -80,6 +80,16 @@ function routePolylineOptions(
 type CachedDirections = { path: google.maps.LatLng[]; meters: number };
 
 const MAX_DIRECTIONS_CACHE_SIZE = 100;
+const DIRECTIONS_REQUEST_TIMEOUT_MS = 10_000;
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error("Directions request timed out")), ms),
+    ),
+  ]);
+}
 
 function rememberDirections(
   cache: Map<string, CachedDirections>,
@@ -96,6 +106,37 @@ function rememberDirections(
 
 function routeCacheKey(path: google.maps.LatLngLiteral[]): string {
   return path.map((p) => `${p.lat.toFixed(6)},${p.lng.toFixed(6)}`).join("|");
+}
+
+function routePathsKey(routes: Route[]): string {
+  return routes
+    .map((route) => {
+      const path = buildRoutePath(route, null);
+      return `${route.vehicleId}:${routeCacheKey(path)}`;
+    })
+    .join("|");
+}
+
+/** Prefer overview_path; fall back to leg step paths when overview is missing. */
+function extractRoadPath(
+  result: google.maps.DirectionsResult,
+): google.maps.LatLng[] {
+  const route = result.routes[0];
+  if (!route) return [];
+
+  if (route.overview_path && route.overview_path.length >= 2) {
+    return route.overview_path;
+  }
+
+  const path: google.maps.LatLng[] = [];
+  for (const leg of route.legs ?? []) {
+    for (const [i, step] of (leg.steps ?? []).entries()) {
+      if (step.path?.length) {
+        path.push(...(i === 0 ? step.path : step.path.slice(1)));
+      }
+    }
+  }
+  return path;
 }
 
 function buildRoutePath(
@@ -135,15 +176,36 @@ function RoutePolylinesOverlay({
     {},
   );
   const directionsCacheRef = useRef(new Map<string, CachedDirections>());
+  const onRouteDistanceUpdateRef = useRef(onRouteDistanceUpdate);
+  const routesRef = useRef(routes);
+  const routesPathKey = useMemo(() => routePathsKey(routes), [routes]);
+
+  useEffect(() => {
+    routesRef.current = routes;
+  }, [routes]);
+
+  useEffect(() => {
+    onRouteDistanceUpdateRef.current = onRouteDistanceUpdate;
+  }, [onRouteDistanceUpdate]);
 
   useEffect(() => {
     if (!map || typeof google === "undefined") return;
 
+    const routesSnapshot = routesRef.current;
     Object.values(polylinesByVehicleRef.current).forEach((p) => p.setMap(null));
     polylinesByVehicleRef.current = {};
 
     let cancelled = false;
     const directionsService = new google.maps.DirectionsService();
+
+    const setRoutePolyline = (
+      vehicleId: string,
+      polyline: google.maps.Polyline,
+    ) => {
+      const prev = polylinesByVehicleRef.current[vehicleId];
+      if (prev) prev.setMap(null);
+      polylinesByVehicleRef.current[vehicleId] = polyline;
+    };
 
     const drawFallback = (route: Route, strokeColor: string) => {
       if (cancelled) return;
@@ -154,90 +216,106 @@ function RoutePolylinesOverlay({
         path: fallbackPath,
         ...routePolylineOptions(strokeColor),
       });
-      polylinesByVehicleRef.current[route.vehicleId] = fallbackPoly;
+      setRoutePolyline(route.vehicleId, fallbackPoly);
     };
 
-    void Promise.allSettled(
-      routes.map(async (route, routeIndex) => {
-        const strokeColor = routeColorHex(routeIndex);
-        const path = buildRoutePath(route, null);
-        if (path.length < 2) return;
-        const origin = path[0]!;
-        const destination = path[path.length - 1]!;
+    const drawRoutePolyline = async (route: Route, routeIndex: number) => {
+      const strokeColor = routeColorHex(routeIndex);
+      const path = buildRoutePath(route, null);
+      if (path.length < 2) return;
 
-        const waypoints = path
-          .slice(1, -1)
-          .map((location) => ({ location, stopover: true }));
-        if (waypoints.length > 25) {
-          drawFallback(route, strokeColor);
-          return;
+      const origin = path[0]!;
+      const destination = path[path.length - 1]!;
+      const waypoints = path
+        .slice(1, -1)
+        .map((location) => ({ location, stopover: true }));
+
+      if (waypoints.length > 25) {
+        drawFallback(route, strokeColor);
+        return;
+      }
+
+      const cacheKey = routeCacheKey(path);
+      const cached = directionsCacheRef.current.get(cacheKey);
+      if (cached && cached.path.length >= 2) {
+        if (cancelled) return;
+        const cachedPoly = new google.maps.Polyline({
+          map,
+          path: cached.path,
+          ...routePolylineOptions(strokeColor),
+        });
+        setRoutePolyline(route.vehicleId, cachedPoly);
+        if (cached.meters > 0 && onRouteDistanceUpdateRef.current) {
+          const distanceMi = Number((cached.meters / 1609.344).toFixed(1));
+          onRouteDistanceUpdateRef.current(route.vehicleId, distanceMi);
         }
+        return;
+      }
 
-        const cacheKey = routeCacheKey(path);
-        const cached = directionsCacheRef.current.get(cacheKey);
-        if (cached && cached.path.length >= 2) {
-          if (cancelled) return;
-          const cachedPoly = new google.maps.Polyline({
-            map,
-            path: cached.path,
-            ...routePolylineOptions(strokeColor),
-          });
-          polylinesByVehicleRef.current[route.vehicleId] = cachedPoly;
-          if (cancelled) return;
-          if (cached.meters > 0 && onRouteDistanceUpdate) {
-            const distanceMi = Number((cached.meters / 1609.344).toFixed(1));
-            onRouteDistanceUpdate(route.vehicleId, distanceMi);
-          }
-          return;
-        }
-
-        try {
-          const result = await directionsService.route({
+      try {
+        const result = await withTimeout(
+          directionsService.route({
             origin,
             destination,
             waypoints,
             optimizeWaypoints: false,
             travelMode: google.maps.TravelMode.DRIVING,
-          });
-          if (cancelled) return;
+          }),
+          DIRECTIONS_REQUEST_TIMEOUT_MS,
+        );
+        if (cancelled) return;
 
-          const roadPath = result.routes[0]?.overview_path;
-          if (!roadPath || roadPath.length < 2) {
-            drawFallback(route, strokeColor);
-            return;
-          }
-
-          const totalMeters = (result.routes[0]?.legs ?? []).reduce(
-            (sum, leg) => sum + (leg.distance?.value ?? 0),
-            0,
-          );
-          if (cancelled) return;
-          if (totalMeters > 0 && onRouteDistanceUpdate) {
-            const distanceMi = Number((totalMeters / 1609.344).toFixed(1));
-            onRouteDistanceUpdate(route.vehicleId, distanceMi);
-          }
-          if (cancelled) return;
-
-          rememberDirections(directionsCacheRef.current, cacheKey, {
-            path: roadPath,
-            meters: totalMeters,
-          });
-
-          const roadPoly = new google.maps.Polyline({
-            map,
-            path: roadPath,
-            ...routePolylineOptions(strokeColor),
-          });
-          polylinesByVehicleRef.current[route.vehicleId] = roadPoly;
-        } catch (err) {
+        const roadPath = extractRoadPath(result);
+        if (roadPath.length < 2) {
           console.warn(
-            "[Map] DirectionsService failed, falling back to straight line:",
-            err,
+            `[Map] Directions returned no road path for vehicle ${route.vehicleId}; falling back to straight line.`,
           );
           drawFallback(route, strokeColor);
+          return;
         }
-      }),
-    );
+
+        const totalMeters = (result.routes[0]?.legs ?? []).reduce(
+          (sum, leg) => sum + (leg.distance?.value ?? 0),
+          0,
+        );
+        if (cancelled) return;
+
+        rememberDirections(directionsCacheRef.current, cacheKey, {
+          path: roadPath,
+          meters: totalMeters,
+        });
+
+        const roadPoly = new google.maps.Polyline({
+          map,
+          path: roadPath,
+          ...routePolylineOptions(strokeColor),
+        });
+        setRoutePolyline(route.vehicleId, roadPoly);
+
+        if (totalMeters > 0 && onRouteDistanceUpdateRef.current) {
+          const distanceMi = Number((totalMeters / 1609.344).toFixed(1));
+          onRouteDistanceUpdateRef.current(route.vehicleId, distanceMi);
+        }
+      } catch (err) {
+        console.warn(
+          `[Map] DirectionsService failed for vehicle ${route.vehicleId}, falling back to straight line:`,
+          err,
+        );
+        drawFallback(route, strokeColor);
+      }
+    };
+
+    void (async () => {
+      // Request one route at a time to avoid Directions API rate-limit failures.
+      for (
+        let routeIndex = 0;
+        routeIndex < routesSnapshot.length;
+        routeIndex += 1
+      ) {
+        if (cancelled) return;
+        await drawRoutePolyline(routesSnapshot[routeIndex]!, routeIndex);
+      }
+    })();
 
     return () => {
       cancelled = true;
@@ -246,7 +324,7 @@ function RoutePolylinesOverlay({
       );
       polylinesByVehicleRef.current = {};
     };
-  }, [map, routes, onRouteDistanceUpdate]);
+  }, [map, routesPathKey]);
 
   useEffect(() => {
     if (!map || typeof google === "undefined") return;
@@ -265,16 +343,33 @@ function RoutePolylinesOverlay({
     }
 
     for (const route of routes) {
-      const poly = byVehicle[route.vehicleId];
-      if (!poly) continue;
       const committed = buildRoutePath(route, null);
       if (committed.length < 2) continue;
       const key = routeCacheKey(committed);
       const cached = directionsCacheRef.current.get(key);
+      const routeIndex = routes.findIndex(
+        (r) => r.vehicleId === route.vehicleId,
+      );
+      const strokeColor = routeColorHex(routeIndex);
+
+      let poly = byVehicle[route.vehicleId];
+      if (!poly) {
+        // Effect 1 may have cleared refs before this runs; show a path immediately.
+        const path =
+          cached && cached.path.length >= 2 ? cached.path : committed;
+        poly = new google.maps.Polyline({
+          map,
+          path,
+          ...routePolylineOptions(strokeColor),
+        });
+        byVehicle[route.vehicleId] = poly;
+        continue;
+      }
+
       if (cached && cached.path.length >= 2) {
         poly.setPath(cached.path);
       } else {
-        poly.setPath(committed);
+        poly.setPath(committed); // straight-line until async fetch fills the cache
       }
     }
   }, [map, routes, pendingPinMove]);

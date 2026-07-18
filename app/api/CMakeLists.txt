@@ -11,6 +11,7 @@ target_sources(
     src/endpoints/optimization_jobs_endpoint.cpp
     src/endpoints/optimize_endpoint.cpp
     src/endpoints/osrm_proxy_endpoint.cpp
+    src/endpoints/whatsapp_endpoint.cpp
     src/optimization_job_runtime.cpp
     src/optimization_job_store.cpp
     src/observability.cpp
@@ -34,6 +35,7 @@ target_sources(
       include/deliveryoptimizer/api/endpoints/optimization_jobs_endpoint.hpp
       include/deliveryoptimizer/api/endpoints/optimize_endpoint.hpp
       include/deliveryoptimizer/api/endpoints/osrm_proxy_endpoint.hpp
+      include/deliveryoptimizer/api/endpoints/whatsapp_endpoint.hpp
       include/deliveryoptimizer/api/forecast_optimizer.hpp
       include/deliveryoptimizer/api/internal/json_utils.hpp
       include/deliveryoptimizer/api/optimization_job_runtime.hpp

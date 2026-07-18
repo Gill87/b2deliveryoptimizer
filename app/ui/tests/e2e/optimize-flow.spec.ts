@@ -29,6 +29,7 @@ async function addDeliveryAddress(page: Page, recipientName: string) {
     .locator('[aria-label="Recipient name"]')
     .first()
     .fill(recipientName);
+  await page.locator('[aria-label="Delivery quantity"]').first().fill("1");
   await page.locator('[aria-label="Edit recipient address"]').first().click();
   await fillAddressOverlay(page, "Enter Address", "Confirm");
   await page.locator('[aria-label="Confirm row"]').first().click();
@@ -88,5 +89,64 @@ test("optimize flow routes 2 stops to 1 vehicle", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Optimized Routes" }),
   ).toBeVisible();
-  await expect(page.getByText("1 route with 2 total stops")).toBeVisible();
+  await expect(
+    page.locator("aside").getByText("1 route with 2 total stops"),
+  ).toBeVisible();
+});
+
+test("results export opens method choices before existing flows", async ({
+  page,
+}) => {
+  await page.goto("/results?mock=1");
+
+  await expect(
+    page.getByRole("heading", { name: "Optimized Routes" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Send", exact: true }),
+  ).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Export", exact: true }).click();
+
+  const methodDialog = page.getByRole("dialog", {
+    name: "Choose export method",
+  });
+  await expect(methodDialog).toBeVisible();
+  await expect(
+    methodDialog.getByRole("button", { name: /Send via WhatsApp/ }),
+  ).toBeVisible();
+  await expect(
+    methodDialog.getByRole("button", { name: /Export JSON/ }),
+  ).toBeVisible();
+
+  await methodDialog.getByRole("button", { name: /Send via WhatsApp/ }).click();
+  await expect(page.getByRole("dialog", { name: "Send Routes" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog", { name: "Send Routes" })).toHaveCount(
+    0,
+  );
+
+  await page.getByRole("button", { name: "Export", exact: true }).click();
+  await page
+    .getByRole("dialog", { name: "Choose export method" })
+    .getByRole("button", { name: /Export JSON/ })
+    .click();
+  await expect(
+    page.getByRole("dialog", { name: "Export Routes" }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog", { name: "Export Routes" })).toHaveCount(
+    0,
+  );
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/results?mock=1");
+  await page.getByRole("button", { name: "Expand route list" }).click();
+  await expect(
+    page.getByRole("button", { name: "Send", exact: true }),
+  ).toHaveCount(0);
+  await page.getByRole("button", { name: "Export", exact: true }).click();
+  await expect(
+    page.getByRole("dialog", { name: "Choose export method" }),
+  ).toBeVisible();
 });
