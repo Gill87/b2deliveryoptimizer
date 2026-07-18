@@ -5,56 +5,144 @@ import {
 } from "@/lib/whatsapp/whatsappClient";
 import type { SendRouteItem } from "@/lib/validation/whatsapp.schema";
 
-describe("sendRoutesToWhatsApp (mock mode)", () => {
+function createRoute(
+  vehicleId: string,
+  driverPhoneNumber: string,
+  driverName: string,
+): SendRouteItem {
+  return {
+    vehicleId,
+    driverPhoneNumber,
+    route: { driverName },
+  };
+}
+
+describe("sendRoutesToWhatsApp", () => {
   beforeEach(() => {
-    vi.useFakeTimers();
+    vi.stubEnv("DELIVERYOPTIMIZER_API_URL", "https://api.example.com/");
+    vi.stubEnv("WHATSAPP_SEND_ROUTE_SECRET", "test-secret");
   });
 
   afterEach(() => {
-    vi.useRealTimers();
+    vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
-  it("logs the would-be payload and resolves a per-route success result", async () => {
-    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+  it("sends each route to the backend and maps WhatsApp message IDs", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ messages: [{ id: "wamid.vehicle-1" }] })),
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ messages: [{ id: "wamid.vehicle-2" }] })),
+      );
+    vi.stubGlobal("fetch", fetchMock);
     const items: SendRouteItem[] = [
+      createRoute("vehicle-1", "+14155551234", "Jim"),
+      createRoute("vehicle-2", "+14155551235", "Sam"),
+    ];
+
+    const results = await sendRoutesToWhatsApp(items);
+
+    expect(results).toEqual([
       {
         vehicleId: "vehicle-1",
-        driverPhoneNumber: "+14155551234",
-        route: { driverName: "Jim" },
+        status: "sent",
+        whatsappMessageId: "wamid.vehicle-1",
       },
       {
         vehicleId: "vehicle-2",
-        driverPhoneNumber: "+14155551235",
-        route: { driverName: "Sam" },
+        status: "sent",
+        whatsappMessageId: "wamid.vehicle-2",
       },
-    ];
-
-    const resultPromise = sendRoutesToWhatsApp(items);
-    await vi.runAllTimersAsync();
-    const results = await resultPromise;
-
-    expect(results).toHaveLength(2);
-    expect(results[0]).toMatchObject({
-      vehicleId: "vehicle-1",
-      status: "sent",
-    });
-    expect(results[0].whatsappMessageId).toContain("vehicle-1");
-    expect(results[1]).toMatchObject({
-      vehicleId: "vehicle-2",
-      status: "sent",
-    });
-    expect(logSpy).toHaveBeenCalledTimes(2);
-    expect(logSpy.mock.calls[0][0]).toContain("vehicle-1");
-    expect(logSpy.mock.calls[0][0]).toContain("14155551234");
-    expect(logSpy.mock.calls[0][0]).not.toContain("+14155551234");
+    ]);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      1,
+      "https://api.example.com/api/whatsapp/send-route",
+      expect.objectContaining({
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-WhatsApp-Send-Secret": "test-secret",
+        },
+        body: JSON.stringify({
+          to: "14155551234",
+          message: JSON.stringify({ driverName: "Jim" }),
+        }),
+      }),
+    );
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      2,
+      "https://api.example.com/api/whatsapp/send-route",
+      expect.objectContaining({
+        body: JSON.stringify({
+          to: "14155551235",
+          message: JSON.stringify({ driverName: "Sam" }),
+        }),
+      }),
+    );
   });
 
+  it("maps individual backend, network, and malformed response failures", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({ error: "WhatsApp upstream request failed." }),
+          { status: 502 },
+        ),
+      )
+      .mockRejectedValueOnce(new TypeError("Network request failed"))
+      .mockResolvedValueOnce(new Response("{"));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const results = await sendRoutesToWhatsApp([
+      createRoute("backend-failure", "+14155551234", "Jim"),
+      createRoute("network-failure", "+14155551235", "Sam"),
+      createRoute("malformed-response", "+14155551236", "Ava"),
+    ]);
+
+    expect(results).toEqual([
+      {
+        vehicleId: "backend-failure",
+        status: "failed",
+        whatsappMessageId: "",
+      },
+      {
+        vehicleId: "network-failure",
+        status: "failed",
+        whatsappMessageId: "",
+      },
+      {
+        vehicleId: "malformed-response",
+        status: "failed",
+        whatsappMessageId: "",
+      },
+    ]);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+  });
+
+  it.each(["DELIVERYOPTIMIZER_API_URL", "WHATSAPP_SEND_ROUTE_SECRET"])(
+    "requires %s for non-empty sends",
+    async (variableName) => {
+      vi.stubEnv(variableName, " ");
+      const fetchMock = vi.fn();
+      vi.stubGlobal("fetch", fetchMock);
+
+      await expect(
+        sendRoutesToWhatsApp([createRoute("vehicle-1", "+14155551234", "Jim")]),
+      ).rejects.toThrow(
+        `${variableName} must be configured to send WhatsApp routes.`,
+      );
+      expect(fetchMock).not.toHaveBeenCalled();
+    },
+  );
+
   it("resolves an empty array for an empty input list", async () => {
-    const resultPromise = sendRoutesToWhatsApp([]);
-    await vi.runAllTimersAsync();
-    const results = await resultPromise;
-    expect(results).toEqual([]);
+    expect(await sendRoutesToWhatsApp([])).toEqual([]);
   });
 
   it("formats E.164 numbers for the WhatsApp recipient field", () => {
