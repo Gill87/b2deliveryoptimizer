@@ -1,53 +1,10 @@
-import { test, expect, type Locator, type Page } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
 const NOMINATIM_MOCK = [
   {
     lat: "37.7749",
     lon: "-122.4194",
     address: { state: "California", country_code: "us" },
-  },
-];
-
-const SEND_TEST_ROUTES = [
-  {
-    vehicleId: "vehicle-1",
-    driverName: "Jim",
-    driverPhoneNumber: "4155551234",
-    vehicleType: "Van",
-    distanceMi: 1,
-    estimatedTimeMinutes: 10,
-    stops: [
-      {
-        id: "stop-1",
-        address: "100 Market St, San Francisco, CA",
-        lat: 37.7749,
-        lng: -122.4194,
-        sequence: 1,
-        capacityUsed: 1,
-        timeWindow: { kind: "at", time: "09:00" },
-        note: "",
-      },
-    ],
-  },
-  {
-    vehicleId: "vehicle-2",
-    driverName: "Sam",
-    driverPhoneNumber: "4155551235",
-    vehicleType: "Van",
-    distanceMi: 1,
-    estimatedTimeMinutes: 10,
-    stops: [
-      {
-        id: "stop-2",
-        address: "200 Market St, San Francisco, CA",
-        lat: 37.775,
-        lng: -122.4195,
-        sequence: 1,
-        capacityUsed: 1,
-        timeWindow: { kind: "at", time: "09:00" },
-        note: "",
-      },
-    ],
   },
 ];
 
@@ -76,18 +33,6 @@ async function addDeliveryAddress(page: Page, recipientName: string) {
   await page.locator('[aria-label="Edit recipient address"]').first().click();
   await fillAddressOverlay(page, "Enter Address", "Confirm");
   await page.locator('[aria-label="Confirm row"]').first().click();
-}
-
-async function openSendRoutesModal(page: Page): Promise<Locator> {
-  await page.getByRole("button", { name: "Export", exact: true }).click();
-  await page
-    .getByRole("dialog", { name: "Choose export method" })
-    .getByRole("button", { name: /^Send via WhatsApp\b/ })
-    .click();
-
-  const sendDialog = page.getByRole("dialog", { name: "Send Routes" });
-  await expect(sendDialog).toBeVisible();
-  return sendDialog;
 }
 
 test("optimize flow routes 2 stops to 1 vehicle", async ({ page }) => {
@@ -171,7 +116,7 @@ test("results export opens method choices before existing flows", async ({
     methodDialog.getByRole("button", { name: /Send via WhatsApp/ }),
   ).toBeVisible();
   await expect(
-    methodDialog.getByRole("button", { name: /^Export Routes\b/ }),
+    methodDialog.getByRole("button", { name: /Export Routes/ }),
   ).toBeVisible();
 
   await methodDialog.getByRole("button", { name: /Send via WhatsApp/ }).click();
@@ -184,7 +129,7 @@ test("results export opens method choices before existing flows", async ({
   await page.getByRole("button", { name: "Export", exact: true }).click();
   await page
     .getByRole("dialog", { name: "Choose export method" })
-    .getByRole("button", { name: /^Export Routes\b/ })
+    .getByRole("button", { name: /Export Routes/ })
     .click();
   await expect(
     page.getByRole("dialog", { name: "Export Routes" }),
@@ -204,68 +149,4 @@ test("results export opens method choices before existing flows", async ({
   await expect(
     page.getByRole("dialog", { name: "Choose export method" }),
   ).toBeVisible();
-});
-
-test("route sends show success and partial-failure outcomes", async ({
-  page,
-}) => {
-  let sendAttempt = 0;
-  await page.route("**/api/whatsapp/send-route", async (route) => {
-    const body = route.request().postDataJSON() as {
-      routes: { vehicleId: string }[];
-    };
-    const isPartialFailure = sendAttempt++ === 1;
-    const failedVehicleId = isPartialFailure ? "vehicle-2" : null;
-
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({
-        results: body.routes.map(({ vehicleId }) => {
-          const didFail = vehicleId === failedVehicleId;
-
-          return {
-            vehicleId,
-            status: didFail ? "failed" : "sent",
-            whatsappMessageId: didFail ? "" : `wamid.${vehicleId}`,
-            error: didFail ? "WhatsApp upstream request failed." : undefined,
-          };
-        }),
-      }),
-    });
-  });
-  await page.addInitScript((routes) => {
-    sessionStorage.setItem("optimizeResults", JSON.stringify(routes));
-  }, SEND_TEST_ROUTES);
-  await page.goto("/results");
-
-  const successSendDialog = await openSendRoutesModal(page);
-  await successSendDialog.getByRole("button", { name: "Send (2)" }).click();
-
-  const successDialog = page.getByRole("dialog", {
-    name: "Routes sent successfully!",
-  });
-  await expect(successDialog).toBeVisible();
-  await expect(successDialog).toContainText(
-    "Your drivers can now access the optimized routes",
-  );
-  await successDialog
-    .getByRole("button", { name: "Close", exact: true })
-    .click();
-
-  const partialSendDialog = await openSendRoutesModal(page);
-  await partialSendDialog.getByRole("button", { name: "Send (2)" }).click();
-
-  const failureDialog = page.getByRole("dialog", {
-    name: "Routes failed to send",
-  });
-  await expect(failureDialog).toContainText(
-    "Some routes were sent successfully, but the route for Sam failed to send.",
-  );
-  await expect(failureDialog).toContainText(
-    "WhatsApp upstream request failed.",
-  );
-  await failureDialog
-    .getByRole("button", { name: "Close", exact: true })
-    .click();
 });

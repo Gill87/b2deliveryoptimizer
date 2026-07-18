@@ -33,87 +33,6 @@ function pickSentVehicleIds(results: WhatsAppSendResult[]): string[] {
   return results.filter((r) => r.status === "sent").map((r) => r.vehicleId);
 }
 
-export type RouteSendOutcome = {
-  status: "success" | "failure";
-  title: string;
-  message: string;
-};
-
-function joinDriverNames(routes: Pick<Route, "driverName">[]): string {
-  const names = routes.map((route) => route.driverName || "an unnamed driver");
-
-  if (names.length === 1) return names[0];
-  if (names.length === 2) return `${names[0]} and ${names[1]}`;
-  return `${names.slice(0, -1).join(", ")}, and ${names.at(-1)}`;
-}
-
-function buildFailureOutcome(
-  failedRoutes: Pick<Route, "driverName">[],
-  sentCount: number,
-  reason: string,
-): RouteSendOutcome {
-  const routePhrase =
-    failedRoutes.length === 1
-      ? `the route for ${joinDriverNames(failedRoutes)}`
-      : `routes for ${joinDriverNames(failedRoutes)}`;
-  const statusMessage =
-    sentCount > 0
-      ? `Some routes were sent successfully, but ${routePhrase} failed to send.`
-      : `${routePhrase[0].toUpperCase()}${routePhrase.slice(1)} failed to send.`;
-
-  return {
-    status: "failure",
-    title: "Routes failed to send",
-    message: `${statusMessage} ${reason} You can retry the failed routes.`,
-  };
-}
-
-export function buildRouteSendOutcome(
-  routes: Pick<Route, "vehicleId" | "driverName">[],
-  results: WhatsAppSendResult[],
-): RouteSendOutcome {
-  const resultsByVehicleId = new Map(
-    results.map((result) => [result.vehicleId, result]),
-  );
-  const failedRoutes = routes.filter(
-    (route) => resultsByVehicleId.get(route.vehicleId)?.status !== "sent",
-  );
-
-  if (failedRoutes.length === 0) {
-    return {
-      status: "success",
-      title: "Routes sent successfully!",
-      message:
-        "Your drivers can now access the optimized routes, load them up on our Driver app, and start driving!",
-    };
-  }
-
-  const reasons = [
-    ...new Set(
-      failedRoutes
-        .map((route) => resultsByVehicleId.get(route.vehicleId)?.error)
-        .filter((reason): reason is string => Boolean(reason)),
-    ),
-  ];
-  const reason =
-    reasons.length === 1
-      ? reasons[0]
-      : "WhatsApp could not send one or more routes.";
-
-  return buildFailureOutcome(
-    failedRoutes,
-    routes.length - failedRoutes.length,
-    reason,
-  );
-}
-
-export function buildRouteSendFailureOutcome(
-  routes: Pick<Route, "driverName">[],
-  reason: string,
-): RouteSendOutcome {
-  return buildFailureOutcome(routes, 0, reason);
-}
-
 export function removeSentVehicleIds(
   selectedIds: Set<string>,
   sentIds: string[],
@@ -131,7 +50,6 @@ export default function SendRoutesModal({
   onSendComplete,
 }: SendRoutesModalProps) {
   const isClient = useIsClient();
-  const [outcome, setOutcome] = useState<RouteSendOutcome | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -145,23 +63,12 @@ export default function SendRoutesModal({
   if (!isOpen || !isClient) return null;
 
   return createPortal(
-    outcome ? (
-      <SendRoutesOutcomeDialog
-        outcome={outcome}
-        onClose={() => {
-          setOutcome(null);
-          onClose();
-        }}
-      />
-    ) : (
-      <SendRoutesModalPanel
-        routes={routes}
-        onClose={onClose}
-        onUpdateDriverPhone={onUpdateDriverPhone}
-        onSendComplete={onSendComplete}
-        onSendOutcome={setOutcome}
-      />
-    ),
+    <SendRoutesModalPanel
+      routes={routes}
+      onClose={onClose}
+      onUpdateDriverPhone={onUpdateDriverPhone}
+      onSendComplete={onSendComplete}
+    />,
     document.body,
   );
 }
@@ -171,116 +78,18 @@ type SendRoutesModalPanelProps = {
   onClose: () => void;
   onUpdateDriverPhone: (vehicleId: string, phone: string) => void;
   onSendComplete: (vehicleIds: string[], sentAtIso: string) => void;
-  onSendOutcome: (outcome: RouteSendOutcome) => void;
 };
 
-type SendState = { status: "idle" } | { status: "sending" };
-
-type SendRoutesOutcomeDialogProps = {
-  outcome: RouteSendOutcome;
-  onClose: () => void;
-};
-
-function SendRoutesOutcomeDialog({
-  outcome,
-  onClose,
-}: SendRoutesOutcomeDialogProps) {
-  const panelRef = useFocusTrap<HTMLDivElement>(true);
-  const titleId = useId();
-  const descriptionId = useId();
-  const isSuccess = outcome.status === "success";
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    },
-    [onClose],
-  );
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 font-sans-manrope"
-      role="presentation"
-      onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        aria-describedby={descriptionId}
-        className="relative mx-4 w-full max-w-md overflow-hidden rounded-xl border border-zinc-200 bg-white text-zinc-900 shadow-lg"
-        onKeyDown={handleKeyDown}
-      >
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800"
-          aria-label="Close outcome dialog"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path
-              d="M1 1L13 13M13 1L1 13"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
-
-        <div className="px-6 pb-5 pt-6">
-          <span
-            className={`flex h-10 w-10 items-center justify-center rounded-full ${
-              isSuccess
-                ? "bg-emerald-100 text-emerald-700"
-                : "bg-red-100 text-red-700"
-            }`}
-            aria-hidden="true"
-          >
-            {isSuccess ? "✓" : "!"}
-          </span>
-          <h2
-            id={titleId}
-            className="mt-4 pr-8 text-lg font-semibold text-zinc-900"
-          >
-            {outcome.title}
-          </h2>
-          <p
-            id={descriptionId}
-            className="mt-2 text-sm leading-snug text-zinc-700"
-          >
-            {outcome.message}
-          </p>
-        </div>
-
-        <div className="flex justify-end border-t border-zinc-100 bg-zinc-50/80 px-6 py-4">
-          <button
-            type="button"
-            onClick={onClose}
-            className="h-9 rounded-md bg-[var(--edit-teal-400)] px-4 text-sm font-semibold text-[var(--edit-foreground)] hover:brightness-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--edit-teal-400)]"
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+type SendState =
+  | { status: "idle" }
+  | { status: "sending" }
+  | { status: "error"; message: string };
 
 function SendRoutesModalPanel({
   routes,
   onClose,
   onUpdateDriverPhone,
   onSendComplete,
-  onSendOutcome,
 }: SendRoutesModalPanelProps) {
   const panelRef = useFocusTrap<HTMLDivElement>(true);
   const titleId = useId();
@@ -340,12 +149,10 @@ function SendRoutesModalPanel({
         const body = (await res.json().catch(() => null)) as {
           error?: string;
         } | null;
-        onSendOutcome(
-          buildRouteSendFailureOutcome(
-            selectedRoutes,
-            body?.error ?? "Failed to send routes via WhatsApp.",
-          ),
-        );
+        setSendState({
+          status: "error",
+          message: body?.error ?? "Failed to send routes.",
+        });
         return;
       }
 
@@ -353,22 +160,29 @@ function SendRoutesModalPanel({
         results?: WhatsAppSendResult[];
       } | null;
       const sentIds = pickSentVehicleIds(body?.results ?? []);
+      const failedCount = selectedRoutes.length - sentIds.length;
 
       if (sentIds.length > 0) {
         onSendComplete(sentIds, new Date().toISOString());
         setSelectedIds((prev) => removeSentVehicleIds(prev, sentIds));
       }
 
-      onSendOutcome(buildRouteSendOutcome(selectedRoutes, body?.results ?? []));
+      if (failedCount > 0) {
+        setSendState({
+          status: "error",
+          message: `${failedCount} route${failedCount > 1 ? "s" : ""} failed to send. Try again.`,
+        });
+        return;
+      }
+
+      onClose();
     } catch {
-      onSendOutcome(
-        buildRouteSendFailureOutcome(
-          selectedRoutes,
-          "Unable to send routes. Check your connection and retry.",
-        ),
-      );
+      setSendState({
+        status: "error",
+        message: "Failed to send routes. Check your connection and retry.",
+      });
     }
-  }, [canSend, selectedRoutes, onSendComplete, onSendOutcome]);
+  }, [canSend, selectedRoutes, onSendComplete, onClose]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -515,6 +329,15 @@ function SendRoutesModalPanel({
             </ul>
           )}
         </div>
+
+        {sendState.status === "error" && (
+          <div
+            role="alert"
+            className="shrink-0 border-t border-red-100 bg-red-50 px-5 py-2 text-sm text-red-700"
+          >
+            {sendState.message}
+          </div>
+        )}
 
         <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-zinc-100 bg-zinc-50/80 px-5 py-4">
           <button

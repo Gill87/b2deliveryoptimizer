@@ -110,19 +110,16 @@ describe("sendRoutesToWhatsApp", () => {
         vehicleId: "backend-failure",
         status: "failed",
         whatsappMessageId: "",
-        error: "WhatsApp upstream request failed.",
       },
       {
         vehicleId: "network-failure",
         status: "failed",
         whatsappMessageId: "",
-        error: "Unable to reach the route sending service. Please try again.",
       },
       {
         vehicleId: "malformed-response",
         status: "failed",
         whatsappMessageId: "",
-        error: "WhatsApp did not confirm that this route was sent.",
       },
     ]);
     expect(fetchMock).toHaveBeenCalledTimes(3);
