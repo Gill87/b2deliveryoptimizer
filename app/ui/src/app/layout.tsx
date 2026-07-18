@@ -40,9 +40,7 @@ export const viewport: Viewport = {
   themeColor: "#111827",
 };
 
-export default function RootLayout({
-  children,
-}: RootLayoutProps) {
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body

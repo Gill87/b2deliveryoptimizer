@@ -354,7 +354,12 @@ export default function HiFiUploadPage({
                   ) : (
                     <>
                       <div className="upload-dropzone-icon" aria-hidden="true">
-                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <svg
+                          width="40"
+                          height="40"
+                          viewBox="0 0 40 40"
+                          fill="none"
+                        >
                           <path
                             d="M24 4H10a2 2 0 00-2 2v28a2 2 0 002 2h20a2 2 0 002-2V14L24 4z"
                             stroke="currentColor"
