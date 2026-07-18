@@ -438,13 +438,13 @@ export default function ResultsPage() {
           )}
         </div>
       </header>
-      <div className="hidden lg:flex flex-1 min-h-0">
+      <div className="hidden lg:flex flex-1 min-h-0 overflow-hidden">
         <NavSidebar>
           <SidebarEditButton />
           <SidebarResultsButton />
         </NavSidebar>
         {/* Hi-fi routes panel width (28rem); always visible on desktop */}
-        <div className="shrink-0 h-full w-[28rem] overflow-hidden">
+        <div className="shrink-0 h-full min-h-0 w-[28rem] overflow-hidden">
           <Sidebar
             routes={routes}
             isEditMode={isEditMode}
