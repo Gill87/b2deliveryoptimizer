@@ -6,6 +6,7 @@ export type WhatsAppSendResult = {
   vehicleId: string;
   status: "sent" | "failed";
   whatsappMessageId: string;
+  error?: string;
 };
 
 export function toWhatsAppRecipientNumber(phoneNumber: string): string {
@@ -39,6 +40,24 @@ function messageIdFromResponse(body: unknown): string | null {
   return typeof messageId === "string" && messageId ? messageId : null;
 }
 
+function errorFromResponse(body: unknown): string | null {
+  if (!body || typeof body !== "object") {
+    return null;
+  }
+
+  const error = (body as { error?: unknown }).error;
+  return typeof error === "string" && error.trim() ? error.trim() : null;
+}
+
+function failedResult(vehicleId: string, error: string): WhatsAppSendResult {
+  return {
+    vehicleId,
+    status: "failed",
+    whatsappMessageId: "",
+    error,
+  };
+}
+
 async function sendRoute(
   item: SendRouteItem,
   endpoint: string,
@@ -57,21 +76,34 @@ async function sendRoute(
       }),
     });
 
-    const messageId = response.ok
-      ? messageIdFromResponse(await response.json().catch(() => null))
-      : null;
+    const body = await response.json().catch(() => null);
+
+    if (!response.ok) {
+      return failedResult(
+        item.vehicleId,
+        errorFromResponse(body) ??
+          "WhatsApp could not send this route. Please try again.",
+      );
+    }
+
+    const messageId = messageIdFromResponse(body);
+    if (!messageId) {
+      return failedResult(
+        item.vehicleId,
+        "WhatsApp did not confirm that this route was sent.",
+      );
+    }
 
     return {
       vehicleId: item.vehicleId,
-      status: messageId ? "sent" : "failed",
-      whatsappMessageId: messageId ?? "",
+      status: "sent",
+      whatsappMessageId: messageId,
     };
   } catch {
-    return {
-      vehicleId: item.vehicleId,
-      status: "failed",
-      whatsappMessageId: "",
-    };
+    return failedResult(
+      item.vehicleId,
+      "Unable to reach the route sending service. Please try again.",
+    );
   }
 }
 
