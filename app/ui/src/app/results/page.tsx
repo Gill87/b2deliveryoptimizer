@@ -168,6 +168,21 @@ export default function ResultsPage() {
     routesRef.current = routes;
   }, [routes]);
 
+  useEffect(() => {
+    const { style: documentElementStyle } = document.documentElement;
+    const { style: bodyStyle } = document.body;
+    const previousDocumentOverflow = documentElementStyle.overflow;
+    const previousBodyOverflow = bodyStyle.overflow;
+
+    documentElementStyle.overflow = "hidden";
+    bodyStyle.overflow = "hidden";
+
+    return () => {
+      documentElementStyle.overflow = previousDocumentOverflow;
+      bodyStyle.overflow = previousBodyOverflow;
+    };
+  }, []);
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSheetExpanded, setIsSheetExpanded] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
