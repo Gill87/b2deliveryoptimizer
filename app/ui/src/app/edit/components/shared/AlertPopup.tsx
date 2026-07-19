@@ -1,10 +1,10 @@
 "use client";
 
-import { useId } from "react";
+import { type KeyboardEvent, useId } from "react";
 
 import {
-  ERROR_OVERLAY_FOOTER,
-  ERROR_OVERLAY_MESSAGE,
+  ALERT_POPUP_FOOTER,
+  ALERT_POPUP_MESSAGE,
   OVERLAY_BACKDROP,
   OVERLAY_CANCEL_BTN,
   OVERLAY_CLOSE_BTN,
@@ -17,32 +17,35 @@ import {
 import styles from "@/app/edit/edit.module.css";
 import { useFocusTrap } from "@/app/edit/hooks/useFocusTrap";
 
-type ErrorOverlayProps = {
+export type AlertPopupVariant = "error" | "warning";
+
+type AlertPopupProps = {
   message: string | null;
   onClose: () => void;
+  variant?: AlertPopupVariant;
   title?: string;
   action?: {
     label: string;
     onClick: () => void;
-    tone?: "warning";
   };
 };
 
-export default function ErrorOverlay({
+export default function AlertPopup({
   message,
   onClose,
-  title = "Something went wrong",
+  variant = "error",
+  title = variant === "warning" ? "Warning" : "Something went wrong",
   action,
-}: ErrorOverlayProps) {
+}: AlertPopupProps) {
   const panelRef = useFocusTrap<HTMLDivElement>(!!message);
   const titleId = useId();
   const messageId = useId();
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Escape") {
+  function handleKeyDown(event: KeyboardEvent): void {
+    if (event.key === "Escape") {
       onClose();
     }
-  };
+  }
 
   if (!message) return null;
 
@@ -74,17 +77,17 @@ export default function ErrorOverlay({
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
-              aria-hidden="true"
+              aria-hidden={true}
             >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
         </div>
-        <p id={messageId} className={ERROR_OVERLAY_MESSAGE}>
+        <p id={messageId} className={ALERT_POPUP_MESSAGE}>
           {message}
         </p>
-        <div className={ERROR_OVERLAY_FOOTER}>
+        <div className={ALERT_POPUP_FOOTER}>
           {action && (
             <button
               type="button"
@@ -97,7 +100,7 @@ export default function ErrorOverlay({
           <button
             type="button"
             onClick={action?.onClick ?? onClose}
-            className={`${action?.tone === "warning" ? OVERLAY_WARNING_BTN : OVERLAY_PRIMARY_BTN} ${styles.primaryBtnOverlay}`}
+            className={`${variant === "warning" ? OVERLAY_WARNING_BTN : OVERLAY_PRIMARY_BTN} ${styles.primaryBtnOverlay}`}
           >
             {action?.label ?? "Dismiss"}
           </button>

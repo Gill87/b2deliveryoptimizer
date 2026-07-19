@@ -27,7 +27,7 @@ import {
   CSV_UPLOAD_FILE_CHIP_SIZE,
   CSV_UPLOAD_FILE_CHIP_REMOVE,
 } from "@/app/edit/formStyles.v2";
-import ErrorOverlay from "@/app/edit/components/shared/ErrorOverlay";
+import AlertPopup from "@/app/edit/components/shared/AlertPopup";
 import type { AddressCard } from "@/app/edit/types/delivery";
 import { useCSVImport } from "@/app/edit/hooks/useCSVImport";
 
@@ -666,7 +666,7 @@ export default function CSVUploadOverlay({
   // ── Render ──────────────────────────────────────────────────────────────────
 
   if (parseError) {
-    return <ErrorOverlay message={parseError} onClose={closeImportModal} />;
+    return <AlertPopup message={parseError} onClose={closeImportModal} />;
   }
 
   if (isImportModalOpen) {

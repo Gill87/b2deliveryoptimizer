@@ -10,7 +10,7 @@ import Navbar from "@/app/components/navbar/Navbar";
 import MobileNavbar from "@/app/components/navbar/MobileNavbar";
 import MobileSidebar from "@/app/components/sidebar/MobileSidebar";
 import OptimizingModal from "@/app/edit/components/shared/OptimizingModal";
-import ErrorOverlay from "@/app/edit/components/shared/ErrorOverlay";
+import AlertPopup from "@/app/edit/components/shared/AlertPopup";
 import Sidebar from "@/app/components/sidebar/Sidebar";
 import SidebarEditButton from "@/app/components/sidebar/SidebarEditButton";
 import SidebarResultsButton from "@/app/components/sidebar/SidebarResultsButton";
@@ -303,23 +303,23 @@ export default function Page() {
         />
       )}
 
-      <ErrorOverlay message={optimizeError} onClose={clearOptimizeError} />
-      <ErrorOverlay
+      <AlertPopup message={optimizeError} onClose={clearOptimizeError} />
+      <AlertPopup
+        variant="warning"
         title="Vehicle capacity is limited"
         message={capacityWarning}
         onClose={dismissCapacityWarning}
         action={{
           label: "Optimize Anyway",
           onClick: handleOptimizeAnyway,
-          tone: "warning",
         }}
       />
-      <ErrorOverlay message={sessionError} onClose={clearSessionError} />
-      <ErrorOverlay
+      <AlertPopup message={sessionError} onClose={clearSessionError} />
+      <AlertPopup
         message={uploadError}
         onClose={() => setUploadError(null)}
       />
-      <ErrorOverlay message={parseError} onClose={closeImportModal} />
+      <AlertPopup message={parseError} onClose={closeImportModal} />
       <OptimizingModal isOpen={isOptimizing} />
       {needsDepotAddress && (
         <AddressOverlay
