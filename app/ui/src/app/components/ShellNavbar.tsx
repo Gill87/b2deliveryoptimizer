@@ -33,10 +33,9 @@ export default function ShellNavbar() {
         background: usesWhiteOnboardingBackground
           ? "#ffffff"
           : "var(--edit-stone-50)",
-        borderBottom:
-          usesWhiteOnboardingBackground
-            ? "1px solid rgba(0, 0, 0, 0.08)"
-            : "none",
+        borderBottom: usesWhiteOnboardingBackground
+          ? "1px solid rgba(0, 0, 0, 0.08)"
+          : "none",
         display: "flex",
         alignItems: "center",
         padding: "16px",
