@@ -315,10 +315,7 @@ export default function Page() {
         }}
       />
       <AlertPopup message={sessionError} onClose={clearSessionError} />
-      <AlertPopup
-        message={uploadError}
-        onClose={() => setUploadError(null)}
-      />
+      <AlertPopup message={uploadError} onClose={() => setUploadError(null)} />
       <AlertPopup message={parseError} onClose={closeImportModal} />
       <OptimizingModal isOpen={isOptimizing} />
       {needsDepotAddress && (
