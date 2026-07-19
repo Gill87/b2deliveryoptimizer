@@ -12,6 +12,8 @@ import { usePathname } from "next/navigation";
 export default function ShellNavbar() {
   const pathname = usePathname();
   const isLandingPage = pathname === "/";
+  const usesWhiteOnboardingBackground =
+    isLandingPage || pathname === "/welcome";
   const brandStyles = {
     fontFamily: "var(--font-manrope), Arial, Helvetica, sans-serif",
     fontSize: "20px",
@@ -28,7 +30,13 @@ export default function ShellNavbar() {
     <header
       style={{
         height: "68px",
-        background: "var(--edit-stone-50)",
+        background: usesWhiteOnboardingBackground
+          ? "#ffffff"
+          : "var(--edit-stone-50)",
+        borderBottom:
+          usesWhiteOnboardingBackground
+            ? "1px solid rgba(0, 0, 0, 0.08)"
+            : "none",
         display: "flex",
         alignItems: "center",
         padding: "16px",
