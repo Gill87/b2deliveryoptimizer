@@ -8,6 +8,7 @@
  */
 
 .root {
+  --edit-btn-warning: #F2B134;
 }
 
 /* ── Primary Button Hover and Pressed States Overlay ──────────────────────── */
