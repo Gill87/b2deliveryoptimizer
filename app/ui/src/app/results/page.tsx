@@ -416,7 +416,7 @@ export default function ResultsPage() {
       <header
         className={`${NAVBAR_V2_ROOT} hidden lg:flex shrink-0 border-b border-[var(--edit-stone-200)]`}
       >
-        <p className={NAVBAR_V2_LOGO}>DELIVERY OPTIMIZER</p>
+        <p className={NAVBAR_V2_LOGO}>Delivery Optimizer</p>
         <div className="ml-auto flex items-center gap-2">
           {pendingPinMove != null && (
             <>

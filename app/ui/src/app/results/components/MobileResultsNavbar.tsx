@@ -4,11 +4,11 @@ import {
   MOBILE_NAVBAR_LEFT_GROUP,
   MOBILE_NAVBAR_MENU_BTN,
   MOBILE_NAVBAR_ROOT,
+  MOBILE_NAVBAR_TITLE,
 } from "../../edit/formStyles.v2";
 import {
   RESULTS_MOBILE_NAV_CANCEL_BTN,
   RESULTS_MOBILE_NAV_SAVE_BTN,
-  RESULTS_MOBILE_NAV_TITLE,
 } from "../formStyles.mobile";
 
 type MobileResultsNavbarProps = {
@@ -49,7 +49,9 @@ export default function MobileResultsNavbar({
             />
           </svg>
         </button>
-        <span className={RESULTS_MOBILE_NAV_TITLE}>Delivery Optimizer</span>
+        <span className={`${MOBILE_NAVBAR_TITLE} min-w-0 truncate`}>
+          Delivery Optimizer
+        </span>
       </div>
       <div className="flex shrink-0 items-center gap-2">
         {isEditMode && (
