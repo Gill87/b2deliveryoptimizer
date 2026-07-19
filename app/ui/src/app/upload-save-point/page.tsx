@@ -2,9 +2,10 @@
 
 export const dynamic = "force-dynamic";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import HiFiUploadPage from "@/app/components/HiFiUploadPage";
+import { createUploadOperation } from "@/app/utils/uploadOperation";
 import { migrateSessionSaveFile } from "@/lib/validation/session.schema";
 
 const MAX_FILE_MB = 10;
@@ -17,6 +18,14 @@ export default function UploadSavePointPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [continueError, setContinueError] = useState<string | null>(null);
   const dragDepth = useRef(0);
+  const activeOperation = useRef(createUploadOperation());
+
+  useEffect(() => {
+    const operation = activeOperation.current;
+    return () => {
+      operation.invalidate();
+    };
+  }, []);
 
   const handleFile = (f: File) => {
     setContinueError(null);
@@ -53,6 +62,10 @@ export default function UploadSavePointPage() {
 
   const handleContinue = useCallback(async () => {
     if (!file || isProcessing) return;
+    const operation = activeOperation.current.start();
+    const isCurrentOperation = () =>
+      activeOperation.current.isCurrent(operation);
+
     setIsProcessing(true);
     setContinueError(null);
 
@@ -63,19 +76,24 @@ export default function UploadSavePointPage() {
 
         try {
           text = await file.text();
+          if (!isCurrentOperation()) return;
           parsed = JSON.parse(text);
         } catch {
-          setContinueError("This file is not valid JSON.");
+          if (isCurrentOperation()) {
+            setContinueError("This file is not valid JSON.");
+          }
           return;
         }
 
         // Valid session save — restore full state on edit page
         try {
           migrateSessionSaveFile(parsed);
+          if (!isCurrentOperation()) return;
           sessionStorage.setItem(
             "savePointFile",
             JSON.stringify({ name: file.name, content: text }),
           );
+          if (!isCurrentOperation()) return;
           router.push("/edit");
           return;
         } catch {
@@ -86,6 +104,7 @@ export default function UploadSavePointPage() {
       // CSV or raw JSON array: store the file content and navigate to /edit,
       // which will open CSVUploadOverlay automatically on mount.
       const text = await file.text();
+      if (!isCurrentOperation()) return;
       try {
         sessionStorage.setItem(
           "pendingCSVFile",
@@ -99,17 +118,28 @@ export default function UploadSavePointPage() {
         );
         return;
       }
+      if (!isCurrentOperation()) return;
       router.push("/edit");
     } catch (err) {
-      setContinueError(
-        err instanceof Error
-          ? err.message
-          : "Something went wrong. Please try again.",
-      );
+      if (isCurrentOperation()) {
+        setContinueError(
+          err instanceof Error
+            ? err.message
+            : "Something went wrong. Please try again.",
+        );
+      }
     } finally {
-      setIsProcessing(false);
+      if (isCurrentOperation()) {
+        setIsProcessing(false);
+      }
     }
   }, [file, isProcessing, router]);
+
+  const handleCancel = () => {
+    activeOperation.current.invalidate();
+    setIsProcessing(false);
+    router.back();
+  };
 
   return (
     <HiFiUploadPage
@@ -129,7 +159,7 @@ export default function UploadSavePointPage() {
         setFile(null);
         setContinueError(null);
       }}
-      onCancel={() => router.back()}
+      onCancel={handleCancel}
       onNext={() => void handleContinue()}
     />
   );

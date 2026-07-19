@@ -2,9 +2,10 @@
 
 export const dynamic = "force-dynamic";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import HiFiUploadPage from "@/app/components/HiFiUploadPage";
+import { createUploadOperation } from "@/app/utils/uploadOperation";
 
 const MAX_FILE_MB = 10;
 const MAX_FILE_BYTES = MAX_FILE_MB * 1024 * 1024;
@@ -16,6 +17,14 @@ export default function UploadRoutePage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const dragDepth = useRef(0);
+  const activeOperation = useRef(createUploadOperation());
+
+  useEffect(() => {
+    const operation = activeOperation.current;
+    return () => {
+      operation.invalidate();
+    };
+  }, []);
 
   const handleFile = (f: File) => {
     setError(null);
@@ -53,26 +62,42 @@ export default function UploadRoutePage() {
 
   const handleContinue = useCallback(async () => {
     if (!file || isProcessing) return;
+    const operation = activeOperation.current.start();
+    const isCurrentOperation = () =>
+      activeOperation.current.isCurrent(operation);
+
     setIsProcessing(true);
     setError(null);
 
     try {
       const text = await file.text();
+      if (!isCurrentOperation()) return;
       sessionStorage.setItem(
         "routeFile",
         JSON.stringify({ name: file.name, content: text }),
       );
+      if (!isCurrentOperation()) return;
       router.push("/driver-view");
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Something went wrong. Please try again.",
-      );
+      if (isCurrentOperation()) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Something went wrong. Please try again.",
+        );
+      }
     } finally {
-      setIsProcessing(false);
+      if (isCurrentOperation()) {
+        setIsProcessing(false);
+      }
     }
   }, [file, isProcessing, router]);
+
+  const handleCancel = () => {
+    activeOperation.current.invalidate();
+    setIsProcessing(false);
+    router.back();
+  };
 
   return (
     <HiFiUploadPage
@@ -92,7 +117,7 @@ export default function UploadRoutePage() {
         setFile(null);
         setError(null);
       }}
-      onCancel={() => router.back()}
+      onCancel={handleCancel}
       onNext={() => void handleContinue()}
     />
   );

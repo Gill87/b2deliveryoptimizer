@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type DragEventHandler } from "react";
+import { useRef, type ChangeEventHandler, type DragEventHandler } from "react";
 import ShellNavbar from "@/app/components/ShellNavbar";
 import { formatSize, PageFooter } from "@/app/utils/routeUtils";
 
@@ -43,6 +43,27 @@ export default function HiFiUploadPage({
 
   const openFilePicker = () => {
     if (!isProcessing) inputRef.current?.click();
+  };
+
+  const handleDragEnter: DragEventHandler<HTMLDivElement> = (event) => {
+    event.preventDefault();
+    if (!isProcessing) onDragEnter(event);
+  };
+
+  const handleDragLeave: DragEventHandler<HTMLDivElement> = (event) => {
+    event.preventDefault();
+    if (!isProcessing) onDragLeave(event);
+  };
+
+  const handleDrop: DragEventHandler<HTMLDivElement> = (event) => {
+    event.preventDefault();
+    if (!isProcessing) onDrop(event);
+  };
+
+  const handleFileChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const selectedFile = event.target.files?.[0];
+    if (!isProcessing && selectedFile) onSelectFile(selectedFile);
+    event.target.value = "";
   };
 
   return (
@@ -134,6 +155,10 @@ export default function HiFiUploadPage({
         .upload-dropzone.dragging {
           border-color: var(--edit-drop-zone-active-border);
           background: var(--edit-drop-zone-active-bg);
+        }
+
+        .upload-dropzone.processing {
+          cursor: not-allowed;
         }
 
         .upload-dropzone-icon {
@@ -230,6 +255,11 @@ export default function HiFiUploadPage({
         }
 
         .upload-file-remove:hover { opacity: 0.7; }
+
+        .upload-file-remove:disabled {
+          cursor: not-allowed;
+          opacity: 0.48;
+        }
 
         .upload-actions {
           display: flex;
@@ -342,12 +372,15 @@ export default function HiFiUploadPage({
               <div className="upload-form-main">
                 <h1 className="upload-title">{title}</h1>
                 <div
-                  className={`upload-dropzone${isDragging ? " dragging" : ""}`}
+                  className={`upload-dropzone${isDragging ? " dragging" : ""}${
+                    isProcessing ? " processing" : ""
+                  }`}
                   onClick={openFilePicker}
-                  onDragEnter={onDragEnter}
+                  onDragEnter={handleDragEnter}
                   onDragOver={(event) => event.preventDefault()}
-                  onDragLeave={onDragLeave}
-                  onDrop={onDrop}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  aria-disabled={isProcessing}
                 >
                   {isProcessing ? (
                     <div className="upload-spinner" />
@@ -403,11 +436,8 @@ export default function HiFiUploadPage({
                     type="file"
                     accept={accept}
                     className="hidden"
-                    onChange={(event) => {
-                      const selectedFile = event.target.files?.[0];
-                      if (selectedFile) onSelectFile(selectedFile);
-                      event.target.value = "";
-                    }}
+                    onChange={handleFileChange}
+                    disabled={isProcessing}
                   />
                 </div>
                 <p className="upload-description">{description}</p>
@@ -442,6 +472,7 @@ export default function HiFiUploadPage({
                       className="upload-file-remove"
                       onClick={onRemoveFile}
                       aria-label="Remove file"
+                      disabled={isProcessing}
                     >
                       <svg
                         width="16"
