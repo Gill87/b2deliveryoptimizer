@@ -10,6 +10,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+import Link from "next/link";
 import { NAVBAR_V2_LOGO, NAVBAR_V2_ROOT } from "../edit/formStyles.v2";
 import styles from "../edit/edit.module.css";
 import MobileSidebar from "../components/sidebar/MobileSidebar";
@@ -416,7 +417,14 @@ export default function ResultsPage() {
       <header
         className={`${NAVBAR_V2_ROOT} hidden lg:flex shrink-0 border-b border-[var(--edit-stone-200)]`}
       >
-        <p className={NAVBAR_V2_LOGO}>Delivery Optimizer</p>
+        <Link
+          href="/"
+          aria-label="Return to the Delivery Optimizer landing page"
+          className={NAVBAR_V2_LOGO}
+          style={{ textDecoration: "none" }}
+        >
+          Delivery Optimizer
+        </Link>
         <div className="ml-auto flex items-center gap-2">
           {pendingPinMove != null && (
             <>

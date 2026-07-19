@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   MOBILE_NAVBAR_LEFT_GROUP,
   MOBILE_NAVBAR_MENU_BTN,
@@ -34,7 +35,14 @@ export default function MobileNavbar({ onMenuClick }: MobileNavbarProps) {
             />
           </svg>
         </button>
-        <span className={MOBILE_NAVBAR_TITLE}>Delivery Optimizer</span>
+        <Link
+          href="/"
+          aria-label="Return to the Delivery Optimizer landing page"
+          className={MOBILE_NAVBAR_TITLE}
+          style={{ textDecoration: "none" }}
+        >
+          Delivery Optimizer
+        </Link>
       </div>
     </header>
   );

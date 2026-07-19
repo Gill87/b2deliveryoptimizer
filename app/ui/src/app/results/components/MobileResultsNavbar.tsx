@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   MOBILE_NAVBAR_LEFT_GROUP,
   MOBILE_NAVBAR_MENU_BTN,
@@ -49,9 +50,14 @@ export default function MobileResultsNavbar({
             />
           </svg>
         </button>
-        <span className={`${MOBILE_NAVBAR_TITLE} min-w-0 truncate`}>
+        <Link
+          href="/"
+          aria-label="Return to the Delivery Optimizer landing page"
+          className={`${MOBILE_NAVBAR_TITLE} min-w-0 truncate`}
+          style={{ textDecoration: "none" }}
+        >
           Delivery Optimizer
-        </span>
+        </Link>
       </div>
       <div className="flex shrink-0 items-center gap-2">
         {isEditMode && (
