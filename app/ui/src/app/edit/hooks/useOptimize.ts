@@ -102,6 +102,7 @@ export function useOptimize(
   const router = useRouter();
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [optimizeError, setOptimizeError] = useState<string | null>(null);
+  const [capacityWarning, setCapacityWarning] = useState<string | null>(null);
   const [geocodeFailedAddressIds, setGeocodeFailedAddressIds] = useState<
     number[]
   >([]);
@@ -121,8 +122,9 @@ export function useOptimize(
   const [needsDepotAddress, setNeedsDepotAddress] = useState(false);
 
   const optimize = useCallback(
-    async (depotAddress?: string) => {
+    async (depotAddress?: string, allowPartialOptimization = false) => {
       setOptimizeError(null);
+      setCapacityWarning(null);
       setGeocodeFailedAddressIds([]);
       setGeocodeFailedVehicleIds([]);
       setOutOfRegionAddressIds([]);
@@ -175,9 +177,9 @@ export function useOptimize(
         (sum, v) => sum + v.capacity,
         0,
       );
-      if (totalDemand > totalCapacity) {
-        setOptimizeError(
-          `Total delivery quantity (${totalDemand}) exceeds total vehicle capacity (${totalCapacity}). Add more vehicles or reduce quantities.`,
+      if (totalDemand > totalCapacity && !allowPartialOptimization) {
+        setCapacityWarning(
+          `Total delivery quantity (${totalDemand}) exceeds total vehicle capacity (${totalCapacity}). Optimize anyway to create a partial route; deliveries that cannot fit within the available capacity will remain unassigned.`,
         );
         return;
       }
@@ -422,6 +424,10 @@ export function useOptimize(
     setOptimizeError(null);
   }, []);
 
+  const clearCapacityWarning = useCallback(() => {
+    setCapacityWarning(null);
+  }, []);
+
   const dismissDepotAddressPrompt = useCallback(() => {
     setNeedsDepotAddress(false);
   }, []);
@@ -431,6 +437,8 @@ export function useOptimize(
     isOptimizing,
     optimizeError,
     clearOptimizeError,
+    capacityWarning,
+    clearCapacityWarning,
     needsDepotAddress,
     dismissDepotAddressPrompt,
     geocodeFailedAddressIds,

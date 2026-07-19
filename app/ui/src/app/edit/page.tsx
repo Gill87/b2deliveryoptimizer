@@ -71,6 +71,8 @@ export default function Page() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUploadOverlayOpen, setIsUploadOverlayOpen] = useState(false);
   const [pendingCSVFile, setPendingCSVFile] = useState<File | null>(null);
+  const [allowPartialOptimization, setAllowPartialOptimization] =
+    useState(false);
   const { importVehicles } = vehicleState;
   const { importAddresses } = addressState;
   const { parseError, closeImportModal } = useCSVImport();
@@ -80,6 +82,8 @@ export default function Page() {
     isOptimizing,
     optimizeError,
     clearOptimizeError,
+    capacityWarning,
+    clearCapacityWarning,
     needsDepotAddress,
     dismissDepotAddressPrompt,
     geocodeFailedAddressIds,
@@ -224,15 +228,25 @@ export default function Page() {
 
   const clearSessionError = useCallback(() => setSessionError(null), []);
 
+  const dismissCapacityWarning = useCallback(() => {
+    setAllowPartialOptimization(false);
+    clearCapacityWarning();
+  }, [clearCapacityWarning]);
+
+  const handleOptimizeAnyway = useCallback(() => {
+    setAllowPartialOptimization(true);
+    void optimize(undefined, true);
+  }, [optimize]);
+
   const handleStartLocationSave = useCallback(
     (addr: LocationAddress) => {
       const parts = [addr.line1];
       if (addr.line2.trim()) parts.push(addr.line2);
       parts.push(addr.city, `${addr.state} ${addr.zipCode}`, addr.country);
       const formattedAddress = parts.join(", ");
-      void optimize(formattedAddress);
+      void optimize(formattedAddress, allowPartialOptimization);
     },
-    [optimize],
+    [allowPartialOptimization, optimize],
   );
 
   function handlePageDragEnter(e: React.DragEvent<HTMLElement>) {
@@ -290,6 +304,16 @@ export default function Page() {
       )}
 
       <ErrorOverlay message={optimizeError} onClose={clearOptimizeError} />
+      <ErrorOverlay
+        title="Vehicle capacity is limited"
+        message={capacityWarning}
+        onClose={dismissCapacityWarning}
+        action={{
+          label: "Optimize Anyway",
+          onClick: handleOptimizeAnyway,
+          tone: "warning",
+        }}
+      />
       <ErrorOverlay message={sessionError} onClose={clearSessionError} />
       <ErrorOverlay
         message={uploadError}
@@ -300,7 +324,10 @@ export default function Page() {
       {needsDepotAddress && (
         <AddressOverlay
           heading="Enter starting location for all driver routes"
-          onClose={dismissDepotAddressPrompt}
+          onClose={() => {
+            setAllowPartialOptimization(false);
+            dismissDepotAddressPrompt();
+          }}
           onSave={handleStartLocationSave}
         />
       )}
