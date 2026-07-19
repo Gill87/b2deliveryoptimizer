@@ -113,9 +113,9 @@ export default function UploadSavePointPage() {
 
   return (
     <HiFiUploadPage
-      title="Import from saved CSV/JSON"
-      dropzoneText="Drag and drop CSV/JSON files here, or"
-      description={`Import delivery details from a saved CSV/JSON file. Maximum file size of ${MAX_FILE_MB} MB.`}
+      title="Import from saved CSV or JSON"
+      dropzoneText="Drag and drop CSV or JSON files here, or"
+      description={`Import delivery details from a saved CSV or JSON file. Maximum file size of ${MAX_FILE_MB} MB.`}
       accept=".json,.csv"
       file={file}
       isDragging={isDragging}
