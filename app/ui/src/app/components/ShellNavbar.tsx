@@ -13,12 +13,11 @@ export default function ShellNavbar() {
   const pathname = usePathname();
   const isLandingPage = pathname === "/";
   const brandStyles = {
-    fontSize: "12px",
+    fontFamily: "var(--font-manrope), Arial, Helvetica, sans-serif",
+    fontSize: "20px",
     fontWeight: 700,
-    letterSpacing: "0.08em",
-    color: "#111",
-    textTransform: "uppercase" as const,
-    fontFamily: "inherit",
+    lineHeight: "28px",
+    color: "var(--edit-text-primary)",
     whiteSpace: "nowrap" as const,
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -28,13 +27,11 @@ export default function ShellNavbar() {
   return (
     <header
       style={{
-        height: "48px",
-        background: "#ffffff",
-        borderBottom: "1px solid #e8e8e8",
+        height: "68px",
+        background: "var(--edit-stone-50)",
         display: "flex",
         alignItems: "center",
-        paddingLeft: "20px",
-        paddingRight: "20px",
+        padding: "16px",
         position: "sticky",
         top: 0,
         zIndex: 50,
