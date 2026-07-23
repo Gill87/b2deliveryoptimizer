@@ -168,6 +168,21 @@ export default function ResultsPage() {
     routesRef.current = routes;
   }, [routes]);
 
+  useEffect(() => {
+    const { style: documentElementStyle } = document.documentElement;
+    const { style: bodyStyle } = document.body;
+    const previousDocumentOverflow = documentElementStyle.overflow;
+    const previousBodyOverflow = bodyStyle.overflow;
+
+    documentElementStyle.overflow = "hidden";
+    bodyStyle.overflow = "hidden";
+
+    return () => {
+      documentElementStyle.overflow = previousDocumentOverflow;
+      bodyStyle.overflow = previousBodyOverflow;
+    };
+  }, []);
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSheetExpanded, setIsSheetExpanded] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -438,13 +453,13 @@ export default function ResultsPage() {
           )}
         </div>
       </header>
-      <div className="hidden lg:flex flex-1 min-h-0">
+      <div className="hidden lg:flex flex-1 min-h-0 overflow-hidden">
         <NavSidebar>
           <SidebarEditButton />
           <SidebarResultsButton />
         </NavSidebar>
         {/* Hi-fi routes panel width (28rem); always visible on desktop */}
-        <div className="shrink-0 h-full w-[28rem] overflow-hidden">
+        <div className="shrink-0 h-full min-h-0 w-[28rem] overflow-hidden">
           <Sidebar
             routes={routes}
             isEditMode={isEditMode}
