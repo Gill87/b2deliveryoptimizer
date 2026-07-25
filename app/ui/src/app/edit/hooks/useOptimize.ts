@@ -229,10 +229,7 @@ export function useOptimize(
       )
     ) {
       setCapacityWarning(
-        capacityWarningMessage(
-          preflight.totalDemand,
-          preflight.totalCapacity,
-        ),
+        capacityWarningMessage(preflight.totalDemand, preflight.totalCapacity),
       );
       return;
     }
