@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import {
   NAVBAR_V2_BTN_SAVE,
   NAVBAR_V2_LOGO,
@@ -14,14 +13,7 @@ type NavbarProps = {
 export default function Navbar({ onSave }: NavbarProps) {
   return (
     <header className={NAVBAR_V2_ROOT}>
-      <Link
-        href="/"
-        aria-label="Return to the Delivery Optimizer landing page"
-        className={NAVBAR_V2_LOGO}
-        style={{ textDecoration: "none" }}
-      >
-        Delivery Optimizer
-      </Link>
+      <span className={NAVBAR_V2_LOGO}>Delivery Optimizer</span>
       <button className={NAVBAR_V2_BTN_SAVE} onClick={onSave} type="button">
         Save
       </button>

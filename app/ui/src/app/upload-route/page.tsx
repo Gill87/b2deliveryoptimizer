@@ -17,14 +17,13 @@ export default function UploadRoutePage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const dragDepth = useRef(0);
-  const activeOperation = useRef(createUploadOperation());
+  const [activeOperation] = useState(createUploadOperation);
 
   useEffect(() => {
-    const operation = activeOperation.current;
     return () => {
-      operation.invalidate();
+      activeOperation.invalidate();
     };
-  }, []);
+  }, [activeOperation]);
 
   const handleFile = (f: File) => {
     setError(null);
@@ -62,9 +61,8 @@ export default function UploadRoutePage() {
 
   const handleContinue = useCallback(async () => {
     if (!file || isProcessing) return;
-    const operation = activeOperation.current.start();
-    const isCurrentOperation = () =>
-      activeOperation.current.isCurrent(operation);
+    const operation = activeOperation.start();
+    const isCurrentOperation = () => activeOperation.isCurrent(operation);
 
     setIsProcessing(true);
     setError(null);
@@ -91,10 +89,10 @@ export default function UploadRoutePage() {
         setIsProcessing(false);
       }
     }
-  }, [file, isProcessing, router]);
+  }, [activeOperation, file, isProcessing, router]);
 
   const handleCancel = () => {
-    activeOperation.current.invalidate();
+    activeOperation.invalidate();
     setIsProcessing(false);
     router.back();
   };

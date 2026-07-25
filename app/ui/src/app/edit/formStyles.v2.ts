@@ -43,7 +43,7 @@ export const MOBILE_NAVBAR_MENU_BTN =
   "size-6 shrink-0 cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--edit-teal-300)] rounded-[4px]";
 
 export const MOBILE_NAVBAR_TITLE =
-  "font-bold text-[20px] leading-[28px] text-[var(--edit-text-primary)] whitespace-nowrap";
+  "font-sans-manrope font-bold text-[20px] leading-[28px] text-[var(--edit-text-primary)] whitespace-nowrap";
 
 // ── MOBILE Sidebar (Figma 7472:3661) ─────────────────────────────────────────
 
@@ -67,7 +67,7 @@ export const MOBILE_SIDEBAR_CLOSE_BTN =
   "size-6 shrink-0 cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--edit-teal-300)] rounded-[4px]";
 
 export const MOBILE_SIDEBAR_HEADER_TITLE =
-  "font-bold text-[20px] leading-[28px] text-[var(--edit-text-primary)] whitespace-nowrap";
+  "font-sans-manrope font-bold text-[20px] leading-[28px] text-[var(--edit-text-primary)] whitespace-nowrap";
 
 export const MOBILE_SIDEBAR_NAV = "flex flex-col gap-4 px-4 mt-[23px]";
 
@@ -99,7 +99,7 @@ export const ADDRESS_CARD_MOBILE_ROOT =
 export const ADDRESS_LIST_MOBILE_WRAP = "lg:hidden flex flex-col gap-4";
 
 export const NAVBAR_V2_LOGO =
-  "font-bold text-[20px] leading-7 text-[var(--edit-text-primary)] whitespace-nowrap";
+  "font-sans-manrope font-bold text-[20px] leading-7 text-[var(--edit-text-primary)] whitespace-nowrap";
 
 export const NAVBAR_V2_ACTIONS = "flex items-center gap-2";
 

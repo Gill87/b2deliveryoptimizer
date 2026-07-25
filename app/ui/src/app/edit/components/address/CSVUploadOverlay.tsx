@@ -201,7 +201,7 @@ function StepColumnMapper({
                       onChange={(e) =>
                         onMappingChange(header, e.target.value as MappableField)
                       }
-                      className="absolute inset-0 w-full h-full appearance-none bg-transparent px-3 pr-10 text-[14px] leading-[1.5] text-[var(--edit-text-primary)] cursor-pointer"
+                      className="absolute inset-0 w-full h-full appearance-none bg-transparent px-3 pr-10 text-[14px] leading-[1.5] text-[var(--edit-text-primary)] cursor-pointer truncate"
                     >
                       <option
                         value=""

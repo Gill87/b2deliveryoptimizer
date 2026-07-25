@@ -1,12 +1,23 @@
 import type { JSX } from "react";
 
+const KNOWN_VEHICLE_TYPES = ["truck", "car", "bicycle"] as const;
+
+type KnownVehicleType = (typeof KNOWN_VEHICLE_TYPES)[number];
+
 type VehicleTypeIconProps = {
   vehicleType?: string;
   className?: string;
 };
 
-function normalizedVehicleType(vehicleType?: string): string {
-  return vehicleType?.trim().toLowerCase() ?? "";
+function isKnownVehicleType(value: string): value is KnownVehicleType {
+  return (KNOWN_VEHICLE_TYPES as readonly string[]).includes(value);
+}
+
+function normalizedVehicleType(
+  vehicleType?: string,
+): KnownVehicleType | "unknown" {
+  const normalized = vehicleType?.trim().toLowerCase() ?? "";
+  return isKnownVehicleType(normalized) ? normalized : "unknown";
 }
 
 function TruckIcon(): JSX.Element {
@@ -131,22 +142,29 @@ function BicycleIcon(): JSX.Element {
 }
 
 function vehicleIconContent(vehicleType?: string): JSX.Element {
-  switch (normalizedVehicleType(vehicleType)) {
+  const kind = normalizedVehicleType(vehicleType);
+  switch (kind) {
     case "truck":
       return <TruckIcon />;
     case "bicycle":
       return <BicycleIcon />;
-    default:
+    case "car":
+    case "unknown":
       return <CarIcon />;
   }
 }
 
 export default function VehicleTypeIcon({
   vehicleType,
-  className = "h-6 w-6 shrink-0",
+  className = "h-4 w-4 shrink-0 text-[var(--edit-text-secondary)]",
 }: VehicleTypeIconProps): JSX.Element {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
       {vehicleIconContent(vehicleType)}
     </svg>
   );

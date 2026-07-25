@@ -31,4 +31,25 @@ describe("createUploadOperation", () => {
     expect(operation.isCurrent(firstUpload)).toBe(false);
     expect(operation.isCurrent(latestUpload)).toBe(true);
   });
+
+  it("prevents a cancelled upload from reporting error after its file read rejects", async () => {
+    const operation = createUploadOperation();
+    const pendingUpload = operation.start();
+    let rejectFileRead!: (error: Error) => void;
+    const fileRead = new Promise<string>((_resolve, reject) => {
+      rejectFileRead = reject;
+    });
+    const setError = vi.fn();
+
+    operation.invalidate();
+    rejectFileRead(new Error("read failed"));
+
+    await fileRead.catch((error: Error) => {
+      if (operation.isCurrent(pendingUpload)) {
+        setError(error.message);
+      }
+    });
+
+    expect(setError).not.toHaveBeenCalled();
+  });
 });

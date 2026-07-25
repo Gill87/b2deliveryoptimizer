@@ -1,7 +1,6 @@
 // app/components/ShellNavbar.tsx
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 /**
@@ -11,9 +10,8 @@ import { usePathname } from "next/navigation";
  */
 export default function ShellNavbar() {
   const pathname = usePathname();
-  const isLandingPage = pathname === "/";
   const usesWhiteOnboardingBackground =
-    isLandingPage || pathname === "/welcome";
+    pathname === "/" || pathname === "/welcome";
   const brandStyles = {
     fontFamily: "var(--font-manrope), Arial, Helvetica, sans-serif",
     fontSize: "20px",
@@ -46,17 +44,7 @@ export default function ShellNavbar() {
         overflow: "hidden",
       }}
     >
-      {isLandingPage ? (
-        <span style={brandStyles}>Delivery Optimizer</span>
-      ) : (
-        <Link
-          href="/"
-          aria-label="Return to the Delivery Optimizer landing page"
-          style={{ ...brandStyles, textDecoration: "none" }}
-        >
-          Delivery Optimizer
-        </Link>
-      )}
+      <span style={brandStyles}>Delivery Optimizer</span>
     </header>
   );
 }

@@ -1,16 +1,15 @@
 "use client";
 
-import Link from "next/link";
 import {
   MOBILE_NAVBAR_LEFT_GROUP,
   MOBILE_NAVBAR_MENU_BTN,
   MOBILE_NAVBAR_ROOT,
   MOBILE_NAVBAR_TITLE,
-} from "../../edit/formStyles.v2";
+} from "@/app/edit/formStyles.v2";
 import {
   RESULTS_MOBILE_NAV_CANCEL_BTN,
   RESULTS_MOBILE_NAV_SAVE_BTN,
-} from "../formStyles.mobile";
+} from "@/app/results/formStyles.mobile";
 
 type MobileResultsNavbarProps = {
   onMenuClick: () => void;
@@ -50,14 +49,9 @@ export default function MobileResultsNavbar({
             />
           </svg>
         </button>
-        <Link
-          href="/"
-          aria-label="Return to the Delivery Optimizer landing page"
-          className={`${MOBILE_NAVBAR_TITLE} min-w-0 truncate`}
-          style={{ textDecoration: "none" }}
-        >
+        <span className={`${MOBILE_NAVBAR_TITLE} min-w-0 truncate`}>
           Delivery Optimizer
-        </Link>
+        </span>
       </div>
       <div className="flex shrink-0 items-center gap-2">
         {isEditMode && (

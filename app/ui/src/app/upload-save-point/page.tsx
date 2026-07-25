@@ -18,14 +18,13 @@ export default function UploadSavePointPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [continueError, setContinueError] = useState<string | null>(null);
   const dragDepth = useRef(0);
-  const activeOperation = useRef(createUploadOperation());
+  const [activeOperation] = useState(createUploadOperation);
 
   useEffect(() => {
-    const operation = activeOperation.current;
     return () => {
-      operation.invalidate();
+      activeOperation.invalidate();
     };
-  }, []);
+  }, [activeOperation]);
 
   const handleFile = (f: File) => {
     setContinueError(null);
@@ -62,9 +61,8 @@ export default function UploadSavePointPage() {
 
   const handleContinue = useCallback(async () => {
     if (!file || isProcessing) return;
-    const operation = activeOperation.current.start();
-    const isCurrentOperation = () =>
-      activeOperation.current.isCurrent(operation);
+    const operation = activeOperation.start();
+    const isCurrentOperation = () => activeOperation.isCurrent(operation);
 
     setIsProcessing(true);
     setContinueError(null);
@@ -113,9 +111,11 @@ export default function UploadSavePointPage() {
       } catch {
         // sessionStorage has a ~5 MB quota — large files can exceed it.
         // Fail visibly rather than silently navigating to a blank column mapper.
-        setContinueError(
-          "This file is too large to import directly. Please use a smaller file (under 5 MB).",
-        );
+        if (isCurrentOperation()) {
+          setContinueError(
+            "This file is too large to import directly. Please use a smaller file (under 5 MB).",
+          );
+        }
         return;
       }
       if (!isCurrentOperation()) return;
@@ -133,10 +133,10 @@ export default function UploadSavePointPage() {
         setIsProcessing(false);
       }
     }
-  }, [file, isProcessing, router]);
+  }, [activeOperation, file, isProcessing, router]);
 
   const handleCancel = () => {
-    activeOperation.current.invalidate();
+    activeOperation.invalidate();
     setIsProcessing(false);
     router.back();
   };
