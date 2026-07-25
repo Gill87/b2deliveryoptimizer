@@ -1,11 +1,24 @@
 import type { SendRouteItem } from "@/lib/validation/whatsapp.schema";
+import { formatWhatsAppRouteMessage } from "@/lib/whatsapp/formatRouteMessage";
+import { retry } from "@/lib/utils/retry";
 
 const SEND_ROUTE_PATH = "/api/whatsapp/send-route";
+const SEND_CONCURRENCY = 5;
+
+const TIMEOUT_MS = Number(
+  process.env.DELIVERYOPTIMIZER_API_TIMEOUT_MS ?? 60000,
+);
 
 export type WhatsAppSendResult = {
   vehicleId: string;
   status: "sent" | "failed";
   whatsappMessageId: string;
+};
+
+type SendError = Error & {
+  retryable: boolean;
+  status?: number;
+  body?: unknown;
 };
 
 export function toWhatsAppRecipientNumber(phoneNumber: string): string {
@@ -25,18 +38,106 @@ function apiUrl(baseUrl: string): string {
   return `${baseUrl.replace(/\/+$/, "")}${SEND_ROUTE_PATH}`;
 }
 
-function messageIdFromResponse(body: unknown): string | null {
+function messageIdFromResponse(body: unknown): string {
   if (!body || typeof body !== "object") {
-    return null;
+    return "";
   }
 
   const messages = (body as { messages?: unknown }).messages;
   if (!Array.isArray(messages)) {
-    return null;
+    return "";
   }
 
   const messageId = (messages[0] as { id?: unknown } | undefined)?.id;
-  return typeof messageId === "string" && messageId ? messageId : null;
+  return typeof messageId === "string" && messageId ? messageId : "";
+}
+
+function createSendError(
+  message: string,
+  options: { retryable: boolean; status?: number; body?: unknown },
+): SendError {
+  const error = new Error(message) as SendError;
+  error.retryable = options.retryable;
+  error.status = options.status;
+  error.body = options.body;
+  return error;
+}
+
+function isAbortError(error: unknown): boolean {
+  return error instanceof Error && error.name === "AbortError";
+}
+
+async function fetchWithTimeout(
+  url: string,
+  options: RequestInit,
+): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+async function parseResponseBody(response: Response): Promise<unknown> {
+  const text = await response.text();
+  if (!text) {
+    return undefined;
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return text;
+  }
+}
+
+function bodySnippet(body: unknown, maxLen = 500): string {
+  if (body === undefined) {
+    return "";
+  }
+  const raw = typeof body === "string" ? body : JSON.stringify(body);
+  return raw.length > maxLen ? `${raw.slice(0, maxLen)}…` : raw;
+}
+
+async function mapPool<T, R>(
+  items: T[],
+  concurrency: number,
+  mapper: (item: T) => Promise<R>,
+): Promise<R[]> {
+  const results = new Array<R>(items.length);
+  let nextIndex = 0;
+
+  async function worker(): Promise<void> {
+    while (nextIndex < items.length) {
+      const index = nextIndex;
+      nextIndex += 1;
+      results[index] = await mapper(items[index]);
+    }
+  }
+
+  const workerCount = Math.min(concurrency, items.length);
+  await Promise.all(Array.from({ length: workerCount }, () => worker()));
+  return results;
+}
+
+async function postSendRoute(
+  endpoint: string,
+  secret: string,
+  item: SendRouteItem,
+): Promise<Response> {
+  return fetchWithTimeout(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-WhatsApp-Send-Secret": secret,
+    },
+    body: JSON.stringify({
+      to: toWhatsAppRecipientNumber(item.driverPhoneNumber),
+      message: formatWhatsAppRouteMessage(item.route),
+    }),
+  });
 }
 
 async function sendRoute(
@@ -45,28 +146,54 @@ async function sendRoute(
   secret: string,
 ): Promise<WhatsAppSendResult> {
   try {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-WhatsApp-Send-Secret": secret,
-      },
-      body: JSON.stringify({
-        to: toWhatsAppRecipientNumber(item.driverPhoneNumber),
-        message: JSON.stringify(item.route),
-      }),
+    const responseBody = await retry(async () => {
+      let response: Response;
+      try {
+        response = await postSendRoute(endpoint, secret, item);
+      } catch (error) {
+        console.error(
+          `[whatsapp] send failed for ${item.vehicleId}: ${
+            isAbortError(error) ? "request timed out" : "network error"
+          }`,
+          error,
+        );
+        throw error;
+      }
+
+      const body = await parseResponseBody(response);
+      if (response.ok) {
+        return body;
+      }
+
+      console.error(
+        `[whatsapp] send failed for ${item.vehicleId}: HTTP ${response.status}`,
+        bodySnippet(body),
+      );
+
+      const retryable = response.status >= 500 || response.status === 429;
+      throw createSendError(
+        retryable
+          ? `WhatsApp send transient error (${response.status})`
+          : `WhatsApp send error (${response.status})`,
+        { retryable, status: response.status, body },
+      );
     });
 
-    const messageId = response.ok
-      ? messageIdFromResponse(await response.json().catch(() => null))
-      : null;
+    const messageId = messageIdFromResponse(responseBody);
+    if (!messageId) {
+      console.warn(
+        `[whatsapp] send succeeded for ${item.vehicleId} without message id`,
+        bodySnippet(responseBody),
+      );
+    }
 
     return {
       vehicleId: item.vehicleId,
-      status: messageId ? "sent" : "failed",
-      whatsappMessageId: messageId ?? "",
+      status: "sent",
+      whatsappMessageId: messageId,
     };
   } catch {
+    // Failure details are logged inside the retry callback before rethrow.
     return {
       vehicleId: item.vehicleId,
       status: "failed",
@@ -85,5 +212,7 @@ export async function sendRoutesToWhatsApp(
   const endpoint = apiUrl(requiredEnv("DELIVERYOPTIMIZER_API_URL"));
   const secret = requiredEnv("WHATSAPP_SEND_ROUTE_SECRET");
 
-  return Promise.all(items.map((item) => sendRoute(item, endpoint, secret)));
+  return mapPool(items, SEND_CONCURRENCY, (item) =>
+    sendRoute(item, endpoint, secret),
+  );
 }

@@ -3,6 +3,7 @@ import {
   sendRoutesToWhatsApp,
   toWhatsAppRecipientNumber,
 } from "@/lib/whatsapp/whatsappClient";
+import { formatWhatsAppRouteMessage } from "@/lib/whatsapp/formatRouteMessage";
 import type { SendRouteItem } from "@/lib/validation/whatsapp.schema";
 
 function createRoute(
@@ -13,7 +14,17 @@ function createRoute(
   return {
     vehicleId,
     driverPhoneNumber,
-    route: { driverName },
+    route: {
+      driverName,
+      stops: [
+        {
+          sequence: 1,
+          addresseeName: "Ava",
+          address: "123 Main St",
+          phoneNumber: "+14155550001",
+        },
+      ],
+    },
   };
 }
 
@@ -70,7 +81,7 @@ describe("sendRoutesToWhatsApp", () => {
         },
         body: JSON.stringify({
           to: "14155551234",
-          message: JSON.stringify({ driverName: "Jim" }),
+          message: formatWhatsAppRouteMessage(items[0].route),
         }),
       }),
     );
@@ -80,23 +91,42 @@ describe("sendRoutesToWhatsApp", () => {
       expect.objectContaining({
         body: JSON.stringify({
           to: "14155551235",
-          message: JSON.stringify({ driverName: "Sam" }),
+          message: formatWhatsAppRouteMessage(items[1].route),
         }),
       }),
     );
   });
 
-  it("maps individual backend, network, and malformed response failures", async () => {
-    const fetchMock = vi
-      .fn()
-      .mockResolvedValueOnce(
-        new Response(
-          JSON.stringify({ error: "WhatsApp upstream request failed." }),
-          { status: 502 },
-        ),
-      )
-      .mockRejectedValueOnce(new TypeError("Network request failed"))
-      .mockResolvedValueOnce(new Response("{"));
+  it("maps backend and network failures, and treats malformed 2xx as sent", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    // Concurrent workers start items 0..2 in order, then item 0 retries twice.
+    const responses: Array<Response | Error> = [
+      new Response(
+        JSON.stringify({ error: "WhatsApp upstream request failed." }),
+        { status: 502 },
+      ),
+      new TypeError("Network request failed"),
+      new Response("{"),
+      new Response(
+        JSON.stringify({ error: "WhatsApp upstream request failed." }),
+        { status: 502 },
+      ),
+      new Response(
+        JSON.stringify({ error: "WhatsApp upstream request failed." }),
+        { status: 502 },
+      ),
+    ];
+    let call = 0;
+    const fetchMock = vi.fn().mockImplementation(() => {
+      const next = responses[call];
+      call += 1;
+      if (next instanceof Error) {
+        return Promise.reject(next);
+      }
+      return Promise.resolve(next);
+    });
     vi.stubGlobal("fetch", fetchMock);
 
     const results = await sendRoutesToWhatsApp([
@@ -118,11 +148,40 @@ describe("sendRoutesToWhatsApp", () => {
       },
       {
         vehicleId: "malformed-response",
-        status: "failed",
+        status: "sent",
         whatsappMessageId: "",
       },
     ]);
-    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(fetchMock).toHaveBeenCalledTimes(5);
+    expect(errorSpy).toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalled();
+  });
+
+  it("retries transient 502 responses then succeeds", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ error: "temporary" }), { status: 502 }),
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ messages: [{ id: "wamid.retry" }] })),
+      );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const results = await sendRoutesToWhatsApp([
+      createRoute("vehicle-1", "+14155551234", "Jim"),
+    ]);
+
+    expect(results).toEqual([
+      {
+        vehicleId: "vehicle-1",
+        status: "sent",
+        whatsappMessageId: "wamid.retry",
+      },
+    ]);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(errorSpy).toHaveBeenCalled();
   });
 
   it.each(["DELIVERYOPTIMIZER_API_URL", "WHATSAPP_SEND_ROUTE_SECRET"])(
@@ -148,5 +207,28 @@ describe("sendRoutesToWhatsApp", () => {
   it("formats E.164 numbers for the WhatsApp recipient field", () => {
     expect(toWhatsAppRecipientNumber("+14155551234")).toBe("14155551234");
     expect(toWhatsAppRecipientNumber("14155551234")).toBe("14155551234");
+  });
+
+  it("caps concurrent in-flight sends", async () => {
+    let inFlight = 0;
+    let maxInFlight = 0;
+    const fetchMock = vi.fn().mockImplementation(async () => {
+      inFlight += 1;
+      maxInFlight = Math.max(maxInFlight, inFlight);
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      inFlight -= 1;
+      return new Response(JSON.stringify({ messages: [{ id: "wamid.x" }] }));
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const items = Array.from({ length: 8 }, (_, i) =>
+      createRoute(`vehicle-${i}`, `+1415555123${i}`, `Driver ${i}`),
+    );
+    const results = await sendRoutesToWhatsApp(items);
+
+    expect(results).toHaveLength(8);
+    expect(results.every((r) => r.status === "sent")).toBe(true);
+    expect(maxInFlight).toBeLessThanOrEqual(5);
+    expect(fetchMock).toHaveBeenCalledTimes(8);
   });
 });
