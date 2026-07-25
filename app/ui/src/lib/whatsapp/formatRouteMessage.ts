@@ -37,8 +37,8 @@ function orderedStops(route: RouteLike): RouteStopLike[] {
   }
 
   return [...route.stops]
-    .filter(
-      (stop): stop is RouteStopLike => Boolean(stop && typeof stop === "object"),
+    .filter((stop): stop is RouteStopLike =>
+      Boolean(stop && typeof stop === "object"),
     )
     .sort((a, b) => sequenceOrInfinity(a) - sequenceOrInfinity(b));
 }
