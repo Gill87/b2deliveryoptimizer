@@ -71,13 +71,13 @@ export default function Page() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUploadOverlayOpen, setIsUploadOverlayOpen] = useState(false);
   const [pendingCSVFile, setPendingCSVFile] = useState<File | null>(null);
-  const [allowPartialOptimization, setAllowPartialOptimization] =
-    useState(false);
   const { importVehicles } = vehicleState;
   const { importAddresses } = addressState;
   const { parseError, closeImportModal } = useCSVImport();
 
   const {
+    startOptimize,
+    optimizeAnyway,
     optimize,
     isOptimizing,
     optimizeError,
@@ -228,25 +228,15 @@ export default function Page() {
 
   const clearSessionError = useCallback(() => setSessionError(null), []);
 
-  const dismissCapacityWarning = useCallback(() => {
-    setAllowPartialOptimization(false);
-    clearCapacityWarning();
-  }, [clearCapacityWarning]);
-
-  const handleOptimizeAnyway = useCallback(() => {
-    setAllowPartialOptimization(true);
-    void optimize(undefined, true);
-  }, [optimize]);
-
   const handleStartLocationSave = useCallback(
     (addr: LocationAddress) => {
       const parts = [addr.line1];
       if (addr.line2.trim()) parts.push(addr.line2);
       parts.push(addr.city, `${addr.state} ${addr.zipCode}`, addr.country);
       const formattedAddress = parts.join(", ");
-      void optimize(formattedAddress, allowPartialOptimization);
+      void optimize(formattedAddress);
     },
-    [allowPartialOptimization, optimize],
+    [optimize],
   );
 
   function handlePageDragEnter(e: React.DragEvent<HTMLElement>) {
@@ -308,11 +298,12 @@ export default function Page() {
         variant="warning"
         title="Vehicle capacity is limited"
         message={capacityWarning}
-        onClose={dismissCapacityWarning}
+        onClose={clearCapacityWarning}
         action={{
           label: "Optimize Anyway",
-          onClick: handleOptimizeAnyway,
+          onClick: optimizeAnyway,
         }}
+        actionDisabled={isOptimizing}
       />
       <AlertPopup message={sessionError} onClose={clearSessionError} />
       <AlertPopup message={uploadError} onClose={() => setUploadError(null)} />
@@ -321,11 +312,9 @@ export default function Page() {
       {needsDepotAddress && (
         <AddressOverlay
           heading="Enter starting location for all driver routes"
-          onClose={() => {
-            setAllowPartialOptimization(false);
-            dismissDepotAddressPrompt();
-          }}
+          onClose={dismissDepotAddressPrompt}
           onSave={handleStartLocationSave}
+          primaryDisabled={isOptimizing}
         />
       )}
       <MobileSidebar
@@ -334,7 +323,7 @@ export default function Page() {
       />
       <MobileBottomBar
         onSave={handleExportSession}
-        onOptimize={() => void optimize()}
+        onOptimize={startOptimize}
         isOptimizing={isOptimizing}
       />
       <MobileNavbar onMenuClick={() => setIsMobileMenuOpen(true)} />
@@ -355,7 +344,7 @@ export default function Page() {
           >
             <div className={MANAGE_VEHICLE_GROUP}>
               <ManageSectionHeader
-                onOptimize={() => void optimize()}
+                onOptimize={startOptimize}
                 isOptimizing={isOptimizing}
               />
               <VehicleSection

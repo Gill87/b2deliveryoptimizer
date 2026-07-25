@@ -28,6 +28,7 @@ type AlertPopupProps = {
     label: string;
     onClick: () => void;
   };
+  actionDisabled?: boolean;
 };
 
 export default function AlertPopup({
@@ -36,6 +37,7 @@ export default function AlertPopup({
   variant = "error",
   title = variant === "warning" ? "Warning" : "Something went wrong",
   action,
+  actionDisabled = false,
 }: AlertPopupProps) {
   const panelRef = useFocusTrap<HTMLDivElement>(!!message);
   const titleId = useId();
@@ -101,6 +103,8 @@ export default function AlertPopup({
             type="button"
             onClick={action?.onClick ?? onClose}
             className={`${variant === "warning" ? OVERLAY_WARNING_BTN : OVERLAY_PRIMARY_BTN} ${styles.primaryBtnOverlay}`}
+            disabled={action ? actionDisabled : false}
+            aria-busy={action ? actionDisabled : false}
           >
             {action?.label ?? "Dismiss"}
           </button>

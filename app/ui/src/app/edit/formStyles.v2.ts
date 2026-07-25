@@ -554,10 +554,10 @@ export const OVERLAY_CANCEL_BTN =
   "h-9 px-4 rounded-[80px] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap hover:bg-[var(--edit-tertiary-btn-hover)] active:bg-[var(--edit-tertiary-btn-pressed)] transition-colors cursor-pointer";
 
 export const OVERLAY_PRIMARY_BTN =
-  "h-9 px-4 rounded-[80px] bg-[var(--edit-btn-primary)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap cursor-pointer";
+  "h-9 px-4 rounded-[80px] bg-[var(--edit-btn-primary)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
 
 export const OVERLAY_WARNING_BTN =
-  "h-9 px-4 rounded-[80px] bg-[var(--edit-btn-warning)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap cursor-pointer";
+  "h-9 px-4 rounded-[80px] bg-[var(--edit-btn-warning)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
 
 export const OVERLAY_DELETE_BTN =
   "h-9 px-4 rounded-[80px] bg-[var(--edit-btn-delete)] font-semibold text-[14px] leading-5 text-[var(--edit-text-invert)] whitespace-nowrap cursor-pointer";
