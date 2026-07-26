@@ -101,32 +101,16 @@ describe("sendRoutesToWhatsApp", () => {
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    // Concurrent workers start items 0..2 in order, then item 0 retries twice.
-    const responses: Array<Response | Error> = [
-      new Response(
-        JSON.stringify({ error: "WhatsApp upstream request failed." }),
-        { status: 502 },
-      ),
-      new TypeError("Network request failed"),
-      new Response("{"),
-      new Response(
-        JSON.stringify({ error: "WhatsApp upstream request failed." }),
-        { status: 502 },
-      ),
-      new Response(
-        JSON.stringify({ error: "WhatsApp upstream request failed." }),
-        { status: 502 },
-      ),
-    ];
-    let call = 0;
-    const fetchMock = vi.fn().mockImplementation(() => {
-      const next = responses[call];
-      call += 1;
-      if (next instanceof Error) {
-        return Promise.reject(next);
-      }
-      return Promise.resolve(next);
-    });
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({ error: "WhatsApp upstream request failed." }),
+          { status: 502 },
+        ),
+      )
+      .mockRejectedValueOnce(new TypeError("Network request failed"))
+      .mockResolvedValueOnce(new Response("{"));
     vi.stubGlobal("fetch", fetchMock);
 
     const results = await sendRoutesToWhatsApp([
@@ -152,12 +136,12 @@ describe("sendRoutesToWhatsApp", () => {
         whatsappMessageId: "",
       },
     ]);
-    expect(fetchMock).toHaveBeenCalledTimes(5);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
     expect(errorSpy).toHaveBeenCalled();
     expect(warnSpy).toHaveBeenCalled();
   });
 
-  it("retries transient 502 responses then succeeds", async () => {
+  it("does not retry transient 502 responses for non-idempotent sends", async () => {
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     const fetchMock = vi
       .fn()
@@ -176,11 +160,11 @@ describe("sendRoutesToWhatsApp", () => {
     expect(results).toEqual([
       {
         vehicleId: "vehicle-1",
-        status: "sent",
-        whatsappMessageId: "wamid.retry",
+        status: "failed",
+        whatsappMessageId: "",
       },
     ]);
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(errorSpy).toHaveBeenCalled();
   });
 

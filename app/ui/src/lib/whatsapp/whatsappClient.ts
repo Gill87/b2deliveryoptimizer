@@ -1,6 +1,5 @@
 import type { SendRouteItem } from "@/lib/validation/whatsapp.schema";
 import { formatWhatsAppRouteMessage } from "@/lib/whatsapp/formatRouteMessage";
-import { retry } from "@/lib/utils/retry";
 
 const SEND_ROUTE_PATH = "/api/whatsapp/send-route";
 const SEND_CONCURRENCY = 5;
@@ -13,12 +12,6 @@ export type WhatsAppSendResult = {
   vehicleId: string;
   status: "sent" | "failed";
   whatsappMessageId: string;
-};
-
-type SendError = Error & {
-  retryable: boolean;
-  status?: number;
-  body?: unknown;
 };
 
 export function toWhatsAppRecipientNumber(phoneNumber: string): string {
@@ -50,17 +43,6 @@ function messageIdFromResponse(body: unknown): string {
 
   const messageId = (messages[0] as { id?: unknown } | undefined)?.id;
   return typeof messageId === "string" && messageId ? messageId : "";
-}
-
-function createSendError(
-  message: string,
-  options: { retryable: boolean; status?: number; body?: unknown },
-): SendError {
-  const error = new Error(message) as SendError;
-  error.retryable = options.retryable;
-  error.status = options.status;
-  error.body = options.body;
-  return error;
 }
 
 function isAbortError(error: unknown): boolean {
@@ -145,45 +127,40 @@ async function sendRoute(
   endpoint: string,
   secret: string,
 ): Promise<WhatsAppSendResult> {
+  // Do not auto-retry: WhatsApp send is a non-idempotent POST, and a 5xx/timeout
+  // after upstream acceptance would duplicate driver messages on retry.
   try {
-    const responseBody = await retry(async () => {
-      let response: Response;
-      try {
-        response = await postSendRoute(endpoint, secret, item);
-      } catch (error) {
-        console.error(
-          `[whatsapp] send failed for ${item.vehicleId}: ${
-            isAbortError(error) ? "request timed out" : "network error"
-          }`,
-          error,
-        );
-        throw error;
-      }
+    let response: Response;
+    try {
+      response = await postSendRoute(endpoint, secret, item);
+    } catch (error) {
+      console.error(
+        `[whatsapp] send failed for ${item.vehicleId}: ${
+          isAbortError(error) ? "request timed out" : "network error"
+        }`,
+        error,
+      );
+      throw error;
+    }
 
-      const body = await parseResponseBody(response);
-      if (response.ok) {
-        return body;
-      }
-
+    const body = await parseResponseBody(response);
+    if (!response.ok) {
       console.error(
         `[whatsapp] send failed for ${item.vehicleId}: HTTP ${response.status}`,
         bodySnippet(body),
       );
+      return {
+        vehicleId: item.vehicleId,
+        status: "failed",
+        whatsappMessageId: "",
+      };
+    }
 
-      const retryable = response.status >= 500 || response.status === 429;
-      throw createSendError(
-        retryable
-          ? `WhatsApp send transient error (${response.status})`
-          : `WhatsApp send error (${response.status})`,
-        { retryable, status: response.status, body },
-      );
-    });
-
-    const messageId = messageIdFromResponse(responseBody);
+    const messageId = messageIdFromResponse(body);
     if (!messageId) {
       console.warn(
         `[whatsapp] send succeeded for ${item.vehicleId} without message id`,
-        bodySnippet(responseBody),
+        bodySnippet(body),
       );
     }
 
@@ -193,7 +170,6 @@ async function sendRoute(
       whatsappMessageId: messageId,
     };
   } catch {
-    // Failure details are logged inside the retry callback before rethrow.
     return {
       vehicleId: item.vehicleId,
       status: "failed",
