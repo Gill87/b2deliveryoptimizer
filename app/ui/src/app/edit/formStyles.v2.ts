@@ -554,7 +554,10 @@ export const OVERLAY_CANCEL_BTN =
   "h-9 px-4 rounded-[80px] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap hover:bg-[var(--edit-tertiary-btn-hover)] active:bg-[var(--edit-tertiary-btn-pressed)] transition-colors cursor-pointer";
 
 export const OVERLAY_PRIMARY_BTN =
-  "h-9 px-4 rounded-[80px] bg-[var(--edit-btn-primary)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap cursor-pointer";
+  "h-9 px-4 rounded-[80px] bg-[var(--edit-btn-primary)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
+
+export const OVERLAY_WARNING_BTN =
+  "h-9 px-4 rounded-[80px] bg-[var(--edit-btn-warning)] font-semibold text-[14px] leading-5 text-[var(--edit-text-primary)] whitespace-nowrap cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
 
 export const OVERLAY_DELETE_BTN =
   "h-9 px-4 rounded-[80px] bg-[var(--edit-btn-delete)] font-semibold text-[14px] leading-5 text-[var(--edit-text-invert)] whitespace-nowrap cursor-pointer";
@@ -780,12 +783,12 @@ export const MOBILE_BOTTOM_BAR_SECONDARY_BTN =
 export const MOBILE_BOTTOM_BAR_SECONDARY_LABEL =
   "font-['Manrope',sans-serif] font-semibold text-[16px] leading-[22px] text-[var(--edit-text-primary)] whitespace-nowrap";
 
-// ── ErrorOverlay ──────────────────────────────────────────────────────────────
+// ── AlertPopup ────────────────────────────────────────────────────────────────
 
-export const ERROR_OVERLAY_MESSAGE =
+export const ALERT_POPUP_MESSAGE =
   "text-[14px] leading-5 text-[var(--edit-text-secondary)] w-full";
 
-export const ERROR_OVERLAY_FOOTER = "flex items-center justify-end";
+export const ALERT_POPUP_FOOTER = "flex items-center justify-end gap-2";
 
 // ── CSV Upload Overlay (Figma 8102:1548 desktop / 7472:5765 mobile) ───────────
 
