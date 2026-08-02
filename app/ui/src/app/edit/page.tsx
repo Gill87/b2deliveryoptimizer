@@ -36,6 +36,7 @@ import DragDropOverlay from "@/app/edit/components/shared/DragDropOverlay";
 import { useVehicles } from "@/app/edit/hooks/useVehicles";
 import { useAddresses } from "@/app/edit/hooks/useAddresses";
 import { useOptimize } from "@/app/edit/hooks/useOptimize";
+import { useOptimizedAddressIds } from "@/app/edit/hooks/useOptimizedAddressIds";
 import { useCallback, useEffect, useState } from "react";
 import { loadSessionFromFile } from "@/lib/session/importSession";
 import { downloadSessionSave } from "@/lib/session/exportSession";
@@ -96,6 +97,8 @@ export default function Page() {
     vehicleState.setVehiclesStartLocation,
     addressState.cacheAddressLocation,
   );
+
+  const optimizedAddressIds = useOptimizedAddressIds();
 
   const [isHydrated, setIsHydrated] = useState(false);
 
@@ -358,6 +361,7 @@ export default function Page() {
                 {...addressState}
                 geocodeFailedIds={geocodeFailedAddressIds}
                 outOfRegionIds={outOfRegionAddressIds}
+                optimizedIds={optimizedAddressIds}
                 onOpenUploadOverlay={() => setIsUploadOverlayOpen(true)}
               />
               <AddressPagination {...addressState} />
