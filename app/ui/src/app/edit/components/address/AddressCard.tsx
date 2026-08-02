@@ -585,9 +585,7 @@ export default function AddressCard({
                   Recipient
                 </span>
                 {isOptimized && (
-                  <span className={ADDRESS_ROW_OPTIMIZED_BADGE}>
-                    Optimized
-                  </span>
+                  <span className={ADDRESS_ROW_OPTIMIZED_BADGE}>Optimized</span>
                 )}
               </div>
               <div className={MOBILE_ADDR_LOCKED_RECIPIENT_LINES}>
