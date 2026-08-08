@@ -201,6 +201,10 @@ function StepperInput({
   );
 }
 
+function OptimizedBadge() {
+  return <span className={ADDRESS_ROW_OPTIMIZED_BADGE}>Optimized</span>;
+}
+
 function AutoResizeNotesTextarea({
   value,
   onChange,
@@ -285,11 +289,7 @@ export default function AddressCard({
                 <>
                   {/* Recipient column — locked */}
                   <div className={ADDRESS_ROW_LOCKED_RECIPIENT_COL}>
-                    {isOptimized && (
-                      <span className={ADDRESS_ROW_OPTIMIZED_BADGE}>
-                        Optimized
-                      </span>
-                    )}
+                    {isOptimized && <OptimizedBadge />}
                     {hasRecipientContact(a) && (
                       <button
                         type="button"
@@ -584,9 +584,7 @@ export default function AddressCard({
                 <span className={MOBILE_ADDR_EDIT_SECTION_LABEL}>
                   Recipient
                 </span>
-                {isOptimized && (
-                  <span className={ADDRESS_ROW_OPTIMIZED_BADGE}>Optimized</span>
-                )}
+                {isOptimized && <OptimizedBadge />}
               </div>
               <div className={MOBILE_ADDR_LOCKED_RECIPIENT_LINES}>
                 {hasRecipientContact(a) && (
@@ -645,11 +643,7 @@ export default function AddressCard({
                     <span className={MOBILE_ADDR_EDIT_SECTION_LABEL}>
                       Recipient
                     </span>
-                    {isOptimized && (
-                      <span className={ADDRESS_ROW_OPTIMIZED_BADGE}>
-                        Optimized
-                      </span>
-                    )}
+                    {isOptimized && <OptimizedBadge />}
                   </div>
                   <button
                     type="button"

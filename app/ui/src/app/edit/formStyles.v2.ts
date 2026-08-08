@@ -175,10 +175,6 @@ export const VEHICLE_ROW_STATUS_TEXT_AVAILABLE =
 export const VEHICLE_ROW_STATUS_TEXT_IN_USE =
   "font-semibold text-[16px] leading-[22px] text-[var(--edit-text-secondary)] whitespace-nowrap";
 
-// "Optimized" badge on delivery cards whose stop was included in the last optimize run.
-export const ADDRESS_ROW_OPTIMIZED_BADGE =
-  "self-start bg-[var(--edit-container-active)] px-2 py-[3px] rounded-[4px] font-semibold text-[12px] leading-[16px] text-[var(--edit-text-primary)] whitespace-nowrap";
-
 // Segmented toggle for Available / In use (Figma 8724:4604)
 export const STATUS_TOGGLE_WRAPPER =
   "bg-[var(--edit-stone-50)] flex gap-[4px] items-center p-[2px] rounded-[6px] w-fit";
@@ -458,6 +454,10 @@ export const ADDRESS_ROW_LOCKED_NOTES_BTN = `${ADDRESS_ROW_LOCKED_PLAIN_TEXT} ${
 
 export const ADDRESS_ROW_LOCKED_NOTES_TEXT =
   "overflow-hidden [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:3]";
+
+// "Optimized" badge on delivery cards whose stop was included in the last optimize run.
+export const ADDRESS_ROW_OPTIMIZED_BADGE =
+  "self-start bg-[var(--edit-container-active)] px-2 py-[3px] rounded-[4px] font-semibold text-[12px] leading-[16px] text-[var(--edit-text-primary)] whitespace-nowrap";
 
 export const MOBILE_LOCKED_CLICKABLE =
   "cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--edit-teal-300)]";
