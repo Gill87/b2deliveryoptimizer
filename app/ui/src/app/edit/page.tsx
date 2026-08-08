@@ -55,13 +55,6 @@ import type { AddressCard } from "@/app/edit/types/delivery";
 
 type StoredUploadFile = { name: string; content: string };
 
-function reindexAddresses(addresses: AddressCard[]): AddressCard[] {
-  return addresses.map((address, index) => ({
-    ...address,
-    id: index + 1,
-  }));
-}
-
 export default function Page() {
   const vehicleState = useVehicles();
   const addressState = useAddresses();
@@ -281,9 +274,10 @@ export default function Page() {
             setPendingCSVFile(null);
           }}
           importAddresses={(cards: AddressCard[]) =>
-            addressState.importAddresses(
-              reindexAddresses([...addressState.addresses, ...cards]),
-            )
+            addressState.importAddresses([
+              ...addressState.addresses,
+              ...cards.map((c) => ({ ...c, id: addressState.reserveId() })),
+            ])
           }
           onInvalidFile={() => {
             setIsUploadOverlayOpen(false);
